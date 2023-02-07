@@ -1,8 +1,9 @@
 package com.example.task2;
 
-public class ItemData {
+public class RecyclerData {
     public String text;
-    public ItemData(String text) {
+
+    public RecyclerData(String text) {
         this.text = text;
     }
 

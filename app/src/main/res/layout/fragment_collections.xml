@@ -1,91 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:context=".CollectionsFragment">
 
-    <FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".CollectionsFragment">
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="@font/poppins"
+        android:text="@string/please_enter_collection_size_and_number_of_elements_to_compare"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.03"
+        app:layout_constraintWidth_percent="0.85" />
 
-        <TextView
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_size"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:hint="@string/collection_size"
+        android:textColorHint="#8D8D8D"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:errorEnabled="true"
+        app:hintTextAppearance="@style/EditTextHint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="65dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.03"
+        app:layout_constraintWidth_percent="0.85">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="35dp"
-            android:fontFamily="@font/poppins"
-            android:text="@string/please_enter_collection_size_and_number_of_elements_to_compare"
-            android:textSize="14sp" />
+            android:layout_height="match_parent"
+            android:background="@drawable/input_bg"
+            android:fontFamily="@font/poppins_medium"
+            android:textAppearance="@style/EditText" />
 
-        <com.google.android.material.textfield.TextInputLayout
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_calculate"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/button_bg"
+        android:text="Calculate"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="65dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_input_size"
+        app:layout_constraintVertical_bias="0.03"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <Button
+        android:id="@+id/btn_stop_start"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/button_bg"
+        android:text="Start"
+        app:layout_constraintBottom_toBottomOf="@+id/text_input_amount"
+        app:layout_constraintEnd_toEndOf="@+id/text_input_amount"
+        app:layout_constraintHeight="65dp"
+        app:layout_constraintTop_toTopOf="@id/text_input_amount"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_amount"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:hint="@string/elements_amount"
+        android:textColorHint="#8D8D8D"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:errorEnabled="true"
+        app:hintTextAppearance="@style/EditTextHint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="65dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_calculate"
+        app:layout_constraintVertical_bias="0.03"
+        app:layout_constraintWidth_percent="0.85">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="100dp"
-            android:hint="@string/collection_size"
-            android:textColorHint="#8D8D8D"
-            app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="0dp"
-            app:errorEnabled="true"
-            app:hintTextAppearance="@style/EditTextHint">
+            android:layout_height="match_parent"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/input_bg"
+            android:fontFamily="@font/poppins_medium"
+            android:textAppearance="@style/EditText" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/input_bg"
-                android:fontFamily="@font/poppins_medium"
-                android:textAppearance="@style/EditText" />
-        </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/btn_calculate"
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="500dp"
-            android:background="@drawable/button_bg"
-            android:text="Calculate" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCollections"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="wrap_content_constrained"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_input_amount"
+        app:layout_constraintWidth_percent="0.87"
+        tools:listitem="@layout/recyclerview_item" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="60dp"
-            android:layout_marginTop="600dp"
-            android:hint="@string/elements_amount"
-            android:textColorHint="#8D8D8D"
-            app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="0dp"
-            app:errorEnabled="true"
-            app:hintTextAppearance="@style/EditTextHint">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/input_bg"
-                android:fontFamily="@font/poppins_medium"
-                android:textAppearance="@style/EditText" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/btn_stop_start"
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginStart="250dp"
-            android:layout_marginTop="600dp"
-            android:background="@drawable/button_bg"
-            android:text="Start" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCollections"
-            android:paddingHorizontal="25dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="700dp"
-            android:layout_marginBottom="10dp"
-            tools:listitem="@layout/recyclerview_item"/>
-
-    </FrameLayout>
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

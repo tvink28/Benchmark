@@ -1,6 +1,5 @@
 package com.example.task2;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,56 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+
 public class CollectionsFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    private ArrayList<ItemData> newsArrayList;
-
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        recyclerView.findViewById(R.id.rvCollections);
-//
-//        // created new array list..
-//        recyclerDataArrayList=new ArrayList<>();
-//
-//        // added data to array list
-//        recyclerDataArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-//        recyclerDataArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-//        recyclerDataArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-//        recyclerDataArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-//        recyclerDataArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-//
-//
-//        // added data from arraylist to adapter class.
-//        RecyclerViewAdapter adapter=new RecyclerViewAdapter(recyclerDataArrayList,this);
-//
-//        // setting grid layout manager to implement grid view.
-//        // in this method '2' represents number of columns to be displayed in grid view.
-//        GridLayoutManager layoutManager=new GridLayoutManager(this,2);
-//
-//        // at last set adapter to recycler view.
-//        recyclerView.setLayoutManager(layoutManager);
-//        recyclerView.setAdapter(adapter);
-//    }
-
-//    private RecyclerView recyclerView;
-//
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        recyclerView.findViewById(R.id.rvCollections);
-//
-//        ArrayList<ItemData> itemDataArrayList = new ArrayList<>();
-//
-//        itemDataArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-//        itemDataArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-//        itemDataArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-//
-//        RecyclerViewAdapter adapter = new RecyclerViewAdapter(itemDataArrayList, this);
-//
-//        GridLayoutManager layoutManager = new GridLayoutManager(this,3);
-//    }
+    private ArrayList<RecyclerData> newsArrayList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,23 +30,37 @@ public class CollectionsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         datainitialize();
-        recyclerView = view.findViewById(R.id.rvCollections);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
-        MyAdapter myAdapter = new MyAdapter(getContext(),newsArrayList);
-        recyclerView.setAdapter(myAdapter);
+        RecyclerView recyclerView = view.findViewById(R.id.rvCollections);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(newsArrayList, getContext());
+        recyclerView.setAdapter(recyclerViewAdapter);
 
     }
 
     private void datainitialize() {
 
         newsArrayList = new ArrayList<>();
-
-        newsArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-        newsArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-        newsArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-        newsArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-        newsArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
-        newsArrayList.add(new ItemData("Adding\n" + "in the beginning ArrayList N/A ms"));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.adding_in_the_beginning_arraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.adding_in_the_beginning_linkedlist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.adding_in_the_beginning_copyonwritearraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.adding_in_the_middle_arraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.adding_in_the_middle_linkedlist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.adding_in_the_middle_copyonwritearraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.adding_in_the_end_arraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.adding_in_the_end_linkedlist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.adding_in_the_end_copyonwritearraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.search_by_value_arraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.search_by_value_linkedlist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.search_by_value_copyonwritearraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.removing_in_the_beginning_arraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.removing_in_the_beginning_linkedlist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.removing_in_the_beginning_copyonwritearraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.removing_in_the_middle_arraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.removing_in_the_middle_linkedlist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.removing_in_the_middle_copyonwritearraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.removing_in_the_end_arraylist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.removing_in_the_end_linkedlist)));
+        newsArrayList.add(new RecyclerData(getResources().getString(R.string.removing_in_the_end_copyonwritearraylist)));
 
     }
 }

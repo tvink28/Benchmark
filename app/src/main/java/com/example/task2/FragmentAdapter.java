@@ -15,9 +15,12 @@ public class FragmentAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch (position) {
-            case 1 : return new MapsFragment();
+            case 0:
+                return new CollectionsFragment();
+            default:
+                return new MapsFragment();
+
         }
-        return new CollectionsFragment();
     }
 
     @Override
