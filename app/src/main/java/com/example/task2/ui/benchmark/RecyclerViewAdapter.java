@@ -1,4 +1,4 @@
-package com.example.task2;
+package com.example.task2.ui.benchmark;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,34 +8,46 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.task2.R;
+import com.example.task2.models.RecyclerData;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
 
-    private final List<RecyclerData> newsArrayList = new ArrayList<>();
+    private final List<RecyclerData> items = new ArrayList<>();
 
-    public RecyclerViewAdapter() {}
+    public RecyclerViewAdapter() {
+    }
 
     @NonNull
     @Override
     public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.recyclerview_item, parent, false
+        );
         return new RecyclerViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
-        holder.bind(newsArrayList.get(position));
+        holder.bind(items.get(position));
 
     }
 
     @Override
     public int getItemCount() {
-        return newsArrayList.size();
+        return items.size();
     }
+
+    public void setItems(Collection<RecyclerData> items) {
+        this.items.clear();
+        this.items.addAll(items);
+        notifyDataSetChanged();
+    }
+
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
@@ -53,15 +65,5 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             textViewAction.setText(recyclerData.action);
             textViewType.setText(recyclerData.type);
         }
-    }
-
-    public void setItems(Collection<RecyclerData> recyclerData) {
-        newsArrayList.addAll(recyclerData);
-        notifyDataSetChanged();
-    }
-
-    public void clearItem(Collection<RecyclerData> recyclerData) {
-        newsArrayList.clear();
-        notifyDataSetChanged();
     }
 }

@@ -1,6 +1,9 @@
-package com.example.task2;
+package com.example.task2.ui.benchmark;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,21 +11,26 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import com.example.task2.R;
+import com.example.task2.models.RecyclerData;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
 public class CollectionsFragment extends Fragment {
 
-    RecyclerViewAdapter recyclerViewAdapter;
+    private final RecyclerViewAdapter adapter = new RecyclerViewAdapter();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        adapter.setItems(createItemsList());
+    }
+
+    @Override
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState
+    ) {
         return inflater.inflate(R.layout.fragment_collections, container, false);
     }
 
@@ -30,24 +38,14 @@ public class CollectionsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        datainitialize();
         RecyclerView recyclerView = view.findViewById(R.id.rvCollections);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        recyclerViewAdapter = new RecyclerViewAdapter();
-        recyclerView.setAdapter(recyclerViewAdapter);
-        loadRecyclerView();
-
+        recyclerView.setAdapter(adapter);
     }
 
-    private void loadRecyclerView() {
-        Collection<RecyclerData> recyclerData = getRecyclerData();
-        recyclerViewAdapter.setItems(recyclerData);
 
-    }
-
-    private Collection<RecyclerData> getRecyclerData() {
+    private Collection<RecyclerData> createItemsList() {
         return Arrays.asList(
-
                 new RecyclerData(R.string.adding_in_the_beginning, R.string.arraylist),
                 new RecyclerData(R.string.adding_in_the_beginning, R.string.linkedlist),
                 new RecyclerData(R.string.adding_in_the_beginning, R.string.copyonwritearraylist),

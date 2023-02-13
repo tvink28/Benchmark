@@ -1,9 +1,8 @@
-package com.example.task2;
+package com.example.task2.models;
 
 public class RecyclerData {
     public int action;
     public int type;
-
 
     public RecyclerData(int action, int type) {
         this.action = action;

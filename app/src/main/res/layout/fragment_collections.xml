@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".CollectionsFragment">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:fontFamily="@font/poppins"
         android:text="@string/please_enter_collection_size_and_number_of_elements_to_compare"
         android:textSize="14sp"
@@ -19,60 +18,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.03"
+        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintWidth_percent="0.85" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text_input_size"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:hint="@string/collection_size"
-        android:textColorHint="#8D8D8D"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeWidthFocused="0dp"
-        app:errorEnabled="true"
-        app:hintTextAppearance="@style/EditTextHint"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.11"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.03"
-        app:layout_constraintWidth_percent="0.85">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/input_bg"
-            android:fontFamily="@font/poppins_medium"
-            android:textAppearance="@style/EditText" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
-        android:id="@+id/btn_calculate"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/button_bg"
-        android:text="@string/calculate"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.11"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_size"
-        app:layout_constraintVertical_bias="0.03"
-        app:layout_constraintWidth_percent="0.85" />
-
-    <Button
-        android:id="@+id/btn_stop_start"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/button_bg"
-        android:text="@string/start"
-        app:layout_constraintBottom_toBottomOf="@+id/text_input_amount"
-        app:layout_constraintEnd_toEndOf="@+id/text_input_amount"
-        app:layout_constraintHeight_percent="0.11"
-        app:layout_constraintTop_toTopOf="@id/text_input_amount"
-        app:layout_constraintWidth_percent="0.3" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_amount"
@@ -85,12 +32,12 @@
         app:errorEnabled="true"
         app:hintTextAppearance="@style/EditTextHint"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_stop_start"
         app:layout_constraintHeight_percent="0.11"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_calculate"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
         app:layout_constraintVertical_bias="0.03"
-        app:layout_constraintWidth_percent="0.85">
+        app:layout_constraintWidth_percent="0.55">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -98,20 +45,33 @@
             android:background="@drawable/input_bg2"
             android:fontFamily="@font/poppins_medium"
             android:textAppearance="@style/EditText" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
+    <Button
+        android:id="@+id/btn_stop_start"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/button_bg"
+        android:text="@string/start"
+        app:layout_constraintBottom_toBottomOf="@+id/text_input_amount"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintHeight_percent="0.11"
+        app:layout_constraintStart_toEndOf="@+id/text_input_amount"
+        app:layout_constraintTop_toTopOf="@id/text_input_amount"
+        app:layout_constraintWidth_percent="0.3" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCollections"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintHeight="wrap_content_constrained"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.76"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_input_amount"
+        app:layout_constraintVertical_bias="1"
         app:layout_constraintWidth_percent="0.85"
         tools:listitem="@layout/recyclerview_item" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
