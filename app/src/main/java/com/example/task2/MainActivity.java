@@ -38,10 +38,10 @@ public class MainActivity extends AppCompatActivity implements TabLayoutMediator
     }
 
 
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-        super.onPointerCaptureChanged(hasCapture);
-    }
+//    @Override
+//    public void onPointerCaptureChanged(boolean hasCapture) {
+//        super.onPointerCaptureChanged(hasCapture);
+//    }
 
 
     @Override
