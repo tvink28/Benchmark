@@ -16,6 +16,7 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements TabLayoutMediator.TabConfigurationStrategy {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements TabLayoutMediator
 
         new TabLayoutMediator(tabLayout, viewPager2, this).attach();
     }
+
 
     @Override
     public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {

@@ -4,6 +4,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="please_enter_collection_size_and_number_of_elements_to_compare">Please enter collection size and number of elements to compare</string>
     <string name="elements_amount">Elements amount:</string>
+    <string name="title_action_bar">Activity</string>
+
 
     <!-- Strings for performing operations on Collections -->
     <string name="adding_in_the_beginning">Adding\n in the beginning</string>
@@ -16,28 +18,6 @@
     <string name="removing_in_the_beginning">Removing\n in the beginning</string>
     <string name="removing_in_the_middle">Removing\n in the middle</string>
     <string name="removing_in_the_end">Removing\n in the end</string>
-    <!--    <string name="adding_in_the_beginning_arraylist">"Adding\n in the beginning ArrayList N/A ms"</string>-->
-    <!--    <string name="adding_in_the_beginning_linkedlist">"Adding\n in the beginning LinkedList N/A ms"</string>-->
-    <!--    <string name="adding_in_the_beginning_copyonwritearraylist">"Adding\n in the beginning CopyOnWriteArrayList N/A ms"</string>-->
-    <!--    <string name="adding_in_the_middle_arraylist">"Adding\n in the middle\n ArrayList N/A ms"</string>-->
-    <!--    <string name="adding_in_the_middle_linkedlist">"Adding\n in the middle\n LinkedList N/A ms"</string>-->
-    <!--    <string name="adding_in_the_middle_copyonwritearraylist">"Adding\n in the middle\n CopyOnWriteArrayList N/A ms"</string>-->
-    <!--    <string name="adding_in_the_end_arraylist">"Adding\n in the end\n ArrayList N/A ms"</string>-->
-    <!--    <string name="adding_in_the_end_linkedlist">"Adding\n in the end\n LinkedList N/A ms"</string>-->
-    <!--    <string name="adding_in_the_end_copyonwritearraylist">"Adding\n in the end\n CopyOnWriteArrayList N/A ms"</string>-->
-    <!--    <string name="search_by_value_arraylist">"Search\n by value\n ArrayList N/A ms"</string>-->
-    <!--    <string name="search_by_value_linkedlist">"Search\n by value\n LinkedList N/A ms"</string>-->
-    <!--    <string name="search_by_value_copyonwritearraylist">"Search\n by value\n CopyOnWriteArrayList N/A ms"</string>-->
-    <!--    <string name="removing_in_the_beginning_arraylist">"Removing\n in the beginning ArrayList N/A ms"</string>-->
-    <!--    <string name="removing_in_the_beginning_linkedlist">"Removing\n in the beginning LinkedList N/A ms"</string>-->
-    <!--    <string name="removing_in_the_beginning_copyonwritearraylist">"Removing\n in the beginning CopyOnWriteArrayList N/A ms"</string>-->
-    <!--    <string name="removing_in_the_middle_arraylist">"Removing\n in the middle\n ArrayList N/A ms"</string>-->
-    <!--    <string name="removing_in_the_middle_linkedlist">"Removing\n in the middle\n LinkedList N/A ms"</string>-->
-    <!--    <string name="removing_in_the_middle_copyonwritearraylist">"Removing\n in the middle\n CopyOnWriteArrayList N/A ms"</string>-->
-    <!--    <string name="removing_in_the_end_arraylist">"Removing\n in the end\n ArrayList N/A ms"</string>-->
-    <!--    <string name="removing_in_the_end_linkedlist">"Removing\n in the end\n LinkedList N/A ms"</string>-->
-    <!--    <string name="removing_in_the_end_copyonwritearraylist">"Removing\n in the end\n CopyOnWriteArrayList N/A ms"</string>-->
-
 
     <!-- Strings for performing operations on Maps -->
     <string name="adding_new_treemap">"Adding new TreeMap N/A ms"</string>
@@ -50,6 +30,9 @@
     <!-- Tab Names -->
     <string name="tab_collections">Collections</string>
     <string name="tab_maps">Maps</string>
+
+    <!-- Button Names -->
     <string name="calculate">Calculate</string>
     <string name="start">Start</string>
+
 </resources>

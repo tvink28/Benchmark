@@ -9,17 +9,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task2.R;
-import com.example.task2.models.RecyclerData;
+import com.example.task2.models.CellOperation;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
+public class CellAdapter extends RecyclerView.Adapter<CellAdapter.RecyclerViewHolder> {
 
-    private final List<RecyclerData> items = new ArrayList<>();
+    private final List<CellOperation> items = new ArrayList<>();
 
-    public RecyclerViewAdapter() {
+    public CellAdapter() {
     }
 
     @NonNull
@@ -42,7 +42,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return items.size();
     }
 
-    public void setItems(Collection<RecyclerData> items) {
+    public void setItems(Collection<CellOperation> items) {
         this.items.clear();
         this.items.addAll(items);
         notifyDataSetChanged();
@@ -52,18 +52,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView textViewAction;
-        private final TextView textViewType;
+//        private final TextView textViewType;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewAction = itemView.findViewById(R.id.item_text_action);
-            textViewType = itemView.findViewById(R.id.item_text_type);
         }
 
-        public void bind(RecyclerData recyclerData) {
-//            textView.setText(recyclerData.text);
-            textViewAction.setText(recyclerData.action);
-            textViewType.setText(recyclerData.type);
+        public void bind(CellOperation cellOperation) {
+
+            String action = itemView.getResources().getString(cellOperation.getAction());
+            String type = itemView.getResources().getString(cellOperation.getType());
+            textViewAction.setText(String.format("%s\n%s", action, type));
+
         }
     }
 }
