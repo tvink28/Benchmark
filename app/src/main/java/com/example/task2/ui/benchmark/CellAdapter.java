@@ -61,8 +61,8 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.RecyclerViewHo
 
         public void bind(CellOperation cellOperation) {
 
-            String action = itemView.getResources().getString(cellOperation.getAction());
-            String type = itemView.getResources().getString(cellOperation.getType());
+            String action = itemView.getResources().getString(cellOperation.action);
+            String type = itemView.getResources().getString(cellOperation.type);
             textViewAction.setText(String.format("%s\n%s", action, type));
 
         }

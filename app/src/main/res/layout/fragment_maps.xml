@@ -1,18 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.benchmark.MapsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="hello_blank_maps"
-        android:textColor="@color/black"
-        android:textSize="24dp"
-        android:textStyle="bold" />
+        android:id="@+id/textViewMaps"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins"
+        android:text="@string/please_enter_collection_size_and_number_of_elements_to_compare"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.03"
+        app:layout_constraintWidth_percent="0.85" />
 
-</FrameLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutMaps"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:hint="@string/elements_amount"
+        android:textColorHint="#8D8D8D"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:hintTextAppearance="@style/EditTextHint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnStopStartMaps"
+        app:layout_constraintHeight_percent="0.11"
+        app:layout_constraintStart_toStartOf="@+id/textViewMaps"
+        app:layout_constraintTop_toBottomOf="@+id/textViewMaps"
+        app:layout_constraintVertical_bias="0.03"
+        app:layout_constraintWidth_percent="0.55">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextMaps"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/input_bg2"
+            android:fontFamily="@font/poppins_medium"
+            android:inputType="number"
+            android:textAppearance="@style/EditText" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnStopStartMaps"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/button_bg"
+        android:text="@string/start"
+        app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutMaps"
+        app:layout_constraintEnd_toEndOf="@+id/textViewMaps"
+        app:layout_constraintHeight_percent="0.11"
+        app:layout_constraintStart_toEndOf="@+id/textInputLayoutMaps"
+        app:layout_constraintTop_toTopOf="@id/textInputLayoutMaps"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCollectionsMaps"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.76"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutMaps"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintWidth_percent="0.85"
+        tools:listitem="@layout/recyclerview_item" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
