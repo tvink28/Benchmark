@@ -4,10 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.benchmark.MapsFragment">
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <TextView
-        android:id="@+id/textViewMaps"
+        android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins"
@@ -19,27 +21,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.03"
+        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintWidth_percent="0.85" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayoutMaps"
+        android:id="@+id/textInputLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:hint="@string/elements_amount"
         android:textColorHint="#8D8D8D"
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
+        app:errorEnabled="true"
         app:hintTextAppearance="@style/EditTextHint"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnStopStartMaps"
+        app:layout_constraintEnd_toStartOf="@+id/btnStopStart"
         app:layout_constraintHeight_percent="0.11"
-        app:layout_constraintStart_toStartOf="@+id/textViewMaps"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMaps"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
         app:layout_constraintVertical_bias="0.03"
         app:layout_constraintWidth_percent="0.55">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextMaps"
+            android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/input_bg2"
@@ -50,30 +54,29 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/btnStopStartMaps"
+        android:id="@+id/btnStopStart"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/button_bg"
         android:text="@string/start"
-        app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutMaps"
-        app:layout_constraintEnd_toEndOf="@+id/textViewMaps"
+        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
         app:layout_constraintHeight_percent="0.11"
-        app:layout_constraintStart_toEndOf="@+id/textInputLayoutMaps"
-        app:layout_constraintTop_toTopOf="@id/textInputLayoutMaps"
+        app:layout_constraintStart_toEndOf="@+id/textInputLayout"
+        app:layout_constraintTop_toTopOf="@id/textInputLayout"
         app:layout_constraintWidth_percent="0.3" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvCollectionsMaps"
+        android:id="@+id/rv"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.76"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutMaps"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
         app:layout_constraintVertical_bias="1"
         app:layout_constraintWidth_percent="0.85"
         tools:listitem="@layout/recyclerview_item" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
