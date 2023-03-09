@@ -18,7 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.task2.R;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class BaseFragment extends Fragment implements View.OnFocusChangeListener, View.OnClickListener {
+public abstract class BaseFragment extends Fragment implements View.OnFocusChangeListener, View.OnClickListener {
+
+
+    protected abstract int getValidationMin();
+
+    protected abstract int getValidationMax();
 
     protected final CellAdapter adapter = new CellAdapter();
     protected TextInputEditText textInputEditText;
@@ -62,31 +67,31 @@ public class BaseFragment extends Fragment implements View.OnFocusChangeListener
         }
     }
 
+
     public void onClick(View v) {
         String input = textInputEditText.getText().toString().trim();
         TextView errorText = errorView.findViewById(R.id.errorText);
-        final int X = textInputEditText.getWidth() / 2 - errorView.getWidth() / 2;
+        int x = textInputEditText.getWidth() / 2 - errorView.getWidth() / 2;
         final int Y = 30;
 
 
         if (TextUtils.isEmpty(input)) {
-            errorPopup.showAsDropDown(textInputEditText, X, Y);
+            errorPopup.showAsDropDown(textInputEditText, x, Y);
             errorText.setText(R.string.error_empty);
             textInputEditText.setBackgroundResource(R.drawable.input_bg_error);
         } else {
             try {
                 int number = Integer.parseInt(input);
-                if (number < 1 || number > 7) {
-                    errorPopup.showAsDropDown(textInputEditText, X, Y);
+                if (number < getValidationMin() || number > getValidationMax()) {
+                    errorPopup.showAsDropDown(textInputEditText, x, Y);
                     errorText.setText(R.string.error_count);
                     textInputEditText.setBackgroundResource(R.drawable.input_bg_error);
-
                 } else {
                     errorPopup.dismiss();
                     textInputEditText.setBackgroundResource(R.drawable.input_bg2);
                 }
             } catch (NumberFormatException e) {
-                errorPopup.showAsDropDown(textInputEditText, X, Y);
+                errorPopup.showAsDropDown(textInputEditText, x, Y);
                 errorText.setText(R.string.error_valid);
                 textInputEditText.setBackgroundResource(R.drawable.input_bg_error);
 

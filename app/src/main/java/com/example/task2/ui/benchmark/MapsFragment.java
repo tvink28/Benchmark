@@ -28,4 +28,14 @@ public class MapsFragment extends BaseFragment {
                 new CellOperation(R.string.removing, R.string.hashmap)
         );
     }
+
+    @Override
+    protected int getValidationMin() {
+        return 1;
+    }
+
+    @Override
+    protected int getValidationMax() {
+        return 2;
+    }
 }

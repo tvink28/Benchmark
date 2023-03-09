@@ -4,8 +4,11 @@ public class CellOperation {
     public final int action;
     public final int type;
 
-    public CellOperation(int action, int type) {
+    public final long operationTime;
+
+    public CellOperation(int action, int type, long operationTime) {
         this.action = action;
         this.type = type;
+        this.operationTime = operationTime;
     }
 }

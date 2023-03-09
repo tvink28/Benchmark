@@ -1,16 +1,26 @@
 package com.example.task2.ui.benchmark;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.task2.R;
+import com.example.task2.models.BenchmarkManager;
 import com.example.task2.models.CellOperation;
+import com.example.task2.models.MyApplication;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+
+import javax.inject.Inject;
 
 public class CollectionsFragment extends BaseFragment {
+
+    @Inject
+    BenchmarkManager benchmarkManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,5 +54,20 @@ public class CollectionsFragment extends BaseFragment {
         );
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ((MyApplication) context.getApplicationContext()).getAppComponent().inject(this);
+    }
 
+
+    @Override
+    protected int getValidationMin() {
+        return 1;
+    }
+
+    @Override
+    protected int getValidationMax() {
+        return 3;
+    }
 }

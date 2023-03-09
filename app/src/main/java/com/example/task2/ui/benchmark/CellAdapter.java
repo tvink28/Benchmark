@@ -63,7 +63,8 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.RecyclerViewHo
 
             String action = itemView.getResources().getString(cellOperation.action);
             String type = itemView.getResources().getString(cellOperation.type);
-            textViewAction.setText(String.format("%s\n%s", action, type));
+            String operationTime = String.valueOf(cellOperation.operationTime);
+            textViewAction.setText(String.format("%s\n%s %s", action, type, operationTime));
 
         }
     }
