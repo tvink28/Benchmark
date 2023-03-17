@@ -6,6 +6,7 @@
     <string name="elements_amount">Elements amount:</string>
     <string name="title_action_bar">Activity</string>
     <string name="start">Start</string>
+    <string name="n_a">N/A</string>
 
 
     <!-- Strings for performing operations on Collections -->

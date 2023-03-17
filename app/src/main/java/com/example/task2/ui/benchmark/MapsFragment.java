@@ -20,22 +20,18 @@ public class MapsFragment extends BaseFragment {
 
     private Collection<CellOperation> createItemsList() {
         return Arrays.asList(
-                new CellOperation(R.string.adding_new, R.string.treemap),
-                new CellOperation(R.string.adding_new, R.string.hashmap),
-                new CellOperation(R.string.search_by_key, R.string.treemap),
-                new CellOperation(R.string.search_by_key, R.string.hashmap),
-                new CellOperation(R.string.removing, R.string.treemap),
-                new CellOperation(R.string.removing, R.string.hashmap)
+                new CellOperation(R.string.adding_new, R.string.treemap, "N/A"),
+                new CellOperation(R.string.adding_new, R.string.hashmap, "N/A"),
+                new CellOperation(R.string.search_by_key, R.string.treemap, "N/A"),
+                new CellOperation(R.string.search_by_key, R.string.hashmap, "N/A"),
+                new CellOperation(R.string.removing, R.string.treemap, "N/A"),
+                new CellOperation(R.string.removing, R.string.hashmap, "N/A")
         );
     }
 
-    @Override
-    protected int getValidationMin() {
-        return 1;
-    }
 
     @Override
-    protected int getValidationMax() {
-        return 2;
+    protected void makeBenchmark(int number) {
+
     }
 }

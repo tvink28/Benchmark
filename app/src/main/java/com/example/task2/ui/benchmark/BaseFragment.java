@@ -16,14 +16,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task2.R;
+import com.example.task2.models.BenchmarkManager;
 import com.google.android.material.textfield.TextInputEditText;
 
 public abstract class BaseFragment extends Fragment implements View.OnFocusChangeListener, View.OnClickListener {
+    protected RecyclerView recyclerView;
 
 
-    protected abstract int getValidationMin();
+    protected BenchmarkManager benchmarkManager = new BenchmarkManager(new BenchmarkManager.CollectionProvider());
 
-    protected abstract int getValidationMax();
 
     protected final CellAdapter adapter = new CellAdapter();
     protected TextInputEditText textInputEditText;
@@ -45,7 +46,7 @@ public abstract class BaseFragment extends Fragment implements View.OnFocusChang
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
 
-        RecyclerView recyclerView = view.findViewById(R.id.rv);
+        recyclerView = view.findViewById(R.id.rv);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(adapter);
 
@@ -69,9 +70,11 @@ public abstract class BaseFragment extends Fragment implements View.OnFocusChang
 
 
     public void onClick(View v) {
+
+
         String input = textInputEditText.getText().toString().trim();
         TextView errorText = errorView.findViewById(R.id.errorText);
-        int x = textInputEditText.getWidth() / 2 - errorView.getWidth() / 2;
+        final int x = textInputEditText.getWidth() / 2 - errorView.getWidth() / 2;
         final int Y = 30;
 
 
@@ -82,11 +85,14 @@ public abstract class BaseFragment extends Fragment implements View.OnFocusChang
         } else {
             try {
                 int number = Integer.parseInt(input);
-                if (number < getValidationMin() || number > getValidationMax()) {
+                if (number < 1) {
                     errorPopup.showAsDropDown(textInputEditText, x, Y);
                     errorText.setText(R.string.error_count);
                     textInputEditText.setBackgroundResource(R.drawable.input_bg_error);
                 } else {
+
+                    makeBenchmark(number);
+
                     errorPopup.dismiss();
                     textInputEditText.setBackgroundResource(R.drawable.input_bg2);
                 }
@@ -99,4 +105,7 @@ public abstract class BaseFragment extends Fragment implements View.OnFocusChang
             }
         }
     }
+
+    protected abstract void makeBenchmark(int number);
+
 }

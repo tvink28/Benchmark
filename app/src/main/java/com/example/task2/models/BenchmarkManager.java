@@ -4,145 +4,114 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class BenchmarkManager {
     private final CollectionProvider collectionProvider;
+    private final ExecutorService executorService;
 
     public BenchmarkManager(CollectionProvider collectionProvider) {
         this.collectionProvider = collectionProvider;
+        this.executorService = Executors.newFixedThreadPool(20);
     }
 
-    public Single<Result> benchmark(int count) {
-        return Single.fromCallable(() -> {
-            List<String> arrayList = collectionProvider.getArrayList();
-            List<String> linkedList = collectionProvider.getLinkedList();
-            List<String> copyOnWriteArrayList = collectionProvider.getCopyOnWriteArrayList();
-
-            long addStartArrayListTime = addStart(arrayList, count);
-            long addStartLinkedListTime = addStart(linkedList, count);
-            long addStartCopyOnWriteArrayListTime = addStart(copyOnWriteArrayList, count);
-
-            long addMiddleArrayListTime = addMiddle(arrayList, count);
-            long addMiddleLinkedListTime = addMiddle(linkedList, count);
-            long addMiddleCopyOnWriteArrayListTime = addMiddle(copyOnWriteArrayList, count);
-
-            long addEndArrayListTime = addEnd(arrayList, count);
-            long addEndLinkedListTime = addEnd(linkedList, count);
-            long addEndCopyOnWriteArrayListTime = addEnd(copyOnWriteArrayList, count);
-
-            return new Result(
-                    addStartArrayListTime, addStartLinkedListTime, addStartCopyOnWriteArrayListTime,
-                    addMiddleArrayListTime, addMiddleLinkedListTime, addMiddleCopyOnWriteArrayListTime,
-                    addEndArrayListTime, addEndLinkedListTime, addEndCopyOnWriteArrayListTime);
-        }).subscribeOn(Schedulers.io());
-
-
+    public void shutdown() {
+        executorService.shutdown();
     }
 
-    private long addStart(List<String> list, int count) {
-        long totalTime = 0;
-        long startTime, endTime;
-
-        for (int i = 0; i < count; i++) {
-            startTime = System.currentTimeMillis();
+    public Future<Long> addStart(List<String> list, int size) {
+        return executorService.submit(() -> {
+            for (int i = 0; i < size; i++) {
+                list.add("test" + i);
+            }
+            long startTime, endTime;
+            startTime = System.nanoTime();
             list.add(0, "test");
-            endTime = System.currentTimeMillis();
-            totalTime += endTime - startTime;
-        }
-        return totalTime / count;
+            endTime = System.nanoTime();
+            return (endTime - startTime);
+        });
     }
 
-    private long addMiddle(List<String> list, int count) {
-        long totalTime = 0;
-        long startTime, endTime;
-
-        for (int i = 0; i < count; i++) {
-            startTime = System.currentTimeMillis();
+    public Future<Long> addMiddle(List<String> list, int size) {
+        return executorService.submit(() -> {
+            for (int i = 0; i < size; i++) {
+                list.add("test" + i);
+            }
+            long startTime, endTime;
+            startTime = System.nanoTime();
             list.add(list.size() / 2, "test");
-            endTime = System.currentTimeMillis();
-            totalTime += endTime - startTime;
-        }
-        return totalTime / count;
+            endTime = System.nanoTime();
+            return (endTime - startTime);
+        });
     }
 
-    private long addEnd(List<String> list, int count) {
-        long totalTime = 0;
-        long startTime, endTime;
-
-        for (int i = 0; i < count; i++) {
-            startTime = System.currentTimeMillis();
+    public Future<Long> addEnd(List<String> list, int size) {
+        return executorService.submit(() -> {
+            for (int i = 0; i < size; i++) {
+                list.add("test" + i);
+            }
+            long startTime, endTime;
+            startTime = System.nanoTime();
             list.add("test");
-            endTime = System.currentTimeMillis();
-            totalTime += endTime - startTime;
-        }
-        return totalTime / count;
+            endTime = System.nanoTime();
+            return (endTime - startTime);
+        });
     }
 
-
-    public static class Result {
-        public final long addStartArrayListTime;
-        public final long addStartLinkedListTime;
-        public final long addStartCopyOnWriteArrayListTime;
-
-        public final long addMiddleArrayListTime;
-        public final long addMiddleLinkedListTime;
-        public final long addMiddleCopyOnWriteArrayListTime;
-
-        public final long addEndArrayListTime;
-        public final long addEndLinkedListTime;
-        public final long addEndCopyOnWriteArrayListTime;
-
-        public Result(long addStartArrayListTime, long addStartLinkedListTime, long addStartCopyOnWriteArrayListTime, long addMiddleArrayListTime, long addMiddleLinkedListTime, long addMiddleCopyOnWriteArrayListTime, long addEndArrayListTime, long addEndLinkedListTime, long addEndCopyOnWriteArrayListTime) {
-            this.addStartArrayListTime = addStartArrayListTime;
-            this.addStartLinkedListTime = addStartLinkedListTime;
-            this.addStartCopyOnWriteArrayListTime = addStartCopyOnWriteArrayListTime;
-            this.addMiddleArrayListTime = addMiddleArrayListTime;
-            this.addMiddleLinkedListTime = addMiddleLinkedListTime;
-            this.addMiddleCopyOnWriteArrayListTime = addMiddleCopyOnWriteArrayListTime;
-            this.addEndArrayListTime = addEndArrayListTime;
-            this.addEndLinkedListTime = addEndLinkedListTime;
-            this.addEndCopyOnWriteArrayListTime = addEndCopyOnWriteArrayListTime;
-        }
-
-        public long getAddStartArrayListTime() {
-            return addStartArrayListTime;
-        }
-
-        public long getAddStartLinkedListTime() {
-            return addStartLinkedListTime;
-        }
-
-        public long getAddStartCopyOnWriteArrayListTime() {
-            return addStartCopyOnWriteArrayListTime;
-        }
-
-        public long getAddMiddleArrayListTime() {
-            return addMiddleArrayListTime;
-        }
-
-        public long getAddMiddleLinkedListTime() {
-            return addMiddleLinkedListTime;
-        }
-
-        public long getAddMiddleCopyOnWriteArrayListTime() {
-            return addMiddleCopyOnWriteArrayListTime;
-        }
-
-        public long getAddEndArrayListTime() {
-            return addEndArrayListTime;
-        }
-
-        public long getAddEndLinkedListTime() {
-            return addEndLinkedListTime;
-        }
-
-        public long getAddEndCopyOnWriteArrayListTime() {
-            return addEndCopyOnWriteArrayListTime;
-        }
+    public Future<Long> searchValue(List<String> list, int size) {
+        return executorService.submit(() -> {
+            for (int i = 0; i < size; i++) {
+                list.add("test" + i);
+            }
+            long startTime, endTime;
+            startTime = System.nanoTime();
+            list.indexOf("test0");
+            endTime = System.nanoTime();
+            return (endTime - startTime);
+        });
     }
+
+    public Future<Long> removeStart(List<String> list, int size) {
+        return executorService.submit(() -> {
+            for (int i = 0; i < size; i++) {
+                list.add("test" + i);
+            }
+            long startTime, endTime;
+            startTime = System.nanoTime();
+            list.remove(0);
+            endTime = System.nanoTime();
+            return (endTime - startTime);
+        });
+    }
+
+    public Future<Long> removeMiddle(List<String> list, int size) {
+        return executorService.submit(() -> {
+            for (int i = 0; i < size; i++) {
+                list.add("test" + i);
+            }
+            long startTime, endTime;
+            startTime = System.nanoTime();
+            list.remove(list.size() / 2);
+            endTime = System.nanoTime();
+            return (endTime - startTime);
+        });
+    }
+
+    public Future<Long> removeEnd(List<String> list, int size) {
+        return executorService.submit(() -> {
+            for (int i = 0; i < size; i++) {
+                list.add("test" + i);
+            }
+            long startTime, endTime;
+            startTime = System.nanoTime();
+            list.remove(list.size() - 1);
+            endTime = System.nanoTime();
+            return (endTime - startTime);
+        });
+    }
+
 
     public static class CollectionProvider {
         private final List<String> arrayList = new ArrayList<>();
@@ -160,5 +129,9 @@ public class BenchmarkManager {
         public List<String> getCopyOnWriteArrayList() {
             return copyOnWriteArrayList;
         }
+    }
+
+    public CollectionProvider getCollectionProvider() {
+        return collectionProvider;
     }
 }
