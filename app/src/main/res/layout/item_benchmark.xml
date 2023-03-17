@@ -21,7 +21,6 @@
             android:gravity="center"
             android:textSize="10sp" />
 
-
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

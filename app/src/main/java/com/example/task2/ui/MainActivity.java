@@ -22,16 +22,16 @@ public class MainActivity extends AppCompatActivity implements TabLayoutMediator
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ViewPager2 viewPager2 = findViewById(R.id.view_pager);
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        final ViewPager2 viewPager2 = findViewById(R.id.view_pager);
+        final TabLayout tabLayout = findViewById(R.id.tab_layout);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentAdapter adapter = new FragmentAdapter(fragmentManager, getLifecycle());
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentAdapter adapter = new FragmentAdapter(fragmentManager, getLifecycle());
         viewPager2.setAdapter(adapter);
 
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.custom_actionbar);
+        getSupportActionBar().setCustomView(R.layout.view_actionbar);
 
         new TabLayoutMediator(tabLayout, viewPager2, this).attach();
     }

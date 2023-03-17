@@ -15,26 +15,25 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CellAdapter extends RecyclerView.Adapter<CellAdapter.RecyclerViewHolder> {
+public class BenchmarksAdapter extends RecyclerView.Adapter<BenchmarksAdapter.BenchmarkViewHolder> {
 
     private final List<CellOperation> items = new ArrayList<>();
 
-    public CellAdapter() {
+    public BenchmarksAdapter() {
     }
 
     @NonNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public BenchmarkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.recyclerview_item, parent, false
+                R.layout.item_benchmark, parent, false
         );
-        return new RecyclerViewHolder(v);
+        return new BenchmarkViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull BenchmarkViewHolder holder, int position) {
         holder.bind(items.get(position));
-
     }
 
     @Override
@@ -49,25 +48,22 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.RecyclerViewHo
     }
 
 
-    public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
+    public static class BenchmarkViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView textViewAction;
 //        private final TextView textViewType;
 
-        public RecyclerViewHolder(@NonNull View itemView) {
+        public BenchmarkViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewAction = itemView.findViewById(R.id.item_text_action);
         }
 
         public void bind(CellOperation cellOperation) {
-
-            String action = itemView.getResources().getString(cellOperation.action);
-            String type = itemView.getResources().getString(cellOperation.type);
-            String time = String.valueOf(cellOperation.time);
+            final String action = itemView.getResources().getString(cellOperation.action);
+            final String type = itemView.getResources().getString(cellOperation.type);
+            final String time = String.valueOf(cellOperation.time);
 
             textViewAction.setText(String.format("%s\n%s\n%s ns", action, type, time));
-
-
         }
     }
 }

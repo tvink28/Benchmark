@@ -19,14 +19,12 @@ import com.example.task2.R;
 import com.example.task2.models.BenchmarkManager;
 import com.google.android.material.textfield.TextInputEditText;
 
-public abstract class BaseFragment extends Fragment implements View.OnFocusChangeListener, View.OnClickListener {
-    protected RecyclerView recyclerView;
-
+public abstract class BenchmarkFragment extends Fragment implements View.OnFocusChangeListener, View.OnClickListener {
 
     protected BenchmarkManager benchmarkManager = new BenchmarkManager(new BenchmarkManager.CollectionProvider());
 
-
-    protected final CellAdapter adapter = new CellAdapter();
+    protected final BenchmarksAdapter adapter = new BenchmarksAdapter();
+    protected RecyclerView recyclerView;
     protected TextInputEditText textInputEditText;
     protected View errorView;
     protected PopupWindow errorPopup;
@@ -35,16 +33,12 @@ public abstract class BaseFragment extends Fragment implements View.OnFocusChang
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState
     ) {
-
-        return inflater.inflate(R.layout.fragment_common, container, false);
-
+        return inflater.inflate(R.layout.fragment_benchmark, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        LayoutInflater inflater = LayoutInflater.from(getContext());
 
         recyclerView = view.findViewById(R.id.rv);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
@@ -52,13 +46,12 @@ public abstract class BaseFragment extends Fragment implements View.OnFocusChang
 
         textInputEditText = view.findViewById(R.id.editText);
         Button buttonStopStart = view.findViewById(R.id.btnStopStart);
-        errorView = inflater.inflate(R.layout.error, null);
+        errorView = LayoutInflater.from(getContext()).inflate(R.layout.view_error, null);
         errorPopup = new PopupWindow(errorView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         errorPopup.setFocusable(true);
         textInputEditText.setOnFocusChangeListener(this);
         buttonStopStart.setOnClickListener(this);
-
     }
 
     public void onFocusChange(View v, boolean hasFocus) {
@@ -70,13 +63,10 @@ public abstract class BaseFragment extends Fragment implements View.OnFocusChang
 
 
     public void onClick(View v) {
-
-
-        String input = textInputEditText.getText().toString().trim();
-        TextView errorText = errorView.findViewById(R.id.errorText);
+        final String input = textInputEditText.getText().toString().trim();
+        final TextView errorText = errorView.findViewById(R.id.errorText);
         final int x = textInputEditText.getWidth() / 2 - errorView.getWidth() / 2;
         final int Y = 30;
-
 
         if (TextUtils.isEmpty(input)) {
             errorPopup.showAsDropDown(textInputEditText, x, Y);
@@ -84,13 +74,12 @@ public abstract class BaseFragment extends Fragment implements View.OnFocusChang
             textInputEditText.setBackgroundResource(R.drawable.input_bg_error);
         } else {
             try {
-                int number = Integer.parseInt(input);
+                final int number = Integer.parseInt(input);
                 if (number < 1) {
                     errorPopup.showAsDropDown(textInputEditText, x, Y);
                     errorText.setText(R.string.error_count);
                     textInputEditText.setBackgroundResource(R.drawable.input_bg_error);
                 } else {
-
                     makeBenchmark(number);
 
                     errorPopup.dismiss();
@@ -100,8 +89,6 @@ public abstract class BaseFragment extends Fragment implements View.OnFocusChang
                 errorPopup.showAsDropDown(textInputEditText, x, Y);
                 errorText.setText(R.string.error_valid);
                 textInputEditText.setBackgroundResource(R.drawable.input_bg_error);
-
-
             }
         }
     }

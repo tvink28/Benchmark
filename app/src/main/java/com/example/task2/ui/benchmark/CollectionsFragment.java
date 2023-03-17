@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class CollectionsFragment extends BaseFragment {
+public class CollectionsFragment extends BenchmarkFragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,145 +87,71 @@ public class CollectionsFragment extends BaseFragment {
 
         Handler handler = new Handler(Looper.myLooper());
 
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
+        handler.post(() -> {
+            try {
+                String arrayListAddStartTime = String.valueOf(arrayListAddStartResult.get());
+                String linkedListAddStartTime = String.valueOf(linkedListAddStartResult.get());
+                String copyOnWriteArrayListAddStartTime = String.valueOf(copyOnWriteArrayListStartResult.get());
 
-                try {
-                    String arrayListAddStartTime = String.valueOf(arrayListAddStartResult.get());
-                    String linkedListAddStartTime = String.valueOf(linkedListAddStartResult.get());
-                    String copyOnWriteArrayListAddStartTime = String.valueOf(copyOnWriteArrayListStartResult.get());
+                String arrayListAddMiddleTime = String.valueOf(arrayListAddMiddleResult.get());
+                String linkedListAddMiddleTime = String.valueOf(linkedListAddMiddleResult.get());
+                String copyOnWriteArrayListAddMiddleListTime = String.valueOf(copyOnWriteArrayListMiddleResult.get());
 
-                    String arrayListAddMiddleTime = String.valueOf(arrayListAddMiddleResult.get());
-                    String linkedListAddMiddleTime = String.valueOf(linkedListAddMiddleResult.get());
-                    String copyOnWriteArrayListAddMiddleListTime = String.valueOf(copyOnWriteArrayListMiddleResult.get());
+                String arrayListAddEndTime = String.valueOf(arrayListAddEndResult.get());
+                String linkedListAddEndTime = String.valueOf(linkedListAddEndResult.get());
+                String copyOnWriteArrayListAddEndTime = String.valueOf(copyOnWriteArrayListEndResult.get());
 
-                    String arrayListAddEndTime = String.valueOf(arrayListAddEndResult.get());
-                    String linkedListAddEndTime = String.valueOf(linkedListAddEndResult.get());
-                    String copyOnWriteArrayListAddEndTime = String.valueOf(copyOnWriteArrayListEndResult.get());
+                String arrayListSearchValueTime = String.valueOf(arrayListSearchValueResult.get());
+                String linkedListSearchValueTime = String.valueOf(linkedListSearchValueResult.get());
+                String copyOnWriteArrayListSearchValueTime = String.valueOf(copyOnWriteArrayListSearchValueResult.get());
 
-                    String arrayListSearchValueTime = String.valueOf(arrayListSearchValueResult.get());
-                    String linkedListSearchValueTime = String.valueOf(linkedListSearchValueResult.get());
-                    String copyOnWriteArrayListSearchValueTime = String.valueOf(copyOnWriteArrayListSearchValueResult.get());
+                String arrayListRemoveStartTime = String.valueOf(arrayListRemoveStartResult.get());
+                String linkedListRemoveStartTime = String.valueOf(linkedListRemoveStartResult.get());
+                String copyOnWriteArrayListRemoveStartTime = String.valueOf(copyOnWriteArrayListRemoveStartResult.get());
 
-                    String arrayListRemoveStartTime = String.valueOf(arrayListRemoveStartResult.get());
-                    String linkedListRemoveStartTime = String.valueOf(linkedListRemoveStartResult.get());
-                    String copyOnWriteArrayListRemoveStartTime = String.valueOf(copyOnWriteArrayListRemoveStartResult.get());
-
-                    String arrayListRemoveMiddleTime = String.valueOf(arrayListRemoveMiddleResult.get());
-                    String linkedListRemoveMiddleTime = String.valueOf(linkedListRemoveMiddleResult.get());
-                    String copyOnWriteArrayListRemoveMiddleTime = String.valueOf(copyOnWriteArrayListRemoveMiddleResult.get());
+                String arrayListRemoveMiddleTime = String.valueOf(arrayListRemoveMiddleResult.get());
+                String linkedListRemoveMiddleTime = String.valueOf(linkedListRemoveMiddleResult.get());
+                String copyOnWriteArrayListRemoveMiddleTime = String.valueOf(copyOnWriteArrayListRemoveMiddleResult.get());
 
 
-                    String arrayListRemoveEndTime = String.valueOf(arrayListRemoveEndResult.get());
-                    String linkedListRemoveEndTime = String.valueOf(linkedListRemoveEndResult.get());
-                    String copyOnWriteArrayListRemoveEndTime = String.valueOf(copyOnWriteArrayListRemoveEndResult.get());
+                String arrayListRemoveEndTime = String.valueOf(arrayListRemoveEndResult.get());
+                String linkedListRemoveEndTime = String.valueOf(linkedListRemoveEndResult.get());
+                String copyOnWriteArrayListRemoveEndTime = String.valueOf(copyOnWriteArrayListRemoveEndResult.get());
 
-                    adapter.setItems(
-                            Arrays.asList(
-                                    new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, arrayListAddStartTime),
-                                    new CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, linkedListAddStartTime),
-                                    new CellOperation(R.string.adding_in_the_beginning, R.string.copyonwritearraylist, copyOnWriteArrayListAddStartTime),
-                                    new CellOperation(R.string.adding_in_the_middle, R.string.arraylist, arrayListAddMiddleTime),
-                                    new CellOperation(R.string.adding_in_the_middle, R.string.linkedlist, linkedListAddMiddleTime),
-                                    new CellOperation(R.string.adding_in_the_middle, R.string.copyonwritearraylist, copyOnWriteArrayListAddMiddleListTime),
-                                    new CellOperation(R.string.adding_in_the_end, R.string.arraylist, arrayListAddEndTime),
-                                    new CellOperation(R.string.adding_in_the_end, R.string.linkedlist, linkedListAddEndTime),
-                                    new CellOperation(R.string.adding_in_the_end, R.string.copyonwritearraylist, copyOnWriteArrayListAddEndTime),
-                                    new CellOperation(R.string.search_by_value, R.string.arraylist, arrayListSearchValueTime),
-                                    new CellOperation(R.string.search_by_value, R.string.linkedlist, linkedListSearchValueTime),
-                                    new CellOperation(R.string.search_by_value, R.string.copyonwritearraylist, copyOnWriteArrayListSearchValueTime),
-                                    new CellOperation(R.string.removing_in_the_beginning, R.string.arraylist, arrayListRemoveStartTime),
-                                    new CellOperation(R.string.removing_in_the_beginning, R.string.linkedlist, linkedListRemoveStartTime),
-                                    new CellOperation(R.string.removing_in_the_beginning, R.string.copyonwritearraylist, copyOnWriteArrayListRemoveStartTime),
-                                    new CellOperation(R.string.removing_in_the_middle, R.string.arraylist, arrayListRemoveMiddleTime),
-                                    new CellOperation(R.string.removing_in_the_middle, R.string.linkedlist, linkedListRemoveMiddleTime),
-                                    new CellOperation(R.string.removing_in_the_middle, R.string.copyonwritearraylist, copyOnWriteArrayListRemoveMiddleTime),
-                                    new CellOperation(R.string.removing_in_the_end, R.string.arraylist, arrayListRemoveEndTime),
-                                    new CellOperation(R.string.removing_in_the_end, R.string.linkedlist, linkedListRemoveEndTime),
-                                    new CellOperation(R.string.removing_in_the_end, R.string.copyonwritearraylist, copyOnWriteArrayListRemoveEndTime)
-                            )
-                    );
+                adapter.setItems(
+                        Arrays.asList(
+                                new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, arrayListAddStartTime),
+                                new CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, linkedListAddStartTime),
+                                new CellOperation(R.string.adding_in_the_beginning, R.string.copyonwritearraylist, copyOnWriteArrayListAddStartTime),
+                                new CellOperation(R.string.adding_in_the_middle, R.string.arraylist, arrayListAddMiddleTime),
+                                new CellOperation(R.string.adding_in_the_middle, R.string.linkedlist, linkedListAddMiddleTime),
+                                new CellOperation(R.string.adding_in_the_middle, R.string.copyonwritearraylist, copyOnWriteArrayListAddMiddleListTime),
+                                new CellOperation(R.string.adding_in_the_end, R.string.arraylist, arrayListAddEndTime),
+                                new CellOperation(R.string.adding_in_the_end, R.string.linkedlist, linkedListAddEndTime),
+                                new CellOperation(R.string.adding_in_the_end, R.string.copyonwritearraylist, copyOnWriteArrayListAddEndTime),
+                                new CellOperation(R.string.search_by_value, R.string.arraylist, arrayListSearchValueTime),
+                                new CellOperation(R.string.search_by_value, R.string.linkedlist, linkedListSearchValueTime),
+                                new CellOperation(R.string.search_by_value, R.string.copyonwritearraylist, copyOnWriteArrayListSearchValueTime),
+                                new CellOperation(R.string.removing_in_the_beginning, R.string.arraylist, arrayListRemoveStartTime),
+                                new CellOperation(R.string.removing_in_the_beginning, R.string.linkedlist, linkedListRemoveStartTime),
+                                new CellOperation(R.string.removing_in_the_beginning, R.string.copyonwritearraylist, copyOnWriteArrayListRemoveStartTime),
+                                new CellOperation(R.string.removing_in_the_middle, R.string.arraylist, arrayListRemoveMiddleTime),
+                                new CellOperation(R.string.removing_in_the_middle, R.string.linkedlist, linkedListRemoveMiddleTime),
+                                new CellOperation(R.string.removing_in_the_middle, R.string.copyonwritearraylist, copyOnWriteArrayListRemoveMiddleTime),
+                                new CellOperation(R.string.removing_in_the_end, R.string.arraylist, arrayListRemoveEndTime),
+                                new CellOperation(R.string.removing_in_the_end, R.string.linkedlist, linkedListRemoveEndTime),
+                                new CellOperation(R.string.removing_in_the_end, R.string.copyonwritearraylist, copyOnWriteArrayListRemoveEndTime)
+                        )
+                );
 
-                    recyclerView.post(() -> adapter.notifyDataSetChanged());
-                    System.out.println("ArrayList addStart time: " + arrayListAddStartTime);
-                    System.out.println("LinkedList addMiddle time: " + linkedListAddStartTime);
-                    System.out.println("CopyOnWriteArrayList addEnd time: " + copyOnWriteArrayListAddStartTime);
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
+                recyclerView.post(() -> adapter.notifyDataSetChanged());
+                System.out.println("ArrayList addStart time: " + arrayListAddStartTime);
+                System.out.println("LinkedList addMiddle time: " + linkedListAddStartTime);
+                System.out.println("CopyOnWriteArrayList addEnd time: " + copyOnWriteArrayListAddStartTime);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
         });
-//        requireActivity().runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    String arrayListAddStartTime = String.valueOf(arrayListAddStartResult.get());
-//                    String linkedListAddStartTime = String.valueOf(linkedListAddStartResult.get());
-//                    String copyOnWriteArrayListAddStartTime = String.valueOf(copyOnWriteArrayListStartResult.get());
-//
-//                    String arrayListAddMiddleTime = String.valueOf(arrayListAddMiddleResult.get());
-//                    String linkedListAddMiddleTime = String.valueOf(linkedListAddMiddleResult.get());
-//                    String copyOnWriteArrayListAddMiddleListTime = String.valueOf(copyOnWriteArrayListMiddleResult.get());
-//
-//                    String arrayListAddEndTime = String.valueOf(arrayListAddEndResult.get());
-//                    String linkedListAddEndTime = String.valueOf(linkedListAddEndResult.get());
-//                    String copyOnWriteArrayListAddEndTime = String.valueOf(copyOnWriteArrayListEndResult.get());
-//
-//                    String arrayListSearchValueTime = String.valueOf(arrayListSearchValueResult.get());
-//                    String linkedListSearchValueTime = String.valueOf(linkedListSearchValueResult.get());
-//                    String copyOnWriteArrayListSearchValueTime = String.valueOf(copyOnWriteArrayListSearchValueResult.get());
-//
-//                    String arrayListRemoveStartTime = String.valueOf(arrayListRemoveStartResult.get());
-//                    String linkedListRemoveStartTime = String.valueOf(linkedListRemoveStartResult.get());
-//                    String copyOnWriteArrayListRemoveStartTime = String.valueOf(copyOnWriteArrayListRemoveStartResult.get());
-//
-//                    String arrayListRemoveMiddleTime = String.valueOf(arrayListRemoveMiddleResult.get());
-//                    String linkedListRemoveMiddleTime = String.valueOf(linkedListRemoveMiddleResult.get());
-//                    String copyOnWriteArrayListRemoveMiddleTime = String.valueOf(copyOnWriteArrayListRemoveMiddleResult.get());
-//
-//
-//                    String arrayListRemoveEndTime = String.valueOf(arrayListRemoveEndResult.get());
-//                    String linkedListRemoveEndTime = String.valueOf(linkedListRemoveEndResult.get());
-//                    String copyOnWriteArrayListRemoveEndTime = String.valueOf(copyOnWriteArrayListRemoveEndResult.get());
-//
-//                    adapter.setItems(
-//                            Arrays.asList(
-//                                    new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, arrayListAddStartTime),
-//                                    new CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, linkedListAddStartTime),
-//                                    new CellOperation(R.string.adding_in_the_beginning, R.string.copyonwritearraylist, copyOnWriteArrayListAddStartTime),
-//                                    new CellOperation(R.string.adding_in_the_middle, R.string.arraylist, arrayListAddMiddleTime),
-//                                    new CellOperation(R.string.adding_in_the_middle, R.string.linkedlist, linkedListAddMiddleTime),
-//                                    new CellOperation(R.string.adding_in_the_middle, R.string.copyonwritearraylist, copyOnWriteArrayListAddMiddleListTime),
-//                                    new CellOperation(R.string.adding_in_the_end, R.string.arraylist, arrayListAddEndTime),
-//                                    new CellOperation(R.string.adding_in_the_end, R.string.linkedlist, linkedListAddEndTime),
-//                                    new CellOperation(R.string.adding_in_the_end, R.string.copyonwritearraylist, copyOnWriteArrayListAddEndTime),
-//                                    new CellOperation(R.string.search_by_value, R.string.arraylist, arrayListSearchValueTime),
-//                                    new CellOperation(R.string.search_by_value, R.string.linkedlist, linkedListSearchValueTime),
-//                                    new CellOperation(R.string.search_by_value, R.string.copyonwritearraylist, copyOnWriteArrayListSearchValueTime),
-//                                    new CellOperation(R.string.removing_in_the_beginning, R.string.arraylist, arrayListRemoveStartTime),
-//                                    new CellOperation(R.string.removing_in_the_beginning, R.string.linkedlist, linkedListRemoveStartTime),
-//                                    new CellOperation(R.string.removing_in_the_beginning, R.string.copyonwritearraylist, copyOnWriteArrayListRemoveStartTime),
-//                                    new CellOperation(R.string.removing_in_the_middle, R.string.arraylist, arrayListRemoveMiddleTime),
-//                                    new CellOperation(R.string.removing_in_the_middle, R.string.linkedlist, linkedListRemoveMiddleTime),
-//                                    new CellOperation(R.string.removing_in_the_middle, R.string.copyonwritearraylist, copyOnWriteArrayListRemoveMiddleTime),
-//                                    new CellOperation(R.string.removing_in_the_end, R.string.arraylist, arrayListRemoveEndTime),
-//                                    new CellOperation(R.string.removing_in_the_end, R.string.linkedlist, linkedListRemoveEndTime),
-//                                    new CellOperation(R.string.removing_in_the_end, R.string.copyonwritearraylist, copyOnWriteArrayListRemoveEndTime)
-//                            )
-//                    );
-//
-//                    recyclerView.post(() -> adapter.notifyDataSetChanged());
-//                    System.out.println("ArrayList addStart time: " + arrayListAddStartTime);
-//                    System.out.println("LinkedList addMiddle time: " + linkedListAddStartTime);
-//                    System.out.println("CopyOnWriteArrayList addEnd time: " + copyOnWriteArrayListAddStartTime);
-//                } catch (InterruptedException | ExecutionException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-
         benchmarkManager.shutdown();
     }
-
 }

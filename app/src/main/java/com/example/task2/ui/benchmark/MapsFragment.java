@@ -8,15 +8,13 @@ import com.example.task2.models.CellOperation;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class MapsFragment extends BaseFragment {
-
+public class MapsFragment extends BenchmarkFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter.setItems(createItemsList());
     }
-
 
     private Collection<CellOperation> createItemsList() {
         return Arrays.asList(

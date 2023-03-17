@@ -10,6 +10,7 @@ import com.example.task2.ui.benchmark.CollectionsFragment;
 import com.example.task2.ui.benchmark.MapsFragment;
 
 public class FragmentAdapter extends FragmentStateAdapter {
+
     public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
     }
@@ -22,7 +23,6 @@ public class FragmentAdapter extends FragmentStateAdapter {
                 return new CollectionsFragment();
             default:
                 return new MapsFragment();
-
         }
     }
 
