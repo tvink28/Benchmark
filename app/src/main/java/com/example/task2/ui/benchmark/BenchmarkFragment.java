@@ -21,8 +21,8 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public abstract class BenchmarkFragment extends Fragment implements View.OnFocusChangeListener, View.OnClickListener {
 
-    protected BenchmarkManager benchmarkManager = new BenchmarkManager(new BenchmarkManager.CollectionProvider());
-
+    protected BenchmarkManager benchmarkManager = new BenchmarkManager();
+    protected final String NA = "N/A";
     protected final BenchmarksAdapter adapter = new BenchmarksAdapter();
     protected RecyclerView recyclerView;
     protected TextInputEditText textInputEditText;
@@ -80,7 +80,8 @@ public abstract class BenchmarkFragment extends Fragment implements View.OnFocus
                     errorText.setText(R.string.error_count);
                     textInputEditText.setBackgroundResource(R.drawable.input_bg_error);
                 } else {
-                    makeBenchmark(number);
+
+                    runBenchmark(number);
 
                     errorPopup.dismiss();
                     textInputEditText.setBackgroundResource(R.drawable.input_bg2);
@@ -93,6 +94,6 @@ public abstract class BenchmarkFragment extends Fragment implements View.OnFocus
         }
     }
 
-    protected abstract void makeBenchmark(int number);
+    protected abstract void runBenchmark(int number);
 
 }

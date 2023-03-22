@@ -6,20 +6,32 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task2.R;
 import com.example.task2.models.CellOperation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-public class BenchmarksAdapter extends RecyclerView.Adapter<BenchmarksAdapter.BenchmarkViewHolder> {
+public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdapter.BenchmarkViewHolder> {
 
-    private final List<CellOperation> items = new ArrayList<>();
+//    private final List<CellOperation> items = new ArrayList<>();
 
     public BenchmarksAdapter() {
+        super(new DiffUtil.ItemCallback<CellOperation>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull CellOperation oldItem, @NonNull CellOperation newItem) {
+                return oldItem.action == newItem.action && oldItem.type == newItem.type;
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull CellOperation oldItem, @NonNull CellOperation newItem) {
+                return oldItem.action == newItem.action && oldItem.type == newItem.type && oldItem.time.equals(newItem.time);
+            }
+        });
     }
 
     @NonNull
@@ -33,25 +45,26 @@ public class BenchmarksAdapter extends RecyclerView.Adapter<BenchmarksAdapter.Be
 
     @Override
     public void onBindViewHolder(@NonNull BenchmarkViewHolder holder, int position) {
-        holder.bind(items.get(position));
+        holder.bind(getItem(position));
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return getCurrentList().size();
     }
 
-    public void setItems(Collection<CellOperation> items) {
-        this.items.clear();
-        this.items.addAll(items);
-        notifyDataSetChanged();
+
+    public void updateCell(int position, String result) {
+        List<CellOperation> currentList = new ArrayList<>(getCurrentList());
+        CellOperation cellOperation = currentList.get(position);
+        currentList.set(position, new CellOperation(cellOperation.action, cellOperation.type, result));
+        submitList(currentList);
     }
 
 
     public static class BenchmarkViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView textViewAction;
-//        private final TextView textViewType;
 
         public BenchmarkViewHolder(@NonNull View itemView) {
             super(itemView);
