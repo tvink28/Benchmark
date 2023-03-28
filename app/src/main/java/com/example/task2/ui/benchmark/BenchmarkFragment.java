@@ -1,5 +1,6 @@
 package com.example.task2.ui.benchmark;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -22,7 +23,7 @@ import com.google.android.material.textfield.TextInputEditText;
 public abstract class BenchmarkFragment extends Fragment implements View.OnFocusChangeListener, View.OnClickListener {
 
     protected BenchmarkManager benchmarkManager = new BenchmarkManager();
-    protected final String NA = "N/A";
+    protected String NA;
     protected final BenchmarksAdapter adapter = new BenchmarksAdapter();
     protected RecyclerView recyclerView;
     protected TextInputEditText textInputEditText;
@@ -41,7 +42,7 @@ public abstract class BenchmarkFragment extends Fragment implements View.OnFocus
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = view.findViewById(R.id.rv);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         recyclerView.setAdapter(adapter);
 
         textInputEditText = view.findViewById(R.id.editText);
@@ -59,6 +60,12 @@ public abstract class BenchmarkFragment extends Fragment implements View.OnFocus
             textInputEditText.clearFocus();
             textInputEditText.setBackgroundResource(R.drawable.input_bg2);
         }
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        NA = context.getString(R.string.na);
     }
 
 

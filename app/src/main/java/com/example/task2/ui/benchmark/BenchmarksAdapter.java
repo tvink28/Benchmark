@@ -13,9 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.task2.R;
 import com.example.task2.models.CellOperation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdapter.BenchmarkViewHolder> {
 
 //    private final List<CellOperation> items = new ArrayList<>();
@@ -55,10 +52,9 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
 
 
     public void updateCell(int position, String result) {
-        List<CellOperation> currentList = new ArrayList<>(getCurrentList());
-        CellOperation cellOperation = currentList.get(position);
-        currentList.set(position, new CellOperation(cellOperation.action, cellOperation.type, result));
-        submitList(currentList);
+        CellOperation cellOperation = getItem(position);
+        cellOperation.setTime(result);
+        notifyDataSetChanged();
     }
 
 
