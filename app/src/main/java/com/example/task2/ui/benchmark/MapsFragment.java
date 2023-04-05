@@ -20,12 +20,12 @@ public class MapsFragment extends BenchmarkFragment {
 
     private Collection<CellOperation> createItemsList() {
         return Arrays.asList(
-                new CellOperation(R.string.adding_new, R.string.treemap, NA),
-                new CellOperation(R.string.adding_new, R.string.hashmap, NA),
-                new CellOperation(R.string.search_by_key, R.string.treemap, NA),
-                new CellOperation(R.string.search_by_key, R.string.hashmap, NA),
-                new CellOperation(R.string.removing, R.string.treemap, NA),
-                new CellOperation(R.string.removing, R.string.hashmap, NA)
+                new CellOperation(R.string.adding_new, R.string.treemap, R.string.na),
+                new CellOperation(R.string.adding_new, R.string.hashmap, R.string.na),
+                new CellOperation(R.string.search_by_key, R.string.treemap, R.string.na),
+                new CellOperation(R.string.search_by_key, R.string.hashmap, R.string.na),
+                new CellOperation(R.string.removing, R.string.treemap, R.string.na),
+                new CellOperation(R.string.removing, R.string.hashmap, R.string.na)
         );
     }
 

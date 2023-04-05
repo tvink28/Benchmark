@@ -5,7 +5,6 @@ import java.util.List;
 public class BenchmarkManager {
 
     public BenchmarkManager() {
-        ;
     }
 
 

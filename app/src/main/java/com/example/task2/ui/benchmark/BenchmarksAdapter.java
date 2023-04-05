@@ -26,7 +26,7 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
 
             @Override
             public boolean areContentsTheSame(@NonNull CellOperation oldItem, @NonNull CellOperation newItem) {
-                return oldItem.action == newItem.action && oldItem.type == newItem.type && oldItem.time.equals(newItem.time);
+                return oldItem.action == newItem.action && oldItem.type == newItem.type && oldItem.time == newItem.time;
             }
         });
     }
@@ -51,13 +51,6 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
     }
 
 
-    public void updateCell(int position, String result) {
-        CellOperation cellOperation = getItem(position);
-        cellOperation.setTime(result);
-        notifyDataSetChanged();
-    }
-
-
     public static class BenchmarkViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView textViewAction;
@@ -70,9 +63,16 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
         public void bind(CellOperation cellOperation) {
             final String action = itemView.getResources().getString(cellOperation.action);
             final String type = itemView.getResources().getString(cellOperation.type);
-            final String time = String.valueOf(cellOperation.time);
+            final int time = cellOperation.time;
 
-            textViewAction.setText(String.format("%s\n%s\n%s ns", action, type, time));
+            String timeText;
+            if (time == R.string.na) {
+                timeText = itemView.getContext().getString(R.string.na);
+            } else {
+                timeText = String.valueOf(time);
+            }
+
+            textViewAction.setText(String.format("%s\n%s\n%s ns", action, type, timeText));
         }
     }
 }
