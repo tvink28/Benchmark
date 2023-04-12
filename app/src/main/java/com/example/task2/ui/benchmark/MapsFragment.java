@@ -6,7 +6,7 @@ import com.example.task2.models.CellOperation;
 import java.util.Arrays;
 import java.util.List;
 
-public class MapsFragment extends BenchmarkFragment {
+public class MapsFragment extends BenchmarksFragment {
 
 
     protected List<CellOperation> createItemsList() {

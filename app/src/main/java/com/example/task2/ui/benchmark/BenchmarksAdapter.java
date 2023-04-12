@@ -15,8 +15,6 @@ import com.example.task2.models.CellOperation;
 
 public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdapter.BenchmarkViewHolder> {
 
-//    private final List<CellOperation> items = new ArrayList<>();
-
     public BenchmarksAdapter() {
         super(new DiffUtil.ItemCallback<CellOperation>() {
             @Override

@@ -32,12 +32,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public abstract class BenchmarkFragment extends Fragment implements View.OnFocusChangeListener, View.OnClickListener, TextWatcher {
-    protected final BenchmarksAdapter adapter = new BenchmarksAdapter();
-    protected Handler handler = new Handler(Looper.getMainLooper());
-    protected TextInputEditText textInputEditText;
-    protected Button buttonStopStart;
-    protected PopupWindow errorPopup;
+public abstract class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, View.OnClickListener, TextWatcher {
+    private final BenchmarksAdapter adapter = new BenchmarksAdapter();
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private TextInputEditText textInputEditText;
+    private Button buttonStopStart;
+    private PopupWindow errorPopup;
     private int number = 0;
     private ExecutorService executorService;
     private List<CellOperation> operations;
@@ -148,9 +148,7 @@ public abstract class BenchmarkFragment extends Fragment implements View.OnFocus
             buttonStopStart.setBackgroundResource(R.drawable.button_bg_stop);
 
             runBenchmark(number);
-
         }
-
     }
 
     private void showError(View errorView, PopupWindow errorPopup, TextView errorText, int y, int errorMessage, int inputBg) {
@@ -162,9 +160,8 @@ public abstract class BenchmarkFragment extends Fragment implements View.OnFocus
         errorPopup.setContentView(errorView);
 
         errorView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        int errorPopupWidth = errorView.getMeasuredWidth();
-
-        int x = textInputEditText.getWidth() / 2 - errorPopupWidth / 2;
+        final int errorPopupWidth = errorView.getMeasuredWidth();
+        final int x = textInputEditText.getWidth() / 2 - errorPopupWidth / 2;
 
         errorPopup.showAsDropDown(textInputEditText, x, y);
     }

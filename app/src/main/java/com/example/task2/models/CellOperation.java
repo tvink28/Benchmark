@@ -5,7 +5,6 @@ public class CellOperation {
     public final int type;
     public final long time;
 
-
     public CellOperation(int action, int type, long time) {
         this.action = action;
         this.type = type;
