@@ -45,11 +45,6 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
         holder.bind(getItem(position));
     }
 
-    @Override
-    public int getItemCount() {
-        return getCurrentList().size();
-    }
-
 
     public static class BenchmarkViewHolder extends RecyclerView.ViewHolder {
 
@@ -63,7 +58,7 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
         public void bind(CellOperation cellOperation) {
             final String action = itemView.getResources().getString(cellOperation.action);
             final String type = itemView.getResources().getString(cellOperation.type);
-            final int time = cellOperation.time;
+            final long time = cellOperation.time;
 
             String timeText;
             if (time == R.string.na) {

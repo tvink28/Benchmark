@@ -8,7 +8,7 @@ public class BenchmarkManager {
     }
 
 
-    public long addStart(List<String> list, int size) {
+    public long addStart(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
         list.add(0, "test");
@@ -16,7 +16,7 @@ public class BenchmarkManager {
         return (endTime - startTime);
     }
 
-    public long addMiddle(List<String> list, int size) {
+    public long addMiddle(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
         list.add(list.size() / 2, "test");
@@ -24,7 +24,7 @@ public class BenchmarkManager {
         return (endTime - startTime);
     }
 
-    public long addEnd(List<String> list, int size) {
+    public long addEnd(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
         list.add("test");
