@@ -53,31 +53,21 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <ToggleButton
         android:id="@+id/btnStopStart"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/button_bg_start"
-        android:text="@string/start"
+        android:background="@drawable/button_toggle_bg"
+        android:checked="true"
         android:textColor="@color/white"
+        android:textOff="@string/stop"
+        android:textOn="@string/start"
         app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
         app:layout_constraintEnd_toEndOf="@+id/textView"
         app:layout_constraintHeight_percent="0.11"
         app:layout_constraintStart_toEndOf="@+id/textInputLayout"
         app:layout_constraintTop_toTopOf="@id/textInputLayout"
         app:layout_constraintWidth_percent="0.3" />
-    <!--    <Button-->
-    <!--        android:id="@+id/btnStopStart"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        android:background="@drawable/button_bg_stop"-->
-    <!--        android:text="@string/start"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"-->
-    <!--        app:layout_constraintEnd_toEndOf="@+id/textView"-->
-    <!--        app:layout_constraintHeight_percent="0.11"-->
-    <!--        app:layout_constraintStart_toEndOf="@+id/textInputLayout"-->
-    <!--        app:layout_constraintTop_toTopOf="@id/textInputLayout"-->
-    <!--        app:layout_constraintWidth_percent="0.3" />-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"

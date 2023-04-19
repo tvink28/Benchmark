@@ -9,9 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,39 +21,32 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task2.R;
-import com.example.task2.models.BenchmarkManager;
 import com.example.task2.models.CellOperation;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, View.OnClickListener, TextWatcher {
+public abstract class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private final Handler handler = new Handler(Looper.getMainLooper());
     private TextInputEditText textInputEditText;
-    private Button buttonStopStart;
+    private ToggleButton buttonStopStart;
     private PopupWindow errorPopup;
-    private int number = 0;
     private ExecutorService executorService;
-    private List<CellOperation> operations;
     private boolean isBenchmarkRunning = false;
 
-    protected abstract List<CellOperation> createItemsList();
-
+    protected abstract List<CellOperation> createItemsList()
+    protected abstract CellOperation measureTime(CellOperation item, int number);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        operations = createItemsList();
-        adapter.submitList(operations);
+        adapter.submitList(createItemsList());
     }
-
 
     @Override
     public View onCreateView(
@@ -69,10 +63,12 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
         recyclerView.setAdapter(adapter);
 
         textInputEditText = view.findViewById(R.id.editText);
-        buttonStopStart = view.findViewById(R.id.btnStopStart);
         textInputEditText.setOnFocusChangeListener(this);
-        buttonStopStart.setOnClickListener(this);
         textInputEditText.addTextChangedListener(this);
+
+        buttonStopStart = view.findViewById(R.id.btnStopStart);
+        buttonStopStart.setOnCheckedChangeListener(this);
+        buttonStopStart.setEnabled(false);
     }
 
     public void onFocusChange(View v, boolean hasFocus) {
@@ -90,11 +86,12 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         final String input = s.toString().trim();
-//        final int number;
+        int number;
 
         try {
             number = Integer.parseInt(input);
         } catch (NumberFormatException e) {
+            buttonStopStart.setEnabled(false);
             return;
         }
 
@@ -112,6 +109,7 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
             if (errorPopup != null) {
                 errorPopup.dismiss();
             }
+            buttonStopStart.setEnabled(true);
         }
     }
 
@@ -120,34 +118,32 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
 
     }
 
-    public void onClick(View v) {
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
         final String input = textInputEditText.getText().toString().trim();
+        int number;
+
         if (input.isEmpty()) {
             return;
         }
-//        int number;
-//
-//        try {
-//            number = Integer.parseInt(input);
-//        } catch (NumberFormatException e) {
-//            return;
-//        }
 
-        if (isBenchmarkRunning) {
-            // Stop benchmark
+        try {
+            number = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            return;
+        }
+
+        if (isChecked) {
             isBenchmarkRunning = false;
-            buttonStopStart.setText(R.string.start);
-            buttonStopStart.setBackgroundResource(R.drawable.button_bg_start);
             if (executorService != null) {
                 executorService.shutdownNow();
             }
         } else {
-            // Start benchmark
             isBenchmarkRunning = true;
-            buttonStopStart.setText(R.string.stop);
-            buttonStopStart.setBackgroundResource(R.drawable.button_bg_stop);
-
-            runBenchmark(number);
+            List<CellOperation> operations = createItemsList();
+            adapter.submitList(operations);
+            runBenchmark(number, operations);
         }
     }
 
@@ -167,64 +163,43 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     }
 
 
-    private void runBenchmark(int number) {
+    private void runBenchmark(int number, List<CellOperation> operations) {
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        List<CellOperation> operationsInProgress = new ArrayList<>(operations);
+
+        AtomicInteger completedTasks = new AtomicInteger(0);
 
         for (int position = 0; position < operations.size(); position++) {
             final int pos = position;
             executorService.submit(() -> {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 if (isBenchmarkRunning) {
                     CellOperation operation = measureTime(operations.get(pos), number);
-                    updateCell(pos, Math.toIntExact(operation.time));
+                    updateCell(pos, Math.toIntExact(operation.time), operationsInProgress);
                 }
                 Log.d("CollectionsFragment", "Thread ID: " + Thread.currentThread().getId() + ", Position: " + pos);
 
-                if (pos == operations.size() - 1) {
+                if (completedTasks.incrementAndGet() == operations.size()) {
                     isBenchmarkRunning = false;
-                    handler.post(() -> {
-                        buttonStopStart.setText(R.string.start);
-                        buttonStopStart.setBackgroundResource(R.drawable.button_bg_start);
-                    });
+                    handler.post(() ->
+                            buttonStopStart.setChecked(true));
                 }
             });
         }
+        executorService.shutdown();
     }
 
-    private void updateCell(int position, int result) {
-        CellOperation cellOperation = operations.get(position);
+    private void updateCell(int position, int result, List<CellOperation> operationsInProgress) {
+        CellOperation cellOperation = operationsInProgress.get(position);
         CellOperation updatedCellOperation = cellOperation.withTime(result);
-        operations.set(position, updatedCellOperation);
-        handler.post(() -> adapter.notifyItemChanged(position));
-    }
+        operationsInProgress.set(position, updatedCellOperation);
 
-
-    CellOperation measureTime(CellOperation item, int number) {
-        BenchmarkManager bm = new BenchmarkManager();
-
-        List list;
-        if (item.type == R.string.arraylist) {
-            list = new ArrayList<>(Collections.nCopies(number, "test"));
-        } else if (item.type == R.string.linkedlist) {
-            list = new LinkedList<>(Collections.nCopies(number, "test"));
-        } else {
-            list = new CopyOnWriteArrayList<>(Collections.nCopies(number, "test"));
-        }
-
-        long result;
-        if (item.action == R.string.adding_in_the_beginning) {
-            result = bm.addStart(list);
-        } else if (item.action == R.string.adding_in_the_middle) {
-            result = bm.addMiddle(list);
-        } else {
-            result = bm.addEnd(list);
-        }
-
-
-        return item.withTime(result);
+        List<CellOperation> updatedList = new ArrayList<>(operationsInProgress);
+        handler.post(() -> adapter.submitList(updatedList));
     }
 }
