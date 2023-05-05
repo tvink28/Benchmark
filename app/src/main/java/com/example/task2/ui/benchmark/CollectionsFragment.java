@@ -13,6 +13,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CollectionsFragment extends BenchmarksFragment {
 
+    @Override
+    protected int getNumberOfColumns() {
+        return 3;
+    }
+
     protected List<CellOperation> createItemsList() {
         return Arrays.asList(
                 new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na),
@@ -39,7 +44,7 @@ public class CollectionsFragment extends BenchmarksFragment {
         );
     }
 
-    protected CellOperation measureTime(CellOperation item, int number) {
+    protected long measureTime(CellOperation item, int number) {
         BenchmarkManager bm = new BenchmarkManager();
 
         List<String> list;
@@ -63,6 +68,6 @@ public class CollectionsFragment extends BenchmarksFragment {
         } else {
             throw new RuntimeException("Unsupported action type");
         }
-        return item.withTime(result);
+        return result;
     }
 }

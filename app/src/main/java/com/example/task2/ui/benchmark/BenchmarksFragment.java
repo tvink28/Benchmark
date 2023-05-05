@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.CompoundButton;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -30,17 +31,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
+public abstract class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private final Handler handler = new Handler(Looper.getMainLooper());
     private TextInputEditText textInputEditText;
     private ToggleButton buttonStopStart;
     private PopupWindow errorPopup;
     private ExecutorService executorService;
-    private boolean isBenchmarkRunning = false;
+    private RecyclerView recyclerView;
 
-    protected abstract List<CellOperation> createItemsList()
-    protected abstract CellOperation measureTime(CellOperation item, int number);
+    protected abstract int getNumberOfColumns();
+
+    protected abstract List<CellOperation> createItemsList();
+
+    protected abstract long measureTime(CellOperation item, int number);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,8 +62,11 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = view.findViewById(R.id.rv);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+
+        recyclerView = view.findViewById(R.id.rv);
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), getNumberOfColumns());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         recyclerView.setAdapter(adapter);
 
         textInputEditText = view.findViewById(R.id.editText);
@@ -69,6 +76,14 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
         buttonStopStart = view.findViewById(R.id.btnStopStart);
         buttonStopStart.setOnCheckedChangeListener(this);
         buttonStopStart.setEnabled(false);
+    }
+
+    @Override
+    public void onGlobalLayout() {
+        recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        int viewWidth = recyclerView.getMeasuredWidth();
+        int columnWidth = viewWidth / getNumberOfColumns();
+        adapter.setColumnWidth(columnWidth);
     }
 
     public void onFocusChange(View v, boolean hasFocus) {
@@ -110,6 +125,7 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
                 errorPopup.dismiss();
             }
             buttonStopStart.setEnabled(true);
+            buttonStopStart.setTag(number);
         }
     }
 
@@ -121,29 +137,19 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-        final String input = textInputEditText.getText().toString().trim();
-        int number;
-
-        if (input.isEmpty()) {
+        if (buttonView.getTag() == null) {
             return;
         }
 
-        try {
-            number = Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            return;
-        }
+        int number = (int) buttonView.getTag();
 
         if (isChecked) {
-            isBenchmarkRunning = false;
             if (executorService != null) {
                 executorService.shutdownNow();
             }
+            adapter.hideAllProgressBars();
         } else {
-            isBenchmarkRunning = true;
-            List<CellOperation> operations = createItemsList();
-            adapter.submitList(operations);
-            runBenchmark(number, operations);
+            runBenchmark(number);
         }
     }
 
@@ -162,33 +168,39 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
         errorPopup.showAsDropDown(textInputEditText, x, y);
     }
 
-
-    private void runBenchmark(int number, List<CellOperation> operations) {
+    private void runBenchmark(int number) {
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        List<CellOperation> operations = createItemsList();
+        adapter.submitList(operations);
 
         List<CellOperation> operationsInProgress = new ArrayList<>(operations);
 
         AtomicInteger completedTasks = new AtomicInteger(0);
 
         for (int position = 0; position < operations.size(); position++) {
+            adapter.showProgressBar(position);
+        }
+
+        for (int position = 0; position < operations.size(); position++) {
             final int pos = position;
             executorService.submit(() -> {
-//                try {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-                if (isBenchmarkRunning) {
-                    CellOperation operation = measureTime(operations.get(pos), number);
-                    updateCell(pos, Math.toIntExact(operation.time), operationsInProgress);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (executorService.isShutdown()) {
+                    long operationTime = measureTime(operations.get(pos), number);
+                    updateCell(pos, Math.toIntExact(operationTime), operationsInProgress);
                 }
                 Log.d("CollectionsFragment", "Thread ID: " + Thread.currentThread().getId() + ", Position: " + pos);
 
                 if (completedTasks.incrementAndGet() == operations.size()) {
-                    isBenchmarkRunning = false;
                     handler.post(() ->
                             buttonStopStart.setChecked(true));
                 }
+                handler.post(() -> adapter.hideProgressBar(pos));
             });
         }
         executorService.shutdown();
