@@ -1,5 +1,7 @@
 package com.example.task2.ui.benchmark;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.task2.R;
 import com.example.task2.models.CellOperation;
 
-import java.util.HashSet;
-
 public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdapter.BenchmarkViewHolder> {
 
-    private final HashSet<Integer> positionsInProgress = new HashSet<>();
-
-    private int columnWidth;
 
     public BenchmarksAdapter() {
         super(new DiffUtil.ItemCallback<CellOperation>() {
@@ -31,14 +28,9 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
 
             @Override
             public boolean areContentsTheSame(@NonNull CellOperation oldItem, @NonNull CellOperation newItem) {
-                return oldItem.action == newItem.action && oldItem.type == newItem.type && oldItem.time == newItem.time;
+                return oldItem.action == newItem.action && oldItem.type == newItem.type && oldItem.time == newItem.time && oldItem.isRunning == newItem.isRunning;
             }
         });
-    }
-
-    public void setColumnWidth(int columnWidth) {
-        this.columnWidth = columnWidth;
-        notifyDataSetChanged();
     }
 
     @NonNull
@@ -52,26 +44,9 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
 
     @Override
     public void onBindViewHolder(@NonNull BenchmarkViewHolder holder, int position) {
-        boolean showProgressBar = positionsInProgress.contains(position);
-        holder.bind(getItem(position), columnWidth, showProgressBar);
+        holder.bind(getItem(position));
     }
 
-    public void showProgressBar(int position) {
-        positionsInProgress.add(position);
-        notifyItemChanged(position);
-    }
-
-    public void hideProgressBar(int position) {
-        positionsInProgress.remove(position);
-        notifyItemChanged(position);
-    }
-
-    public void hideAllProgressBars() {
-        HashSet<Integer> copy = new HashSet<>(positionsInProgress);
-        for (Integer position : copy) {
-            hideProgressBar(position);
-        }
-    }
 
     public static class BenchmarkViewHolder extends RecyclerView.ViewHolder {
 
@@ -88,10 +63,19 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
             progressBar = itemView.findViewById(R.id.progressBar);
         }
 
-        public void bind(CellOperation cellOperation, int columnWidth, boolean showProgressBar) {
+        public void bind(CellOperation cellOperation) {
             final String action = itemView.getResources().getString(cellOperation.action);
             final String type = itemView.getResources().getString(cellOperation.type);
             final long time = cellOperation.time;
+
+            if (cellOperation.isRunning) {
+                fadeIn(progressBar);
+                fadeIn(backgroundView);
+            } else {
+                fadeOut(progressBar);
+                fadeOut(backgroundView);
+            }
+
 
             String timeText;
             if (time == R.string.na) {
@@ -102,20 +86,27 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
 
             textViewAction.setText(String.format("%s\n%s\n%s ns", action, type, timeText));
 
-            int margin = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.card_margin);
-            int height = columnWidth - 2 * margin;
+        }
 
-            ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
-            layoutParams.height = height;
-            itemView.setLayoutParams(layoutParams);
+        private void fadeIn(final View view) {
+            view.setAlpha(0);
+            view.setVisibility(View.VISIBLE);
+            view.animate()
+                    .alpha(1)
+                    .setDuration(300)
+                    .setListener(null);
+        }
 
-            if (showProgressBar) {
-                progressBar.setVisibility(View.VISIBLE);
-                backgroundView.setVisibility(View.VISIBLE);
-            } else {
-                progressBar.setVisibility(View.GONE);
-                backgroundView.setVisibility(View.GONE);
-            }
+        private void fadeOut(final View view) {
+            view.animate()
+                    .alpha(0)
+                    .setDuration(300)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            view.setVisibility(View.GONE);
+                        }
+                    });
         }
     }
 }

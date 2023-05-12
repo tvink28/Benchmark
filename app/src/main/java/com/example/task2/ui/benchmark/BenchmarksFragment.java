@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.CompoundButton;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -31,14 +30,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
+public abstract class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private final Handler handler = new Handler(Looper.getMainLooper());
     private TextInputEditText textInputEditText;
     private ToggleButton buttonStopStart;
     private PopupWindow errorPopup;
     private ExecutorService executorService;
-    private RecyclerView recyclerView;
 
     protected abstract int getNumberOfColumns();
 
@@ -63,10 +61,9 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.rv);
+        RecyclerView recyclerView = view.findViewById(R.id.rv);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), getNumberOfColumns());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         recyclerView.setAdapter(adapter);
 
         textInputEditText = view.findViewById(R.id.editText);
@@ -78,18 +75,11 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
         buttonStopStart.setEnabled(false);
     }
 
-    @Override
-    public void onGlobalLayout() {
-        recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        int viewWidth = recyclerView.getMeasuredWidth();
-        int columnWidth = viewWidth / getNumberOfColumns();
-        adapter.setColumnWidth(columnWidth);
-    }
-
     public void onFocusChange(View v, boolean hasFocus) {
         if (!hasFocus) {
             textInputEditText.clearFocus();
             textInputEditText.setBackgroundResource(R.drawable.input_bg2);
+            errorPopup.dismiss();
         }
     }
 
@@ -107,25 +97,18 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
             number = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             buttonStopStart.setEnabled(false);
+            showError(R.string.error_valid, R.drawable.input_bg_error);
             return;
         }
 
         if (number < 1) {
-            final View errorView = LayoutInflater.from(getContext()).inflate(R.layout.view_error, null);
-            final TextView errorText = errorView.findViewById(R.id.errorText);
-            if (errorPopup == null) {
-                errorPopup = new PopupWindow(errorView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            }
-            final int Y = 30;
-
-            showError(errorView, errorPopup, errorText, Y, R.string.error_count, R.drawable.input_bg_error);
+            showError(R.string.error_count, R.drawable.input_bg_error);
         } else {
             textInputEditText.setBackgroundResource(R.drawable.input_bg2);
             if (errorPopup != null) {
                 errorPopup.dismiss();
             }
             buttonStopStart.setEnabled(true);
-            buttonStopStart.setTag(number);
         }
     }
 
@@ -137,23 +120,31 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-        if (buttonView.getTag() == null) {
-            return;
-        }
+        int number = Integer.parseInt(textInputEditText.getText().toString().trim());
 
-        int number = (int) buttonView.getTag();
+        if (executorService != null) {
+            executorService.shutdownNow();
+            executorService = null;
 
-        if (isChecked) {
-            if (executorService != null) {
-                executorService.shutdownNow();
-            }
-            adapter.hideAllProgressBars();
+//            List<CellOperation> currentList = adapter.getCurrentList();
+//            for (CellOperation operation : currentList) {
+//                operation.isRunning = false;
+//            }
+//            adapter.submitList(currentList);
+
         } else {
             runBenchmark(number);
         }
     }
 
-    private void showError(View errorView, PopupWindow errorPopup, TextView errorText, int y, int errorMessage, int inputBg) {
+    private void showError(int errorMessage, int inputBg) {
+        final View errorView = LayoutInflater.from(getContext()).inflate(R.layout.view_error, null);
+        final TextView errorText = errorView.findViewById(R.id.errorText);
+        if (errorPopup == null) {
+            errorPopup = new PopupWindow(errorView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+        final int Y = 30;
+
         errorText.setText(errorMessage);
         textInputEditText.setBackgroundResource(inputBg);
 
@@ -165,13 +156,17 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
         final int errorPopupWidth = errorView.getMeasuredWidth();
         final int x = textInputEditText.getWidth() / 2 - errorPopupWidth / 2;
 
-        errorPopup.showAsDropDown(textInputEditText, x, y);
+        errorPopup.showAsDropDown(textInputEditText, x, Y);
     }
 
     private void runBenchmark(int number) {
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         List<CellOperation> operations = createItemsList();
+
+        for (CellOperation operation : operations) {
+            operation.isRunning = true;
+        }
         adapter.submitList(operations);
 
         List<CellOperation> operationsInProgress = new ArrayList<>(operations);
@@ -179,20 +174,17 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
         AtomicInteger completedTasks = new AtomicInteger(0);
 
         for (int position = 0; position < operations.size(); position++) {
-            adapter.showProgressBar(position);
-        }
-
-        for (int position = 0; position < operations.size(); position++) {
             final int pos = position;
             executorService.submit(() -> {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 if (executorService.isShutdown()) {
                     long operationTime = measureTime(operations.get(pos), number);
-                    updateCell(pos, Math.toIntExact(operationTime), operationsInProgress);
+                    operationsInProgress.get(pos).isRunning = false;
+                    handler.post(() -> updateCell(pos, Math.toIntExact(operationTime), operationsInProgress));
                 }
                 Log.d("CollectionsFragment", "Thread ID: " + Thread.currentThread().getId() + ", Position: " + pos);
 
@@ -200,7 +192,6 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
                     handler.post(() ->
                             buttonStopStart.setChecked(true));
                 }
-                handler.post(() -> adapter.hideProgressBar(pos));
             });
         }
         executorService.shutdown();
@@ -212,6 +203,6 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
         operationsInProgress.set(position, updatedCellOperation);
 
         List<CellOperation> updatedList = new ArrayList<>(operationsInProgress);
-        handler.post(() -> adapter.submitList(updatedList));
+        adapter.submitList(updatedList);
     }
 }

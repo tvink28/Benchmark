@@ -4,6 +4,8 @@ public class CellOperation {
     public final int action;
     public final int type;
     public final long time;
+    public boolean isRunning;
+
 
     public CellOperation(int action, int type, long time) {
         this.action = action;
@@ -12,6 +14,8 @@ public class CellOperation {
     }
 
     public CellOperation withTime(long newTime) {
-        return new CellOperation(action, type, newTime);
+        CellOperation cellOperation = new CellOperation(action, type, newTime);
+        cellOperation.isRunning = this.isRunning;
+        return cellOperation;
     }
 }
