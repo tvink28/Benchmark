@@ -18,14 +18,14 @@ public class MapsFragment extends BenchmarksFragment {
         return 2;
     }
 
-    protected List<CellOperation> createItemsList() {
+    protected List<CellOperation> createItemsList(boolean setRunning) {
         return Arrays.asList(
-                new CellOperation(R.string.adding_new, R.string.treemap, R.string.na),
-                new CellOperation(R.string.adding_new, R.string.hashmap, R.string.na),
-                new CellOperation(R.string.search_by_key, R.string.treemap, R.string.na),
-                new CellOperation(R.string.search_by_key, R.string.hashmap, R.string.na),
-                new CellOperation(R.string.removing, R.string.treemap, R.string.na),
-                new CellOperation(R.string.removing, R.string.hashmap, R.string.na)
+                new CellOperation(R.string.adding_new, R.string.treemap, R.string.na, false, false),
+                new CellOperation(R.string.adding_new, R.string.hashmap, R.string.na, false, false),
+                new CellOperation(R.string.search_by_key, R.string.treemap, R.string.na, false, false),
+                new CellOperation(R.string.search_by_key, R.string.hashmap, R.string.na, false, false),
+                new CellOperation(R.string.removing, R.string.treemap, R.string.na, false, false),
+                new CellOperation(R.string.removing, R.string.hashmap, R.string.na, false, false)
         );
     }
 

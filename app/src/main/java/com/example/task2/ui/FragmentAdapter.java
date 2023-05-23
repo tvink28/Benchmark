@@ -21,8 +21,10 @@ public class FragmentAdapter extends FragmentStateAdapter {
         switch (position) {
             case 0:
                 return new CollectionsFragment();
-            default:
+            case 1 :
                 return new MapsFragment();
+            default:
+                throw new IllegalArgumentException("Invalid position: " + position);
         }
     }
 

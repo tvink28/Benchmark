@@ -40,14 +40,14 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
 
     protected abstract int getNumberOfColumns();
 
-    protected abstract List<CellOperation> createItemsList();
+    protected abstract List<CellOperation> createItemsList(boolean setRunning);
 
     protected abstract long measureTime(CellOperation item, int number);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter.submitList(createItemsList());
+        adapter.submitList(createItemsList(false));
     }
 
     @Override
@@ -124,13 +124,16 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
 
         if (executorService != null) {
             executorService.shutdownNow();
-            executorService = null;
 
-//            List<CellOperation> currentList = adapter.getCurrentList();
+
+
+//            final List<CellOperation> currentList = new ArrayList<>(adapter.getCurrentList());
 //            for (CellOperation operation : currentList) {
-//                operation.isRunning = false;
+//                operation.withIsRunning(false);
 //            }
 //            adapter.submitList(currentList);
+
+            executorService = null;
 
         } else {
             runBenchmark(number);
@@ -162,11 +165,7 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     private void runBenchmark(int number) {
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-        List<CellOperation> operations = createItemsList();
-
-        for (CellOperation operation : operations) {
-            operation.isRunning = true;
-        }
+        final List<CellOperation> operations = createItemsList(true);
         adapter.submitList(operations);
 
         List<CellOperation> operationsInProgress = new ArrayList<>(operations);
@@ -181,11 +180,9 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (executorService.isShutdown()) {
-                    long operationTime = measureTime(operations.get(pos), number);
-                    operationsInProgress.get(pos).isRunning = false;
-                    handler.post(() -> updateCell(pos, Math.toIntExact(operationTime), operationsInProgress));
-                }
+                long operationTime = measureTime(operations.get(pos), number);
+                handler.post(() -> updateCell(pos, Math.toIntExact(operationTime), operationsInProgress));
+
                 Log.d("CollectionsFragment", "Thread ID: " + Thread.currentThread().getId() + ", Position: " + pos);
 
                 if (completedTasks.incrementAndGet() == operations.size()) {
@@ -199,10 +196,9 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
 
     private void updateCell(int position, int result, List<CellOperation> operationsInProgress) {
         CellOperation cellOperation = operationsInProgress.get(position);
-        CellOperation updatedCellOperation = cellOperation.withTime(result);
+        CellOperation updatedCellOperation = cellOperation.withTime(result).withIsRunning(false);
         operationsInProgress.set(position, updatedCellOperation);
 
-        List<CellOperation> updatedList = new ArrayList<>(operationsInProgress);
-        adapter.submitList(updatedList);
+        adapter.submitList(new ArrayList<>(operationsInProgress));
     }
 }

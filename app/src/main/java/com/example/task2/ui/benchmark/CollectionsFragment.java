@@ -18,17 +18,17 @@ public class CollectionsFragment extends BenchmarksFragment {
         return 3;
     }
 
-    protected List<CellOperation> createItemsList() {
-        return Arrays.asList(
-                new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na),
-                new CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na),
-                new CellOperation(R.string.adding_in_the_beginning, R.string.copyonwritearraylist, R.string.na),
-                new CellOperation(R.string.adding_in_the_middle, R.string.arraylist, R.string.na),
-                new CellOperation(R.string.adding_in_the_middle, R.string.linkedlist, R.string.na),
-                new CellOperation(R.string.adding_in_the_middle, R.string.copyonwritearraylist, R.string.na),
-                new CellOperation(R.string.adding_in_the_end, R.string.arraylist, R.string.na),
-                new CellOperation(R.string.adding_in_the_end, R.string.linkedlist, R.string.na),
-                new CellOperation(R.string.adding_in_the_end, R.string.copyonwritearraylist, R.string.na)
+    protected List<CellOperation> createItemsList(boolean setRunning) {
+        List<CellOperation> operations = Arrays.asList(
+                new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, false, false),
+                new CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na, false, false),
+                new CellOperation(R.string.adding_in_the_beginning, R.string.copyonwritearraylist, R.string.na, false, false),
+                new CellOperation(R.string.adding_in_the_middle, R.string.arraylist, R.string.na, false, false),
+                new CellOperation(R.string.adding_in_the_middle, R.string.linkedlist, R.string.na, false, false),
+                new CellOperation(R.string.adding_in_the_middle, R.string.copyonwritearraylist, R.string.na, false, false),
+                new CellOperation(R.string.adding_in_the_end, R.string.arraylist, R.string.na, false, false),
+                new CellOperation(R.string.adding_in_the_end, R.string.linkedlist, R.string.na, false, false),
+                new CellOperation(R.string.adding_in_the_end, R.string.copyonwritearraylist, R.string.na, false, false)
 //                new CellOperation(R.string.search_by_value, R.string.arraylist, NA),
 //                new CellOperation(R.string.search_by_value, R.string.linkedlist, NA),
 //                new CellOperation(R.string.search_by_value, R.string.copyonwritearraylist, NA),
@@ -42,6 +42,16 @@ public class CollectionsFragment extends BenchmarksFragment {
 //                new CellOperation(R.string.removing_in_the_end, R.string.linkedlist, NA),
 //                new CellOperation(R.string.removing_in_the_end, R.string.copyonwritearraylist, NA)
         );
+
+        if (setRunning) {
+            List<CellOperation> updatedOperations = new ArrayList<>();
+            for (CellOperation operation : operations) {
+                updatedOperations.add(operation.withIsRunning(true).withRunAnimation(true));
+            }
+            return updatedOperations;
+        } else {
+            return operations;
+        }
     }
 
     protected long measureTime(CellOperation item, int number) {

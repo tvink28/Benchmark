@@ -1,7 +1,5 @@
 package com.example.task2.ui.benchmark;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,12 +66,18 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
             final String type = itemView.getResources().getString(cellOperation.type);
             final long time = cellOperation.time;
 
-            if (cellOperation.isRunning) {
-                fadeIn(progressBar);
-                fadeIn(backgroundView);
-            } else {
-                fadeOut(progressBar);
-                fadeOut(backgroundView);
+            if (cellOperation.runAnimation) {
+                progressBar.setAlpha(0f);
+                backgroundView.setAlpha(0f);
+                progressBar.setVisibility(View.VISIBLE);
+                backgroundView.setVisibility(View.VISIBLE);
+                if (cellOperation.isRunning) {
+                    fadeIn(progressBar);
+                    fadeIn(backgroundView);
+                } else {
+                    fadeOut(progressBar);
+                    fadeOut(backgroundView);
+                }
             }
 
 
@@ -88,25 +92,18 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
 
         }
 
-        private void fadeIn(final View view) {
-            view.setAlpha(0);
-            view.setVisibility(View.VISIBLE);
+        public void fadeIn(View view) {
             view.animate()
-                    .alpha(1)
-                    .setDuration(300)
+                    .alpha(1f)
+                    .setDuration(1000)
                     .setListener(null);
         }
 
-        private void fadeOut(final View view) {
+        public void fadeOut(View view) {
             view.animate()
-                    .alpha(0)
-                    .setDuration(300)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            view.setVisibility(View.GONE);
-                        }
-                    });
+                    .alpha(0f)
+                    .setDuration(1000)
+                    .setListener(null);
         }
     }
 }
