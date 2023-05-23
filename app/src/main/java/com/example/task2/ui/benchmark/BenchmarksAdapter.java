@@ -26,7 +26,7 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
 
             @Override
             public boolean areContentsTheSame(@NonNull CellOperation oldItem, @NonNull CellOperation newItem) {
-                return oldItem.action == newItem.action && oldItem.type == newItem.type && oldItem.time == newItem.time && oldItem.isRunning == newItem.isRunning;
+                return oldItem.action == newItem.action && oldItem.type == newItem.type && oldItem.time == newItem.time && oldItem.isRunning == newItem.isRunning && oldItem.runAnimation == newItem.runAnimation;
             }
         });
     }
@@ -67,10 +67,6 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
             final long time = cellOperation.time;
 
             if (cellOperation.runAnimation) {
-                progressBar.setAlpha(0f);
-                backgroundView.setAlpha(0f);
-                progressBar.setVisibility(View.VISIBLE);
-                backgroundView.setVisibility(View.VISIBLE);
                 if (cellOperation.isRunning) {
                     fadeIn(progressBar);
                     fadeIn(backgroundView);

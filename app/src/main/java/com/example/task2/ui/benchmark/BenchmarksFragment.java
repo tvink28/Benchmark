@@ -125,8 +125,7 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
         if (executorService != null) {
             executorService.shutdownNow();
 
-
-
+//
 //            final List<CellOperation> currentList = new ArrayList<>(adapter.getCurrentList());
 //            for (CellOperation operation : currentList) {
 //                operation.withIsRunning(false);

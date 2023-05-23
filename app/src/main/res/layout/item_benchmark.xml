@@ -28,16 +28,18 @@
             android:id="@+id/backgroundView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:alpha="0"
             android:background="#80E6E4EA"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:alpha="0"
             android:indeterminateDrawable="@drawable/progress_bar"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
     </androidx.cardview.widget.CardView>
 
