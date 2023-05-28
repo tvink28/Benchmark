@@ -14,7 +14,7 @@ public class CellOperation {
     }
 
     public CellOperation withTime(long newTime) {
-        return new CellOperation(action, type, newTime, isRunning);
+        return new CellOperation(action, type, newTime, false);
     }
 
     public CellOperation withIsRunning(boolean newIsRunning) {

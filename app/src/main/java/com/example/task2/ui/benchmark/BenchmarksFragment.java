@@ -38,8 +38,6 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     private PopupWindow errorPopup;
     private ExecutorService executorService;
 
-    private RecyclerView recyclerView;
-
     protected abstract int getNumberOfColumns();
 
     protected abstract List<CellOperation> createItemsList(boolean setRunning);
@@ -63,8 +61,10 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.rv);
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), getNumberOfColumns());
+        final RecyclerView recyclerView = view.findViewById(R.id.rv);
+        final GridLayoutManager layoutManager = new GridLayoutManager(
+                getActivity(), getNumberOfColumns()
+        );
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
@@ -81,7 +81,9 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
         if (!hasFocus) {
             textInputEditText.clearFocus();
             textInputEditText.setBackgroundResource(R.drawable.input_bg2);
-            errorPopup.dismiss();
+            if (errorPopup != null) {
+                errorPopup.dismiss();
+            }
         }
     }
 
@@ -126,15 +128,15 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
 
         if (executorService != null) {
             executorService.shutdownNow();
-
-//            final List<CellOperation> currentList = new ArrayList<>();          // при использовании этого кода, моя последняя ячейка перестает обновляться, не могу найти решение.
-//            for (CellOperation operation : adapter.getCurrentList()) {
-//                currentList.add(operation.withIsRunning(false));
-//            }
-//            adapter.submitList(currentList);
-
             executorService = null;
 
+            final List<CellOperation> list = new ArrayList<>(adapter.getCurrentList());
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).isRunning) {
+                    list.set(i, list.get(i).withIsRunning(false));
+                }
+            }
+            adapter.submitList(list);
         } else {
             runBenchmark(number);
         }
@@ -166,39 +168,33 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         final List<CellOperation> operations = createItemsList(true);
-        adapter.submitList(operations);
+        adapter.submitList(new ArrayList<>(operations));
 
-        List<CellOperation> operationsInProgress = new ArrayList<>(operations); // убирая данную строку, ячейки перестают корректно обновляться
-
-        AtomicInteger completedTasks = new AtomicInteger(0);
-
+        final AtomicInteger completedTasks = new AtomicInteger(0);
         for (int position = 0; position < operations.size(); position++) {
             final int pos = position;
             executorService.submit(() -> {
                 try {
-                    Thread.sleep(1500);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                long operationTime = measureTime(operations.get(pos), number);
-                handler.post(() -> updateCell(pos, Math.toIntExact(operationTime), operationsInProgress));
+                final CellOperation cell = operations.get(pos);
+                final long operationTime = measureTime(cell, number);
 
-                Log.d("CollectionsFragment", "Thread ID: " + Thread.currentThread().getId() + ", Position: " + pos);
-
+                final CellOperation update = cell.withTime(Math.toIntExact(operationTime));
+                handler.post(() -> updateCell(pos, update, operations));
                 if (completedTasks.incrementAndGet() == operations.size()) {
-                    handler.post(() ->
-                            buttonStopStart.setChecked(true));
+                    handler.post(() -> buttonStopStart.setChecked(true));
                 }
             });
         }
         executorService.shutdown();
     }
 
-    private void updateCell(int position, int result, List<CellOperation> operationsInProgress) {
-        CellOperation cellOperation = operationsInProgress.get(position);
-        CellOperation updatedCellOperation = cellOperation.withTime(result).withIsRunning(false);
-        operationsInProgress.set(position, updatedCellOperation);
-
-        adapter.submitList(new ArrayList<>(operationsInProgress));
+    private void updateCell(int position, CellOperation cell, List<CellOperation> operations) {
+        Log.d("LOGG:", "Update on position: " + position);
+        operations.set(position, cell);
+        adapter.submitList(new ArrayList<>(operations));
     }
 }

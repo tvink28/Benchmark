@@ -49,9 +49,7 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
     public static class BenchmarkViewHolder extends RecyclerView.ViewHolder {
 
         private final View backgroundView;
-
         private final ProgressBar progressBar;
-
         private final TextView textViewAction;
 
         private boolean isProgressBarVisible;
