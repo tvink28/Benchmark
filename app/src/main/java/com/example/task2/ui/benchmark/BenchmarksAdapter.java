@@ -26,7 +26,7 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
 
             @Override
             public boolean areContentsTheSame(@NonNull CellOperation oldItem, @NonNull CellOperation newItem) {
-                return oldItem.action == newItem.action && oldItem.type == newItem.type && oldItem.time == newItem.time && oldItem.isRunning == newItem.isRunning && oldItem.runAnimation == newItem.runAnimation;
+                return oldItem.equals(newItem);
             }
         });
     }
@@ -54,28 +54,20 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
 
         private final TextView textViewAction;
 
+        private boolean isProgressBarVisible;
+
         public BenchmarkViewHolder(@NonNull View itemView) {
             super(itemView);
             backgroundView = itemView.findViewById(R.id.backgroundView);
             textViewAction = itemView.findViewById(R.id.item_text_action);
             progressBar = itemView.findViewById(R.id.progressBar);
+            isProgressBarVisible = false;
         }
 
         public void bind(CellOperation cellOperation) {
             final String action = itemView.getResources().getString(cellOperation.action);
             final String type = itemView.getResources().getString(cellOperation.type);
             final long time = cellOperation.time;
-
-            if (cellOperation.runAnimation) {
-                if (cellOperation.isRunning) {
-                    fadeIn(progressBar);
-                    fadeIn(backgroundView);
-                } else {
-                    fadeOut(progressBar);
-                    fadeOut(backgroundView);
-                }
-            }
-
 
             String timeText;
             if (time == R.string.na) {
@@ -86,20 +78,17 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
 
             textViewAction.setText(String.format("%s\n%s\n%s ns", action, type, timeText));
 
+            if (cellOperation.isRunning != isProgressBarVisible) {
+                isProgressBarVisible = cellOperation.isRunning;
+                setVisibility(progressBar, isProgressBarVisible);
+                setVisibility(backgroundView, isProgressBarVisible);
+            }
         }
 
-        public void fadeIn(View view) {
+        public void setVisibility(View view, boolean isVisible) {
             view.animate()
-                    .alpha(1f)
-                    .setDuration(1000)
-                    .setListener(null);
-        }
-
-        public void fadeOut(View view) {
-            view.animate()
-                    .alpha(0f)
-                    .setDuration(1000)
-                    .setListener(null);
+                    .alpha(isVisible ? 1 : 0)
+                    .setDuration(500);
         }
     }
 }

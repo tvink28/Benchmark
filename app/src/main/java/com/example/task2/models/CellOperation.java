@@ -5,26 +5,37 @@ public class CellOperation {
     public final int type;
     public final long time;
     public final boolean isRunning;
-    public final boolean runAnimation;
 
-
-    public CellOperation(int action, int type, long time, boolean isRunning, boolean runAnimation) {
+    public CellOperation(int action, int type, long time, boolean isRunning) {
         this.action = action;
         this.type = type;
         this.time = time;
         this.isRunning = isRunning;
-        this.runAnimation = runAnimation;
     }
 
     public CellOperation withTime(long newTime) {
-        return new CellOperation(action, type, newTime, isRunning, runAnimation);
+        return new CellOperation(action, type, newTime, isRunning);
     }
 
     public CellOperation withIsRunning(boolean newIsRunning) {
-        return new CellOperation(action, type, time, newIsRunning, runAnimation);
+        return new CellOperation(action, type, time, newIsRunning);
     }
 
-    public CellOperation withRunAnimation(boolean newRunAnimation) {
-        return new CellOperation(action, type, time, isRunning, newRunAnimation);
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+
+        CellOperation otherCellOperation = (CellOperation) other;
+
+        return action == otherCellOperation.action &&
+                type == otherCellOperation.type &&
+                time == otherCellOperation.time &&
+                isRunning == otherCellOperation.isRunning;
     }
 }

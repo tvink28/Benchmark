@@ -38,6 +38,8 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     private PopupWindow errorPopup;
     private ExecutorService executorService;
 
+    private RecyclerView recyclerView;
+
     protected abstract int getNumberOfColumns();
 
     protected abstract List<CellOperation> createItemsList(boolean setRunning);
@@ -61,7 +63,7 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = view.findViewById(R.id.rv);
+        recyclerView = view.findViewById(R.id.rv);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), getNumberOfColumns());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -125,10 +127,9 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
         if (executorService != null) {
             executorService.shutdownNow();
 
-//
-//            final List<CellOperation> currentList = new ArrayList<>(adapter.getCurrentList());
-//            for (CellOperation operation : currentList) {
-//                operation.withIsRunning(false);
+//            final List<CellOperation> currentList = new ArrayList<>();          // при использовании этого кода, моя последняя ячейка перестает обновляться, не могу найти решение.
+//            for (CellOperation operation : adapter.getCurrentList()) {
+//                currentList.add(operation.withIsRunning(false));
 //            }
 //            adapter.submitList(currentList);
 
@@ -167,7 +168,7 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
         final List<CellOperation> operations = createItemsList(true);
         adapter.submitList(operations);
 
-        List<CellOperation> operationsInProgress = new ArrayList<>(operations);
+        List<CellOperation> operationsInProgress = new ArrayList<>(operations); // убирая данную строку, ячейки перестают корректно обновляться
 
         AtomicInteger completedTasks = new AtomicInteger(0);
 
