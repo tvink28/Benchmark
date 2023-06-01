@@ -1,8 +1,9 @@
 package com.example.task2.ui.benchmark;
 
 import com.example.task2.R;
-import com.example.task2.models.BenchmarkManager;
+import com.example.task2.models.Benchmark;
 import com.example.task2.models.CellOperation;
+import com.example.task2.models.CollectionBenchmark;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,34 +56,37 @@ public class CollectionsFragment extends BenchmarksFragment {
     }
 
     protected long measureTime(CellOperation item, int number) {
-        BenchmarkManager bm = new BenchmarkManager();
+        Benchmark benchmark;
 
         List<String> list;
         if (item.type == R.string.arraylist) {
             list = new ArrayList<>(Collections.nCopies(number, "test"));
+            benchmark = new CollectionBenchmark();
         } else if (item.type == R.string.linkedlist) {
             list = new LinkedList<>(Collections.nCopies(number, "test"));
+            benchmark = new CollectionBenchmark();
         } else if (item.type == R.string.copyonwritearraylist) {
             list = new CopyOnWriteArrayList<>(Collections.nCopies(number, "test"));
+            benchmark = new CollectionBenchmark();
         } else {
             throw new RuntimeException("Unsupported collection type");
         }
 
         long result;
         if (item.action == R.string.adding_in_the_beginning) {
-            result = bm.addStart(list);
+            result = benchmark.addStart(list);
         } else if (item.action == R.string.adding_in_the_middle) {
-            result = bm.addMiddle(list);
+            result = benchmark.addMiddle(list);
         } else if (item.action == R.string.adding_in_the_end) {
-            result = bm.addEnd(list);
+            result = benchmark.addEnd(list);
         } else if (item.action == R.string.search_by_value) {
-            result = bm.searchByValue(list);
+            result = benchmark.searchByValue(list);
         } else if (item.action == R.string.removing_in_the_beginning) {
-            result = bm.removeStart(list);
+            result = benchmark.removeStart(list);
         } else if (item.action == R.string.removing_in_the_middle) {
-            result = bm.removeMiddle(list);
+            result = benchmark.removeMiddle(list);
         } else if (item.action == R.string.removing_in_the_end) {
-            result = bm.removeEnd(list);
+            result = benchmark.removeEnd(list);
         } else {
             throw new RuntimeException("Unsupported action type");
         }

@@ -1,8 +1,9 @@
 package com.example.task2.ui.benchmark;
 
 import com.example.task2.R;
-import com.example.task2.models.BenchmarkManager;
+import com.example.task2.models.Benchmark;
 import com.example.task2.models.CellOperation;
+import com.example.task2.models.MapBenchmark;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,13 +41,15 @@ public class MapsFragment extends BenchmarksFragment {
     }
 
     protected long measureTime(CellOperation item, int number) {
-        BenchmarkManager bm = new BenchmarkManager();
+        Benchmark benchmark;
 
         Map<String, String> map;
         if (item.type == R.string.treemap) {
             map = new TreeMap<>();
+            benchmark = new MapBenchmark();
         } else if (item.type == R.string.hashmap) {
             map = new HashMap<>();
+            benchmark = new MapBenchmark();
         } else {
             throw new RuntimeException("Unsupported map type");
         }
@@ -57,11 +60,11 @@ public class MapsFragment extends BenchmarksFragment {
 
         long result;
         if (item.action == R.string.adding_new) {
-            result = bm.addNew(map);
+            result = benchmark.addNew(map);
         } else if (item.action == R.string.search_by_key) {
-            result = bm.searchByKey(map);
+            result = benchmark.searchByKey(map);
         } else if (item.action == R.string.removing) {
-            result = bm.removing(map);
+            result = benchmark.removing(map);
         } else {
             throw new RuntimeException("Unsupported action type");
         }

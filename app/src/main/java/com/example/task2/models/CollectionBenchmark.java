@@ -1,15 +1,11 @@
 package com.example.task2.models;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class BenchmarkManager {
-
-    public BenchmarkManager() {
-    }
-
+public class CollectionBenchmark implements Benchmark {
+    @Override
     public long addStart(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
@@ -18,6 +14,7 @@ public class BenchmarkManager {
         return (endTime - startTime);
     }
 
+    @Override
     public long addMiddle(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
@@ -26,6 +23,7 @@ public class BenchmarkManager {
         return (endTime - startTime);
     }
 
+    @Override
     public long addEnd(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
@@ -34,6 +32,7 @@ public class BenchmarkManager {
         return (endTime - startTime);
     }
 
+    @Override
     public long searchByValue(List<String> list) {
         String specificNumber = "28";
         Random random = new Random();
@@ -46,6 +45,7 @@ public class BenchmarkManager {
         return (endTime - startTime);
     }
 
+    @Override
     public long removeStart(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
@@ -54,6 +54,7 @@ public class BenchmarkManager {
         return (endTime - startTime);
     }
 
+    @Override
     public long removeMiddle(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
@@ -62,6 +63,7 @@ public class BenchmarkManager {
         return (endTime - startTime);
     }
 
+    @Override
     public long removeEnd(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
@@ -70,35 +72,18 @@ public class BenchmarkManager {
         return (endTime - startTime);
     }
 
+    @Override
     public long addNew(Map<String, String> map) {
-        long startTime, endTime;
-        startTime = System.nanoTime();
-        map.put("key", "value");
-        endTime = System.nanoTime();
-        return (endTime - startTime);
+        throw new UnsupportedOperationException("Method not supported for Collection benchmarking");
     }
 
+    @Override
     public long searchByKey(Map<String, String> map) {
-        String specificNumber = "28";
-        Random random = new Random();
-        List<String> keys = new ArrayList<>(map.keySet());
-        String randomKey = keys.get(random.nextInt(keys.size()));
-        map.put(randomKey, specificNumber);
-        long startTime, endTime;
-        startTime = System.nanoTime();
-        map.containsKey(specificNumber);
-        endTime = System.nanoTime();
-        return (endTime - startTime);
+        throw new UnsupportedOperationException("Method not supported for Collection benchmarking");
     }
 
+    @Override
     public long removing(Map<String, String> map) {
-        Random random = new Random();
-        List<String> keys = new ArrayList<>(map.keySet());
-        String randomKey = keys.get(random.nextInt(keys.size()));
-        long startTime, endTime;
-        startTime = System.nanoTime();
-        map.remove(randomKey);
-        endTime = System.nanoTime();
-        return (endTime - startTime);
+        throw new UnsupportedOperationException("Method not supported for Collection benchmarking");
     }
 }
