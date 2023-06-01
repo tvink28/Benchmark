@@ -28,19 +28,19 @@ public class CollectionsFragment extends BenchmarksFragment {
                 new CellOperation(R.string.adding_in_the_middle, R.string.copyonwritearraylist, R.string.na, false),
                 new CellOperation(R.string.adding_in_the_end, R.string.arraylist, R.string.na, false),
                 new CellOperation(R.string.adding_in_the_end, R.string.linkedlist, R.string.na, false),
-                new CellOperation(R.string.adding_in_the_end, R.string.copyonwritearraylist, R.string.na, false)
-//                new CellOperation(R.string.search_by_value, R.string.arraylist, NA),
-//                new CellOperation(R.string.search_by_value, R.string.linkedlist, NA),
-//                new CellOperation(R.string.search_by_value, R.string.copyonwritearraylist, NA),
-//                new CellOperation(R.string.removing_in_the_beginning, R.string.arraylist, NA),
-//                new CellOperation(R.string.removing_in_the_beginning, R.string.linkedlist, NA),
-//                new CellOperation(R.string.removing_in_the_beginning, R.string.copyonwritearraylist, NA),
-//                new CellOperation(R.string.removing_in_the_middle, R.string.arraylist, NA),
-//                new CellOperation(R.string.removing_in_the_middle, R.string.linkedlist, NA),
-//                new CellOperation(R.string.removing_in_the_middle, R.string.copyonwritearraylist, NA),
-//                new CellOperation(R.string.removing_in_the_end, R.string.arraylist, NA),
-//                new CellOperation(R.string.removing_in_the_end, R.string.linkedlist, NA),
-//                new CellOperation(R.string.removing_in_the_end, R.string.copyonwritearraylist, NA)
+                new CellOperation(R.string.adding_in_the_end, R.string.copyonwritearraylist, R.string.na, false),
+                new CellOperation(R.string.search_by_value, R.string.arraylist, R.string.na, false),
+                new CellOperation(R.string.search_by_value, R.string.linkedlist, R.string.na, false),
+                new CellOperation(R.string.search_by_value, R.string.copyonwritearraylist, R.string.na, false),
+                new CellOperation(R.string.removing_in_the_beginning, R.string.arraylist, R.string.na, false),
+                new CellOperation(R.string.removing_in_the_beginning, R.string.linkedlist, R.string.na, false),
+                new CellOperation(R.string.removing_in_the_beginning, R.string.copyonwritearraylist, R.string.na, false),
+                new CellOperation(R.string.removing_in_the_middle, R.string.arraylist, R.string.na, false),
+                new CellOperation(R.string.removing_in_the_middle, R.string.linkedlist, R.string.na, false),
+                new CellOperation(R.string.removing_in_the_middle, R.string.copyonwritearraylist, R.string.na, false),
+                new CellOperation(R.string.removing_in_the_end, R.string.arraylist, R.string.na, false),
+                new CellOperation(R.string.removing_in_the_end, R.string.linkedlist, R.string.na, false),
+                new CellOperation(R.string.removing_in_the_end, R.string.copyonwritearraylist, R.string.na, false)
         );
 
         if (setRunning) {
@@ -75,6 +75,14 @@ public class CollectionsFragment extends BenchmarksFragment {
             result = bm.addMiddle(list);
         } else if (item.action == R.string.adding_in_the_end) {
             result = bm.addEnd(list);
+        } else if (item.action == R.string.search_by_value) {
+            result = bm.searchByValue(list);
+        } else if (item.action == R.string.removing_in_the_beginning) {
+            result = bm.removeStart(list);
+        } else if (item.action == R.string.removing_in_the_middle) {
+            result = bm.removeMiddle(list);
+        } else if (item.action == R.string.removing_in_the_end) {
+            result = bm.removeEnd(list);
         } else {
             throw new RuntimeException("Unsupported action type");
         }

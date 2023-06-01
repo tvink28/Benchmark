@@ -1,13 +1,14 @@
 package com.example.task2.models;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class BenchmarkManager {
 
     public BenchmarkManager() {
     }
-
 
     public long addStart(List<String> list) {
         long startTime, endTime;
@@ -33,13 +34,14 @@ public class BenchmarkManager {
         return (endTime - startTime);
     }
 
-    public long searchByValue(List<String> list, String value) {
+    public long searchByValue(List<String> list) {
         String specificNumber = "28";
+        Random random = new Random();
+        int randomIndex = random.nextInt(list.size());
+        list.set(randomIndex, specificNumber);
         long startTime, endTime;
         startTime = System.nanoTime();
-        Random random = new Random();
-        int randomIndex = random.nextInt(list.size() + 1);
-        list.add(randomIndex, specificNumber);
+        list.contains(specificNumber);
         endTime = System.nanoTime();
         return (endTime - startTime);
     }
@@ -64,6 +66,38 @@ public class BenchmarkManager {
         long startTime, endTime;
         startTime = System.nanoTime();
         list.remove(list.size() - 1);
+        endTime = System.nanoTime();
+        return (endTime - startTime);
+    }
+
+    public long addNew(Map<String, String> map) {
+        long startTime, endTime;
+        startTime = System.nanoTime();
+        map.put("key", "value");
+        endTime = System.nanoTime();
+        return (endTime - startTime);
+    }
+
+    public long searchByKey(Map<String, String> map) {
+        String specificNumber = "28";
+        Random random = new Random();
+        List<String> keys = new ArrayList<>(map.keySet());
+        String randomKey = keys.get(random.nextInt(keys.size()));
+        map.put(randomKey, specificNumber);
+        long startTime, endTime;
+        startTime = System.nanoTime();
+        map.containsKey(specificNumber);
+        endTime = System.nanoTime();
+        return (endTime - startTime);
+    }
+
+    public long removing(Map<String, String> map) {
+        Random random = new Random();
+        List<String> keys = new ArrayList<>(map.keySet());
+        String randomKey = keys.get(random.nextInt(keys.size()));
+        long startTime, endTime;
+        startTime = System.nanoTime();
+        map.remove(randomKey);
         endTime = System.nanoTime();
         return (endTime - startTime);
     }

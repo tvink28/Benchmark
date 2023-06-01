@@ -16,7 +16,6 @@ import com.example.task2.models.CellOperation;
 
 public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdapter.BenchmarkViewHolder> {
 
-
     public BenchmarksAdapter() {
         super(new DiffUtil.ItemCallback<CellOperation>() {
             @Override
@@ -45,21 +44,17 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
         holder.bind(getItem(position));
     }
 
-
     public static class BenchmarkViewHolder extends RecyclerView.ViewHolder {
 
         private final View backgroundView;
         private final ProgressBar progressBar;
         private final TextView textViewAction;
 
-        private boolean isProgressBarVisible;
-
         public BenchmarkViewHolder(@NonNull View itemView) {
             super(itemView);
             backgroundView = itemView.findViewById(R.id.backgroundView);
             textViewAction = itemView.findViewById(R.id.item_text_action);
             progressBar = itemView.findViewById(R.id.progressBar);
-            isProgressBarVisible = false;
         }
 
         public void bind(CellOperation cellOperation) {
@@ -76,10 +71,9 @@ public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdap
 
             textViewAction.setText(String.format("%s\n%s\n%s ns", action, type, timeText));
 
-            if (cellOperation.isRunning != isProgressBarVisible) {
-                isProgressBarVisible = cellOperation.isRunning;
-                setVisibility(progressBar, isProgressBarVisible);
-                setVisibility(backgroundView, isProgressBarVisible);
+            if (cellOperation.isRunning != (progressBar.getAlpha() != 0)) {
+                setVisibility(progressBar, cellOperation.isRunning);
+                setVisibility(backgroundView, cellOperation.isRunning);
             }
         }
 

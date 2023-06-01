@@ -16,6 +16,8 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements TabLayoutMediator.TabConfigurationStrategy {
 
+    private TabLayoutMediator tabLayoutMediator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +34,16 @@ public class MainActivity extends AppCompatActivity implements TabLayoutMediator
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.view_actionbar);
 
-        new TabLayoutMediator(tabLayout, viewPager2, this).attach();
+        tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager2, this);
+        tabLayoutMediator.attach();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (tabLayoutMediator != null) {
+            tabLayoutMediator.detach();
+        }
     }
 
     @Override
