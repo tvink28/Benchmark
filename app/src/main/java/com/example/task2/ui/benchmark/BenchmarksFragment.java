@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,10 +122,7 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-        int number = Integer.parseInt(textInputEditText.getText().toString().trim());
-
-        if (executorService != null) {
+        if (executorService != null && !executorService.isShutdown()) {
             executorService.shutdownNow();
             executorService = null;
 
@@ -138,15 +134,21 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
             }
             adapter.submitList(list);
         } else {
+            final int number = Integer.parseInt(textInputEditText.getText().toString().trim());
             runBenchmark(number);
         }
     }
 
     private void showError(int errorMessage, int inputBg) {
-        final View errorView = LayoutInflater.from(getContext()).inflate(R.layout.view_error, null);
-        final TextView errorText = errorView.findViewById(R.id.errorText);
+        final View errorView;
+        final TextView errorText;
         if (errorPopup == null) {
+            errorView = LayoutInflater.from(getContext()).inflate(R.layout.view_error, (ViewGroup) getView(), false);
+            errorText = errorView.findViewById(R.id.errorText);
             errorPopup = new PopupWindow(errorView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        } else {
+            errorView = errorPopup.getContentView();
+            errorText = errorPopup.getContentView().findViewById(R.id.errorText);
         }
         final int Y = 30;
 
@@ -185,7 +187,11 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
                 final CellOperation update = cell.withTime(Math.toIntExact(operationTime));
                 handler.post(() -> updateCell(pos, update, operations));
                 if (completedTasks.incrementAndGet() == operations.size()) {
-                    handler.post(() -> buttonStopStart.setChecked(true));
+                    handler.post(() -> {
+                        buttonStopStart.setOnCheckedChangeListener(null);
+                        buttonStopStart.setChecked(true);
+                        buttonStopStart.setOnCheckedChangeListener(BenchmarksFragment.this);
+                    });
                 }
             });
         }
@@ -193,7 +199,6 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     }
 
     private void updateCell(int position, CellOperation cell, List<CellOperation> operations) {
-        Log.d("LOGG:", "Update on position: " + position);
         operations.set(position, cell);
         adapter.submitList(new ArrayList<>(operations));
     }
