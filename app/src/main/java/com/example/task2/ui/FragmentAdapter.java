@@ -6,8 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.task2.ui.benchmark.CollectionsFragment;
-import com.example.task2.ui.benchmark.MapsFragment;
+import com.example.task2.ui.benchmark.BenchmarksFragment;
 
 public class FragmentAdapter extends FragmentStateAdapter {
 
@@ -18,14 +17,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position) {
-            case 0:
-                return new CollectionsFragment();
-            case 1 :
-                return new MapsFragment();
-            default:
-                throw new IllegalArgumentException("Invalid position: " + position);
-        }
+        return BenchmarksFragment.newInstance(position);
     }
 
     @Override

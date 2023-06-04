@@ -1,26 +1,27 @@
 package com.example.task2.models;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
 
 public interface Benchmark {
-    long addStart(List<String> list);
+    String specificNumber = "28";
+    Random random = new Random();
 
-    long addMiddle(List<String> list);
+    int getNumberOfColumns();
 
-    long addEnd(List<String> list);
+    List<CellOperation> createItemsList(boolean setRunning);
 
-    long searchByValue(List<String> list);
-
-    long removeStart(List<String> list);
-
-    long removeMiddle(List<String> list);
-
-    long removeEnd(List<String> list);
-
-    long addNew(Map<String, String> map);
-
-    long searchByKey(Map<String, String> map);
-
-    long removing(Map<String, String> map);
+    long measureTime(CellOperation item, int number);
 }
+
+
+
+
+
+
+
+
+
+
+
+

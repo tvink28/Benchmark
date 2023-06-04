@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task2.R;
+import com.example.task2.models.Benchmark;
 import com.example.task2.models.CellOperation;
+import com.example.task2.models.CollectionBenchmark;
+import com.example.task2.models.MapBenchmark;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -29,24 +33,37 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
+public class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private Benchmark benchmark;
     private TextInputEditText textInputEditText;
     private ToggleButton buttonStopStart;
     private PopupWindow errorPopup;
     private ExecutorService executorService;
 
-    protected abstract int getNumberOfColumns();
 
-    protected abstract List<CellOperation> createItemsList(boolean setRunning);
-
-    protected abstract long measureTime(CellOperation item, int number);
+    public static BenchmarksFragment newInstance(int benchmarkType) {
+        Bundle args = new Bundle();
+        args.putInt("benchmarkType", benchmarkType);
+        BenchmarksFragment fragment = new BenchmarksFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter.submitList(createItemsList(false));
+
+        Bundle args = getArguments();
+        int benchmarkType = args.getInt("benchmarkType");
+
+        if (benchmarkType == 0) {
+            benchmark = new CollectionBenchmark();
+        } else {
+            benchmark = new MapBenchmark();
+        }
+        adapter.submitList(benchmark.createItemsList(false));
     }
 
     @Override
@@ -62,7 +79,7 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
 
         final RecyclerView recyclerView = view.findViewById(R.id.rv);
         final GridLayoutManager layoutManager = new GridLayoutManager(
-                getActivity(), getNumberOfColumns()
+                getActivity(), benchmark.getNumberOfColumns()
         );
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -169,7 +186,7 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     private void runBenchmark(int number) {
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-        final List<CellOperation> operations = createItemsList(true);
+        final List<CellOperation> operations = benchmark.createItemsList(true);
         adapter.submitList(new ArrayList<>(operations));
 
         final AtomicInteger completedTasks = new AtomicInteger(0);
@@ -182,7 +199,7 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
                     e.printStackTrace();
                 }
                 final CellOperation cell = operations.get(pos);
-                final long operationTime = measureTime(cell, number);
+                final long operationTime = benchmark.measureTime(cell, number);
 
                 final CellOperation update = cell.withTime(Math.toIntExact(operationTime));
                 handler.post(() -> updateCell(pos, update, operations));
@@ -199,6 +216,7 @@ public abstract class BenchmarksFragment extends Fragment implements View.OnFocu
     }
 
     private void updateCell(int position, CellOperation cell, List<CellOperation> operations) {
+        Log.d("LOGG:", "Update on position: " + position);
         operations.set(position, cell);
         adapter.submitList(new ArrayList<>(operations));
     }
