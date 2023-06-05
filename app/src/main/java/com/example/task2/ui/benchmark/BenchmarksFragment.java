@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +33,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
+    private static final String ARG_BENCHMARK_TYPE = "benchmarkType";
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private final Handler handler = new Handler(Looper.getMainLooper());
     private Benchmark benchmark;
@@ -42,10 +42,9 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
     private PopupWindow errorPopup;
     private ExecutorService executorService;
 
-
     public static BenchmarksFragment newInstance(int benchmarkType) {
         Bundle args = new Bundle();
-        args.putInt("benchmarkType", benchmarkType);
+        args.putInt(ARG_BENCHMARK_TYPE, benchmarkType);
         BenchmarksFragment fragment = new BenchmarksFragment();
         fragment.setArguments(args);
         return fragment;
@@ -56,7 +55,7 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
         super.onCreate(savedInstanceState);
 
         Bundle args = getArguments();
-        int benchmarkType = args.getInt("benchmarkType");
+        int benchmarkType = args.getInt(ARG_BENCHMARK_TYPE);
 
         if (benchmarkType == 0) {
             benchmark = new CollectionBenchmark();
@@ -216,7 +215,6 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
     }
 
     private void updateCell(int position, CellOperation cell, List<CellOperation> operations) {
-        Log.d("LOGG:", "Update on position: " + position);
         operations.set(position, cell);
         adapter.submitList(new ArrayList<>(operations));
     }

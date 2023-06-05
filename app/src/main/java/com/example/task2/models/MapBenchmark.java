@@ -7,9 +7,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 
 public class MapBenchmark implements Benchmark {
+    private static final String SPECIFIC_NUMBER = "28";
+    private final Random random = new Random();
 
     @Override
     public int getNumberOfColumns() {
@@ -18,24 +21,14 @@ public class MapBenchmark implements Benchmark {
 
     @Override
     public List<CellOperation> createItemsList(boolean setRunning) {
-        List<CellOperation> operations = Arrays.asList(
-                new CellOperation(R.string.adding_new, R.string.treemap, R.string.na, false),
-                new CellOperation(R.string.adding_new, R.string.hashmap, R.string.na, false),
-                new CellOperation(R.string.search_by_key, R.string.treemap, R.string.na, false),
-                new CellOperation(R.string.search_by_key, R.string.hashmap, R.string.na, false),
-                new CellOperation(R.string.removing, R.string.treemap, R.string.na, false),
-                new CellOperation(R.string.removing, R.string.hashmap, R.string.na, false)
+        return Arrays.asList(
+                new CellOperation(R.string.adding_new, R.string.treemap, R.string.na, setRunning),
+                new CellOperation(R.string.adding_new, R.string.hashmap, R.string.na, setRunning),
+                new CellOperation(R.string.search_by_key, R.string.treemap, R.string.na, setRunning),
+                new CellOperation(R.string.search_by_key, R.string.hashmap, R.string.na, setRunning),
+                new CellOperation(R.string.removing, R.string.treemap, R.string.na, setRunning),
+                new CellOperation(R.string.removing, R.string.hashmap, R.string.na, setRunning)
         );
-
-        if (setRunning) {
-            List<CellOperation> updatedOperations = new ArrayList<>();
-            for (CellOperation operation : operations) {
-                updatedOperations.add(operation.withIsRunning(true));
-            }
-            return updatedOperations;
-        } else {
-            return operations;
-        }
     }
 
     @Override
@@ -77,10 +70,10 @@ public class MapBenchmark implements Benchmark {
     public long searchByKey(Map<String, String> map) {
         List<String> keys = new ArrayList<>(map.keySet());
         String randomKey = keys.get(random.nextInt(keys.size()));
-        map.put(randomKey, specificNumber);
+        map.put(randomKey, SPECIFIC_NUMBER);
         long startTime, endTime;
         startTime = System.nanoTime();
-        map.containsKey(specificNumber);
+        map.containsKey(SPECIFIC_NUMBER);
         endTime = System.nanoTime();
         return (endTime - startTime);
     }

@@ -1,11 +1,8 @@
 package com.example.task2.models;
 
 import java.util.List;
-import java.util.Random;
 
 public interface Benchmark {
-    String specificNumber = "28";
-    Random random = new Random();
 
     int getNumberOfColumns();
 

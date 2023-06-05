@@ -7,9 +7,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CollectionBenchmark implements Benchmark {
+    private static final String SPECIFIC_NUMBER = "28";
+    private final Random random = new Random();
 
     @Override
     public int getNumberOfColumns() {
@@ -18,39 +21,29 @@ public class CollectionBenchmark implements Benchmark {
 
     @Override
     public List<CellOperation> createItemsList(boolean setRunning) {
-        List<CellOperation> operations = Arrays.asList(
-                new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, false),
-                new CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na, false),
-                new CellOperation(R.string.adding_in_the_beginning, R.string.copyonwritearraylist, R.string.na, false),
-                new CellOperation(R.string.adding_in_the_middle, R.string.arraylist, R.string.na, false),
-                new CellOperation(R.string.adding_in_the_middle, R.string.linkedlist, R.string.na, false),
-                new CellOperation(R.string.adding_in_the_middle, R.string.copyonwritearraylist, R.string.na, false),
-                new CellOperation(R.string.adding_in_the_end, R.string.arraylist, R.string.na, false),
-                new CellOperation(R.string.adding_in_the_end, R.string.linkedlist, R.string.na, false),
-                new CellOperation(R.string.adding_in_the_end, R.string.copyonwritearraylist, R.string.na, false),
-                new CellOperation(R.string.search_by_value, R.string.arraylist, R.string.na, false),
-                new CellOperation(R.string.search_by_value, R.string.linkedlist, R.string.na, false),
-                new CellOperation(R.string.search_by_value, R.string.copyonwritearraylist, R.string.na, false),
-                new CellOperation(R.string.removing_in_the_beginning, R.string.arraylist, R.string.na, false),
-                new CellOperation(R.string.removing_in_the_beginning, R.string.linkedlist, R.string.na, false),
-                new CellOperation(R.string.removing_in_the_beginning, R.string.copyonwritearraylist, R.string.na, false),
-                new CellOperation(R.string.removing_in_the_middle, R.string.arraylist, R.string.na, false),
-                new CellOperation(R.string.removing_in_the_middle, R.string.linkedlist, R.string.na, false),
-                new CellOperation(R.string.removing_in_the_middle, R.string.copyonwritearraylist, R.string.na, false),
-                new CellOperation(R.string.removing_in_the_end, R.string.arraylist, R.string.na, false),
-                new CellOperation(R.string.removing_in_the_end, R.string.linkedlist, R.string.na, false),
-                new CellOperation(R.string.removing_in_the_end, R.string.copyonwritearraylist, R.string.na, false)
+        return Arrays.asList(
+                new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, setRunning),
+                new CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na, setRunning),
+                new CellOperation(R.string.adding_in_the_beginning, R.string.copyonwritearraylist, R.string.na, setRunning),
+                new CellOperation(R.string.adding_in_the_middle, R.string.arraylist, R.string.na, setRunning),
+                new CellOperation(R.string.adding_in_the_middle, R.string.linkedlist, R.string.na, setRunning),
+                new CellOperation(R.string.adding_in_the_middle, R.string.copyonwritearraylist, R.string.na, setRunning),
+                new CellOperation(R.string.adding_in_the_end, R.string.arraylist, R.string.na, setRunning),
+                new CellOperation(R.string.adding_in_the_end, R.string.linkedlist, R.string.na, setRunning),
+                new CellOperation(R.string.adding_in_the_end, R.string.copyonwritearraylist, R.string.na, setRunning),
+                new CellOperation(R.string.search_by_value, R.string.arraylist, R.string.na, setRunning),
+                new CellOperation(R.string.search_by_value, R.string.linkedlist, R.string.na, setRunning),
+                new CellOperation(R.string.search_by_value, R.string.copyonwritearraylist, R.string.na, setRunning),
+                new CellOperation(R.string.removing_in_the_beginning, R.string.arraylist, R.string.na, setRunning),
+                new CellOperation(R.string.removing_in_the_beginning, R.string.linkedlist, R.string.na, setRunning),
+                new CellOperation(R.string.removing_in_the_beginning, R.string.copyonwritearraylist, R.string.na, setRunning),
+                new CellOperation(R.string.removing_in_the_middle, R.string.arraylist, R.string.na, setRunning),
+                new CellOperation(R.string.removing_in_the_middle, R.string.linkedlist, R.string.na, setRunning),
+                new CellOperation(R.string.removing_in_the_middle, R.string.copyonwritearraylist, R.string.na, setRunning),
+                new CellOperation(R.string.removing_in_the_end, R.string.arraylist, R.string.na, setRunning),
+                new CellOperation(R.string.removing_in_the_end, R.string.linkedlist, R.string.na, setRunning),
+                new CellOperation(R.string.removing_in_the_end, R.string.copyonwritearraylist, R.string.na, setRunning)
         );
-
-        if (setRunning) {
-            List<CellOperation> updatedOperations = new ArrayList<>();
-            for (CellOperation operation : operations) {
-                updatedOperations.add(operation.withIsRunning(true));
-            }
-            return updatedOperations;
-        } else {
-            return operations;
-        }
     }
 
     @Override
@@ -113,10 +106,10 @@ public class CollectionBenchmark implements Benchmark {
 
     public long searchByValue(List<String> list) {
         int randomIndex = random.nextInt(list.size());
-        list.set(randomIndex, specificNumber);
+        list.set(randomIndex, SPECIFIC_NUMBER);
         long startTime, endTime;
         startTime = System.nanoTime();
-        list.contains(specificNumber);
+        list.contains(SPECIFIC_NUMBER);
         endTime = System.nanoTime();
         return (endTime - startTime);
     }
