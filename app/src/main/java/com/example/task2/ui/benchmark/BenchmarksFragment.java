@@ -1,8 +1,6 @@
 package com.example.task2.ui.benchmark;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -16,31 +14,26 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task2.R;
 import com.example.task2.models.Benchmark;
-import com.example.task2.models.CellOperation;
 import com.example.task2.models.CollectionBenchmark;
 import com.example.task2.models.MapBenchmark;
+import com.example.task2.viewModel.BenchmarksViewModel;
+import com.example.task2.viewModel.BenchmarksViewModelFactory;
 import com.google.android.material.textfield.TextInputEditText;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
     private static final String ARG_BENCHMARK_TYPE = "benchmarkType";
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
-    private final Handler handler = new Handler(Looper.getMainLooper());
     private Benchmark benchmark;
     private TextInputEditText textInputEditText;
     private ToggleButton buttonStopStart;
     private PopupWindow errorPopup;
-    private ExecutorService executorService;
+    private BenchmarksViewModel viewModel;
 
     public static BenchmarksFragment newInstance(int benchmarkType) {
         Bundle args = new Bundle();
@@ -62,7 +55,9 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
         } else {
             benchmark = new MapBenchmark();
         }
-        adapter.submitList(benchmark.createItemsList(false));
+        BenchmarksViewModelFactory factory = new BenchmarksViewModelFactory(benchmark);
+        viewModel = new ViewModelProvider(this, factory).get(BenchmarksViewModel.class);
+        viewModel.updateCellOperationsList(false);
     }
 
     @Override
@@ -82,6 +77,15 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
         );
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        viewModel.getCellOperationsLiveData().observe(getViewLifecycleOwner(), adapter::submitList);
+        viewModel.getAllTasksCompletedLiveData().observe(getViewLifecycleOwner(), allTasksCompleted -> {
+            if (allTasksCompleted) {
+                buttonStopStart.setOnCheckedChangeListener(null);
+                buttonStopStart.setChecked(true);
+                buttonStopStart.setOnCheckedChangeListener(this);
+            }
+        });
 
         textInputEditText = view.findViewById(R.id.editText);
         textInputEditText.setOnFocusChangeListener(this);
@@ -138,20 +142,11 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (executorService != null && !executorService.isShutdown()) {
-            executorService.shutdownNow();
-            executorService = null;
-
-            final List<CellOperation> list = new ArrayList<>(adapter.getCurrentList());
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).isRunning) {
-                    list.set(i, list.get(i).withIsRunning(false));
-                }
-            }
-            adapter.submitList(list);
+        if (viewModel.isShutdown()) {
+            viewModel.stopBenchmark();
         } else {
             final int number = Integer.parseInt(textInputEditText.getText().toString().trim());
-            runBenchmark(number);
+            viewModel.runBenchmark(number);
         }
     }
 
@@ -180,42 +175,5 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
         final int x = textInputEditText.getWidth() / 2 - errorPopupWidth / 2;
 
         errorPopup.showAsDropDown(textInputEditText, x, Y);
-    }
-
-    private void runBenchmark(int number) {
-        executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-
-        final List<CellOperation> operations = benchmark.createItemsList(true);
-        adapter.submitList(new ArrayList<>(operations));
-
-        final AtomicInteger completedTasks = new AtomicInteger(0);
-        for (int position = 0; position < operations.size(); position++) {
-            final int pos = position;
-            executorService.submit(() -> {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                final CellOperation cell = operations.get(pos);
-                final long operationTime = benchmark.measureTime(cell, number);
-
-                final CellOperation update = cell.withTime(Math.toIntExact(operationTime));
-                handler.post(() -> updateCell(pos, update, operations));
-                if (completedTasks.incrementAndGet() == operations.size()) {
-                    handler.post(() -> {
-                        buttonStopStart.setOnCheckedChangeListener(null);
-                        buttonStopStart.setChecked(true);
-                        buttonStopStart.setOnCheckedChangeListener(BenchmarksFragment.this);
-                    });
-                }
-            });
-        }
-        executorService.shutdown();
-    }
-
-    private void updateCell(int position, CellOperation cell, List<CellOperation> operations) {
-        operations.set(position, cell);
-        adapter.submitList(new ArrayList<>(operations));
     }
 }
