@@ -19,9 +19,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task2.R;
-import com.example.task2.models.Benchmark;
-import com.example.task2.models.CollectionBenchmark;
-import com.example.task2.models.MapBenchmark;
 import com.example.task2.viewModel.BenchmarksViewModel;
 import com.example.task2.viewModel.BenchmarksViewModelFactory;
 import com.google.android.material.textfield.TextInputEditText;
@@ -29,7 +26,6 @@ import com.google.android.material.textfield.TextInputEditText;
 public class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
     private static final String ARG_BENCHMARK_TYPE = "benchmarkType";
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
-    private Benchmark benchmark;
     private TextInputEditText textInputEditText;
     private ToggleButton buttonStopStart;
     private PopupWindow errorPopup;
@@ -50,14 +46,9 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
         Bundle args = getArguments();
         int benchmarkType = args.getInt(ARG_BENCHMARK_TYPE);
 
-        if (benchmarkType == 0) {
-            benchmark = new CollectionBenchmark();
-        } else {
-            benchmark = new MapBenchmark();
-        }
-        BenchmarksViewModelFactory factory = new BenchmarksViewModelFactory(benchmark);
+        BenchmarksViewModelFactory factory = new BenchmarksViewModelFactory(benchmarkType);
         viewModel = new ViewModelProvider(this, factory).get(BenchmarksViewModel.class);
-        viewModel.updateCellOperationsList(false);
+        viewModel.onCreate();
     }
 
     @Override
@@ -73,17 +64,29 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
 
         final RecyclerView recyclerView = view.findViewById(R.id.rv);
         final GridLayoutManager layoutManager = new GridLayoutManager(
-                getActivity(), benchmark.getNumberOfColumns()
+                getActivity(), viewModel.getNumberOfColumns()
         );
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
         viewModel.getCellOperationsLiveData().observe(getViewLifecycleOwner(), adapter::submitList);
         viewModel.getAllTasksCompletedLiveData().observe(getViewLifecycleOwner(), allTasksCompleted -> {
-            if (allTasksCompleted) {
+            if (allTasksCompleted && viewModel.isComplete()) {
                 buttonStopStart.setOnCheckedChangeListener(null);
                 buttonStopStart.setChecked(true);
                 buttonStopStart.setOnCheckedChangeListener(this);
+            }
+        });
+        viewModel.getValidNumberLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage == 0) {
+                buttonStopStart.setEnabled(true);
+                textInputEditText.setBackgroundResource(R.drawable.input_bg2);
+                if (errorPopup != null) {
+                    errorPopup.dismiss();
+                }
+            } else {
+                buttonStopStart.setEnabled(false);
+                showError(errorMessage, R.drawable.input_bg_error);
             }
         });
 
@@ -114,25 +117,8 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         final String input = s.toString().trim();
-        int number;
 
-        try {
-            number = Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            buttonStopStart.setEnabled(false);
-            showError(R.string.error_valid, R.drawable.input_bg_error);
-            return;
-        }
-
-        if (number < 1) {
-            showError(R.string.error_count, R.drawable.input_bg_error);
-        } else {
-            textInputEditText.setBackgroundResource(R.drawable.input_bg2);
-            if (errorPopup != null) {
-                errorPopup.dismiss();
-            }
-            buttonStopStart.setEnabled(true);
-        }
+        viewModel.validateNumber(input);
     }
 
     @Override
@@ -142,12 +128,7 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (viewModel.isShutdown()) {
-            viewModel.stopBenchmark();
-        } else {
-            final int number = Integer.parseInt(textInputEditText.getText().toString().trim());
-            viewModel.runBenchmark(number);
-        }
+        viewModel.onButtonClicked(textInputEditText.getText().toString().trim());
     }
 
     private void showError(int errorMessage, int inputBg) {

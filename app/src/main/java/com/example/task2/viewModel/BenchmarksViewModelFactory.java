@@ -5,12 +5,18 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.task2.models.Benchmark;
+import com.example.task2.models.CollectionBenchmark;
+import com.example.task2.models.MapBenchmark;
 
 public class BenchmarksViewModelFactory implements ViewModelProvider.Factory {
     private final Benchmark benchmark;
 
-    public BenchmarksViewModelFactory(Benchmark benchmark) {
-        this.benchmark = benchmark;
+    public BenchmarksViewModelFactory(int benchmarkType) {
+        if (benchmarkType == 0) {
+            benchmark = new CollectionBenchmark();
+        } else {
+            benchmark = new MapBenchmark();
+        }
     }
 
     @NonNull

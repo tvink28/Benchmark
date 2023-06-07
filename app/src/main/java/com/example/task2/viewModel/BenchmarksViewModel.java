@@ -1,8 +1,10 @@
 package com.example.task2.viewModel;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.task2.R;
 import com.example.task2.models.Benchmark;
 import com.example.task2.models.CellOperation;
 
@@ -17,6 +19,7 @@ public class BenchmarksViewModel extends ViewModel {
     private final Benchmark benchmark;
     private final MutableLiveData<List<CellOperation>> cellOperationsLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> allTasksCompletedLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Integer> validNumberLiveData = new MutableLiveData<>();
     private ExecutorService executorService;
 
 
@@ -24,17 +27,50 @@ public class BenchmarksViewModel extends ViewModel {
         this.benchmark = benchmark;
     }
 
-    public MutableLiveData<List<CellOperation>> getCellOperationsLiveData() {
+    public LiveData<List<CellOperation>> getCellOperationsLiveData() {
         return cellOperationsLiveData;
     }
 
-    public MutableLiveData<Boolean> getAllTasksCompletedLiveData() {
+    public LiveData<Boolean> getAllTasksCompletedLiveData() {
         return allTasksCompletedLiveData;
     }
 
-    public void updateCellOperationsList(boolean setRunning) {
-        List<CellOperation> cellOperations = benchmark.createItemsList(setRunning);
+    public LiveData<Integer> getValidNumberLiveData() {
+        return validNumberLiveData;
+    }
+
+    public void onButtonClicked(String input) {
+        if (executorService != null && !executorService.isShutdown()) {
+            stopBenchmark();
+        } else {
+            final int number = Integer.parseInt(input);
+            runBenchmark(number);
+        }
+    }
+
+    public void validateNumber(String input) {
+        int number;
+        int errorMessage = 0;
+
+        try {
+            number = Integer.parseInt(input);
+            if (number < 1) {
+                errorMessage = R.string.error_count;
+            }
+        } catch (NumberFormatException e) {
+            errorMessage = R.string.error_valid;
+        }
+
+        validNumberLiveData.setValue(errorMessage);
+    }
+
+    public void onCreate() {
+        List<CellOperation> cellOperations = benchmark.createItemsList(false);
         cellOperationsLiveData.setValue(cellOperations);
+    }
+
+    public int getNumberOfColumns() {
+        return benchmark.getNumberOfColumns();
     }
 
     public void runBenchmark(int number) {
@@ -47,11 +83,6 @@ public class BenchmarksViewModel extends ViewModel {
         for (int position = 0; position < operations.size(); position++) {
             final int pos = position;
             executorService.submit(() -> {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 final CellOperation cell = operations.get(pos);
                 final long operationTime = benchmark.measureTime(cell, number);
 
@@ -67,8 +98,8 @@ public class BenchmarksViewModel extends ViewModel {
         executorService.shutdown();
     }
 
-    public boolean isShutdown() {
-        return executorService != null && !executorService.isShutdown();
+    public boolean isComplete() {
+        return executorService.isShutdown();
     }
 
     public void stopBenchmark() {

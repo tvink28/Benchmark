@@ -32,7 +32,6 @@
     <!-- Tab Names -->
     <string name="tab_collections">Collections</string>
     <string name="tab_maps">Maps</string>
-    <string name="error_empty">The field must not be empty</string>
     <string name="error_count">Error.You need enter elements count.</string>
     <string name="error_valid">Please enter a valid number</string>
 
