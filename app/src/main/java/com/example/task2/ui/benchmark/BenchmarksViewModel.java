@@ -1,4 +1,7 @@
-package com.example.task2.viewModel;
+package com.example.task2.ui.benchmark;
+
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -20,8 +23,8 @@ public class BenchmarksViewModel extends ViewModel {
     private final MutableLiveData<List<CellOperation>> cellOperationsLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> allTasksCompletedLiveData = new MutableLiveData<>();
     private final MutableLiveData<Integer> validNumberLiveData = new MutableLiveData<>();
+    private final Handler handler = new Handler(Looper.getMainLooper());
     private ExecutorService executorService;
-
 
     public BenchmarksViewModel(Benchmark benchmark) {
         this.benchmark = benchmark;
@@ -50,7 +53,7 @@ public class BenchmarksViewModel extends ViewModel {
 
     public void validateNumber(String input) {
         int number;
-        int errorMessage = 0;
+        Integer errorMessage = null;
 
         try {
             number = Integer.parseInt(input);
@@ -65,8 +68,7 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public void onCreate() {
-        List<CellOperation> cellOperations = benchmark.createItemsList(false);
-        cellOperationsLiveData.setValue(cellOperations);
+        cellOperationsLiveData.setValue(benchmark.createItemsList(false));
     }
 
     public int getNumberOfColumns() {
@@ -88,7 +90,7 @@ public class BenchmarksViewModel extends ViewModel {
 
                 final CellOperation update = cell.withTime(Math.toIntExact(operationTime));
                 operations.set(pos, update);
-                cellOperationsLiveData.postValue(new ArrayList<>(operations));
+                handler.post(() -> cellOperationsLiveData.setValue(new ArrayList<>(operations)));
 
                 if (completedTasks.incrementAndGet() == operations.size()) {
                     allTasksCompletedLiveData.postValue(true);
@@ -96,10 +98,6 @@ public class BenchmarksViewModel extends ViewModel {
             });
         }
         executorService.shutdown();
-    }
-
-    public boolean isComplete() {
-        return executorService.isShutdown();
     }
 
     public void stopBenchmark() {

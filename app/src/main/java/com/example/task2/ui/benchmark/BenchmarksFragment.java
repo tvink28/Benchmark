@@ -19,8 +19,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task2.R;
-import com.example.task2.viewModel.BenchmarksViewModel;
-import com.example.task2.viewModel.BenchmarksViewModelFactory;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
@@ -71,14 +69,12 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
 
         viewModel.getCellOperationsLiveData().observe(getViewLifecycleOwner(), adapter::submitList);
         viewModel.getAllTasksCompletedLiveData().observe(getViewLifecycleOwner(), allTasksCompleted -> {
-            if (allTasksCompleted && viewModel.isComplete()) {
-                buttonStopStart.setOnCheckedChangeListener(null);
-                buttonStopStart.setChecked(true);
-                buttonStopStart.setOnCheckedChangeListener(this);
-            }
+            buttonStopStart.setOnCheckedChangeListener(null);
+            buttonStopStart.setChecked(allTasksCompleted);
+            buttonStopStart.setOnCheckedChangeListener(this);
         });
         viewModel.getValidNumberLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
-            if (errorMessage == 0) {
+            if (errorMessage == null) {
                 buttonStopStart.setEnabled(true);
                 textInputEditText.setBackgroundResource(R.drawable.input_bg2);
                 if (errorPopup != null) {

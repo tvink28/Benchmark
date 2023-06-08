@@ -1,4 +1,4 @@
-package com.example.task2.viewModel;
+package com.example.task2.ui.benchmark;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
