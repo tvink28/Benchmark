@@ -44,7 +44,9 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
         Bundle args = getArguments();
         int benchmarkType = args.getInt(ARG_BENCHMARK_TYPE);
 
-        BenchmarksViewModelFactory factory = new BenchmarksViewModelFactory(benchmarkType);
+        BenchmarkComponent component = DaggerBenchmarkComponent.factory().create(new BenchmarkModule(benchmarkType));
+        component.inject(this);
+        BenchmarksViewModelFactory factory = component.benchmarksViewModelFactory();
         viewModel = new ViewModelProvider(this, factory).get(BenchmarksViewModel.class);
         viewModel.onCreate();
     }

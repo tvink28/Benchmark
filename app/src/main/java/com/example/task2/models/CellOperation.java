@@ -1,5 +1,7 @@
 package com.example.task2.models;
 
+import java.util.Objects;
+
 public class CellOperation {
     public final int action;
     public final int type;
@@ -37,5 +39,10 @@ public class CellOperation {
                 type == otherCellOperation.type &&
                 time == otherCellOperation.time &&
                 isRunning == otherCellOperation.isRunning;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(action, type);
     }
 }

@@ -1,7 +1,6 @@
 package com.example.task2.ui.benchmark;
 
-import android.os.Handler;
-import android.os.Looper;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -14,17 +13,18 @@ import com.example.task2.models.CellOperation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class BenchmarksViewModel extends ViewModel {
     private final Benchmark benchmark;
     private final MutableLiveData<List<CellOperation>> cellOperationsLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> allTasksCompletedLiveData = new MutableLiveData<>();
     private final MutableLiveData<Integer> validNumberLiveData = new MutableLiveData<>();
-    private final Handler handler = new Handler(Looper.getMainLooper());
-    private ExecutorService executorService;
+    private Disposable disposable;
 
     public BenchmarksViewModel(Benchmark benchmark) {
         this.benchmark = benchmark;
@@ -43,7 +43,7 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public void onButtonClicked(String input) {
-        if (executorService != null && !executorService.isShutdown()) {
+        if (disposable != null && !disposable.isDisposed()) {
             stopBenchmark();
         } else {
             final int number = Integer.parseInt(input);
@@ -76,33 +76,34 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public void runBenchmark(int number) {
-        executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-
         final List<CellOperation> operations = benchmark.createItemsList(true);
         cellOperationsLiveData.postValue(new ArrayList<>(operations));
 
-        final AtomicInteger completedTasks = new AtomicInteger(0);
-        for (int position = 0; position < operations.size(); position++) {
-            final int pos = position;
-            executorService.submit(() -> {
-                final CellOperation cell = operations.get(pos);
-                final long operationTime = benchmark.measureTime(cell, number);
-
-                final CellOperation update = cell.withTime(Math.toIntExact(operationTime));
-                operations.set(pos, update);
-                handler.post(() -> cellOperationsLiveData.setValue(new ArrayList<>(operations)));
-
-                if (completedTasks.incrementAndGet() == operations.size()) {
-                    allTasksCompletedLiveData.postValue(true);
-                }
-            });
-        }
-        executorService.shutdown();
+        disposable = Observable.fromIterable(operations)
+                .flatMap(cell -> Observable.fromCallable(() -> {
+                    final long operationTime = benchmark.measureTime(cell, number);
+                    return cell.withTime(Math.toIntExact(operationTime));
+                }))
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(updatedCell -> {
+                    int position = -1;
+                    for (int i = 0; i < operations.size(); i++) {
+                        if (operations.get(i).hashCode() == updatedCell.hashCode()) {
+                            position = i;
+                        }
+                    }
+                    operations.set(position, updatedCell);
+                    cellOperationsLiveData.setValue(new ArrayList<>(operations));
+                }, throwable -> {
+                    Log.e("LOGG:", "Error: " + throwable.getMessage());
+                }, () -> {
+                    allTasksCompletedLiveData.setValue(true);
+                });
     }
 
     public void stopBenchmark() {
-        executorService.shutdownNow();
-        executorService = null;
+        disposable.dispose();
 
         final List<CellOperation> list = new ArrayList<>(Objects.requireNonNull(cellOperationsLiveData.getValue()));
         for (int i = 0; i < list.size(); i++) {
@@ -116,8 +117,8 @@ public class BenchmarksViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        if (executorService != null && !executorService.isShutdown()) {
-            executorService.shutdownNow();
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
         }
     }
 }
