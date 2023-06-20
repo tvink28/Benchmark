@@ -2,6 +2,7 @@ package com.example.task2.ui.benchmark;
 
 import android.util.Log;
 
+import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -24,7 +25,7 @@ public class BenchmarksViewModel extends ViewModel {
     private final MutableLiveData<List<CellOperation>> cellOperationsLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> allTasksCompletedLiveData = new MutableLiveData<>();
     private final MutableLiveData<Integer> validNumberLiveData = new MutableLiveData<>();
-    private Disposable disposable;
+    private Disposable disposable = Disposable.disposed();
 
     public BenchmarksViewModel(Benchmark benchmark) {
         this.benchmark = benchmark;
@@ -82,24 +83,17 @@ public class BenchmarksViewModel extends ViewModel {
         disposable = Observable.fromIterable(operations)
                 .flatMap(cell -> Observable.fromCallable(() -> {
                     final long operationTime = benchmark.measureTime(cell, number);
-                    return cell.withTime(Math.toIntExact(operationTime));
+                    return new Pair<>(operations.indexOf(cell), cell.withTime(Math.toIntExact(operationTime)));
                 }))
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(updatedCell -> {
-                    int position = -1;
-                    for (int i = 0; i < operations.size(); i++) {
-                        if (operations.get(i).hashCode() == updatedCell.hashCode()) {
-                            position = i;
-                        }
-                    }
+                .doFinally(() -> allTasksCompletedLiveData.setValue(true))
+                .subscribe(pair -> {
+                    int position = pair.first;
+                    CellOperation updatedCell = pair.second;
                     operations.set(position, updatedCell);
                     cellOperationsLiveData.setValue(new ArrayList<>(operations));
-                }, throwable -> {
-                    Log.e("LOGG:", "Error: " + throwable.getMessage());
-                }, () -> {
-                    allTasksCompletedLiveData.setValue(true);
-                });
+                }, throwable -> Log.e("LOGG:", "Error: " + throwable.getMessage()));
     }
 
     public void stopBenchmark() {

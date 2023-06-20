@@ -1,19 +1,13 @@
 package com.example.task2.ui.benchmark;
 
-import com.example.task2.models.Benchmark;
-
 import dagger.Component;
 
 @Component(modules = {BenchmarkModule.class})
 public interface BenchmarkComponent {
-    BenchmarksViewModelFactory benchmarksViewModelFactory();
 
-    Benchmark benchmark();
+    void inject(BenchmarksViewModelFactory factory);
 
-    void inject(BenchmarksFragment fragment);
+    BenchmarkModule getBenchmarkModule();
 
-    @Component.Factory
-    interface Factory {
-        BenchmarkComponent create(BenchmarkModule module);
-    }
+
 }

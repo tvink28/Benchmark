@@ -21,9 +21,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.task2.R;
 import com.google.android.material.textfield.TextInputEditText;
 
+import javax.inject.Inject;
+
 public class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
     private static final String ARG_BENCHMARK_TYPE = "benchmarkType";
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
+    @Inject
+    BenchmarksViewModelFactory factory;
     private TextInputEditText textInputEditText;
     private ToggleButton buttonStopStart;
     private PopupWindow errorPopup;
@@ -44,9 +48,7 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
         Bundle args = getArguments();
         int benchmarkType = args.getInt(ARG_BENCHMARK_TYPE);
 
-        BenchmarkComponent component = DaggerBenchmarkComponent.factory().create(new BenchmarkModule(benchmarkType));
-        component.inject(this);
-        BenchmarksViewModelFactory factory = component.benchmarksViewModelFactory();
+        factory = new BenchmarksViewModelFactory(benchmarkType);
         viewModel = new ViewModelProvider(this, factory).get(BenchmarksViewModel.class);
         viewModel.onCreate();
     }

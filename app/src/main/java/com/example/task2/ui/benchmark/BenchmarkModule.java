@@ -9,23 +9,19 @@ import dagger.Provides;
 
 @Module
 public class BenchmarkModule {
-    private final int benchmarkType;
 
-    public BenchmarkModule(int benchmarkType) {
-        this.benchmarkType = benchmarkType;
+    @Provides
+    public Benchmark provideCollectionBenchmark() {
+        return new CollectionBenchmark();
     }
 
     @Provides
-    public Benchmark provideBenchmark() {
-        if (benchmarkType == 0) {
-            return new CollectionBenchmark();
-        } else {
-            return new MapBenchmark();
-        }
+    public Benchmark provideMapBenchmark() {
+        return new MapBenchmark();
     }
 
     @Provides
-    public BenchmarksViewModelFactory provideBenchmarksViewModelFactory(Benchmark benchmark) {
-        return new BenchmarksViewModelFactory(benchmark);
+    public BenchmarkModule getBenchmarkModule() {
+        return this;
     }
 }

@@ -6,11 +6,21 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.task2.models.Benchmark;
 
+import javax.inject.Inject;
+
 public class BenchmarksViewModelFactory implements ViewModelProvider.Factory {
     private final Benchmark benchmark;
 
-    public BenchmarksViewModelFactory(Benchmark benchmark) {
-        this.benchmark = benchmark;
+    BenchmarkComponent component = DaggerBenchmarkComponent.create();
+
+    @Inject
+    public BenchmarksViewModelFactory(int benchmarkType) {
+        component.inject(this);
+        if (benchmarkType == 0) {
+            benchmark = component.getBenchmarkModule().provideCollectionBenchmark();
+        } else {
+            benchmark = component.getBenchmarkModule().provideMapBenchmark();
+        }
     }
 
     @NonNull
