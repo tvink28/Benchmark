@@ -83,7 +83,7 @@ public class BenchmarksViewModel extends ViewModel {
         disposable = Observable.fromIterable(operations)
                 .flatMap(cell -> Observable.fromCallable(() -> {
                     final long operationTime = benchmark.measureTime(cell, number);
-                    return new Pair<>(operations.indexOf(cell), cell.withTime(Math.toIntExact(operationTime)));
+                    return new Pair<>(operations.indexOf(cell), cell.withTime(operationTime));
                 }))
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())

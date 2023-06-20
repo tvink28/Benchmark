@@ -8,6 +8,4 @@ public interface BenchmarkComponent {
     void inject(BenchmarksViewModelFactory factory);
 
     BenchmarkModule getBenchmarkModule();
-
-
 }
