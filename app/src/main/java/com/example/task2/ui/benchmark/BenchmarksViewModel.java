@@ -1,7 +1,5 @@
 package com.example.task2.ui.benchmark;
 
-import android.util.Log;
-
 import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -93,7 +91,7 @@ public class BenchmarksViewModel extends ViewModel {
                     CellOperation updatedCell = pair.second;
                     operations.set(position, updatedCell);
                     cellOperationsLiveData.setValue(new ArrayList<>(operations));
-                }, throwable -> Log.e("LOGG:", "Error: " + throwable.getMessage()));
+                }, Throwable::printStackTrace);
     }
 
     public void stopBenchmark() {
@@ -111,7 +109,7 @@ public class BenchmarksViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        if (disposable != null && !disposable.isDisposed()) {
+        if (!disposable.isDisposed()) {
             disposable.dispose();
         }
     }

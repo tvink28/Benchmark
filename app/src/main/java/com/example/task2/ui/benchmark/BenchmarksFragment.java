@@ -18,9 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.task2.BenchmarksApplication;
 import com.example.task2.R;
-import com.example.task2.models.BenchmarkComponent;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
@@ -43,11 +41,7 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Bundle args = getArguments();
-        int benchmarkType = args.getInt(ARG_BENCHMARK_TYPE);
-
-        BenchmarkComponent component = ((BenchmarksApplication) requireActivity().getApplication()).getComponent();
-        BenchmarksViewModelFactory factory = new BenchmarksViewModelFactory(benchmarkType, component);
+        BenchmarksViewModelFactory factory = new BenchmarksViewModelFactory(getArguments().getInt(ARG_BENCHMARK_TYPE));
         viewModel = new ViewModelProvider(this, factory).get(BenchmarksViewModel.class);
         viewModel.onCreate();
     }

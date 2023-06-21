@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.task2.models.BenchmarkComponent;
+import com.example.task2.BenchmarksApp;
 import com.example.task2.models.benchmarks.Benchmark;
 import com.example.task2.models.benchmarks.BenchmarkTypes;
 
@@ -22,9 +22,9 @@ public class BenchmarksViewModelFactory implements ViewModelProvider.Factory {
     @Named("MapBenchmark")
     Benchmark mapBenchmark;
 
-    public BenchmarksViewModelFactory(int benchmarkType, BenchmarkComponent component) {
+    public BenchmarksViewModelFactory(int benchmarkType) {
         this.benchmarkType = benchmarkType;
-        component.inject(this);
+        BenchmarksApp.getInstance().getComponent().inject(this);
     }
 
     @NonNull
