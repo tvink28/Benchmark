@@ -1,8 +1,8 @@
-package com.example.task2.ui.benchmark;
+package com.example.task2.models;
 
-import com.example.task2.models.Benchmark;
-import com.example.task2.models.CollectionBenchmark;
-import com.example.task2.models.MapBenchmark;
+import com.example.task2.models.benchmarks.Benchmark;
+import com.example.task2.models.benchmarks.CollectionBenchmark;
+import com.example.task2.models.benchmarks.MapBenchmark;
 
 import javax.inject.Named;
 

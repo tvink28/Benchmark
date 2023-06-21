@@ -8,8 +8,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.task2.R;
-import com.example.task2.models.Benchmark;
-import com.example.task2.models.CellOperation;
+import com.example.task2.models.benchmarks.Benchmark;
+import com.example.task2.models.benchmarks.CellOperation;
 
 import java.util.ArrayList;
 import java.util.List;

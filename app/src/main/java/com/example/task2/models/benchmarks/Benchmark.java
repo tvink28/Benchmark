@@ -1,4 +1,4 @@
-package com.example.task2.models;
+package com.example.task2.models.benchmarks;
 
 import java.util.List;
 

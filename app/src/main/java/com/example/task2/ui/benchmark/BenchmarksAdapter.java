@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task2.R;
-import com.example.task2.models.CellOperation;
+import com.example.task2.models.benchmarks.CellOperation;
 
 public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdapter.BenchmarkViewHolder> {
 

@@ -1,4 +1,6 @@
-package com.example.task2.ui.benchmark;
+package com.example.task2.models;
+
+import com.example.task2.ui.benchmark.BenchmarksViewModelFactory;
 
 import dagger.Component;
 

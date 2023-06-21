@@ -4,20 +4,24 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.task2.models.Benchmark;
+import com.example.task2.models.BenchmarkComponent;
+import com.example.task2.models.DaggerBenchmarkComponent;
+import com.example.task2.models.benchmarks.Benchmark;
+import com.example.task2.models.benchmarks.BenchmarkTypes;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 public class BenchmarksViewModelFactory implements ViewModelProvider.Factory {
-    private static final int COLLECTION_BENCHMARK = 0;
     private final int benchmarkType;
+
     @Inject
     @Named("CollectionBenchmark")
-    Benchmark provideCollectionBenchmark;
+    Benchmark collectionBenchmark;
+
     @Inject
     @Named("MapBenchmark")
-    Benchmark provideMapBenchmark;
+    Benchmark mapBenchmark;
     BenchmarkComponent component = DaggerBenchmarkComponent.create();
 
     public BenchmarksViewModelFactory(int benchmarkType) {
@@ -30,10 +34,12 @@ public class BenchmarksViewModelFactory implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(BenchmarksViewModel.class)) {
             Benchmark benchmark;
-            if (benchmarkType == COLLECTION_BENCHMARK) {
-                benchmark = provideCollectionBenchmark;
+            if (benchmarkType == BenchmarkTypes.LISTS) {
+                benchmark = collectionBenchmark;
+            } else if (benchmarkType == BenchmarkTypes.MAPS) {
+                benchmark = mapBenchmark;
             } else {
-                benchmark = provideMapBenchmark;
+                throw new IllegalArgumentException("Unknown benchmark type");
             }
             T viewModel = modelClass.cast(new BenchmarksViewModel(benchmark));
             if (viewModel != null) {
