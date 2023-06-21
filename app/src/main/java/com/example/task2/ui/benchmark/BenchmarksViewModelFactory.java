@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.task2.models.BenchmarkComponent;
-import com.example.task2.models.DaggerBenchmarkComponent;
 import com.example.task2.models.benchmarks.Benchmark;
 import com.example.task2.models.benchmarks.BenchmarkTypes;
 
@@ -22,9 +21,8 @@ public class BenchmarksViewModelFactory implements ViewModelProvider.Factory {
     @Inject
     @Named("MapBenchmark")
     Benchmark mapBenchmark;
-    BenchmarkComponent component = DaggerBenchmarkComponent.create();
 
-    public BenchmarksViewModelFactory(int benchmarkType) {
+    public BenchmarksViewModelFactory(int benchmarkType, BenchmarkComponent component) {
         this.benchmarkType = benchmarkType;
         component.inject(this);
     }
