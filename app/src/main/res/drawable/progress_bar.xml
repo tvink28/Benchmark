@@ -1,0 +1,8 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <rotate
+            android:drawable="@drawable/progress_bar_image"
+            android:fromDegrees="0"
+            android:toDegrees="1080" />
+    </item>
+</layer-list>

@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Task 2</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="please_enter_collection_size_and_number_of_elements_to_compare">Please enter collection size and number of elements to compare</string>
+    <string name="elements_amount">Elements amount:</string>
+    <string name="title_action_bar">Activity</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="na">N/A</string>
+
+
+    <!-- Strings for performing operations on Collections -->
+    <string name="adding_in_the_beginning">Adding\n in the beginning</string>
+    <string name="adding_in_the_middle">Adding\n in the middle</string>
+    <string name="adding_in_the_end">Adding\n in the end</string>
+    <string name="search_by_value">Search\n by value</string>
+    <string name="removing_in_the_beginning">Removing\n in the beginning</string>
+    <string name="removing_in_the_middle">Removing\n in the middle</string>
+    <string name="removing_in_the_end">Removing\n in the end</string>
+    <string name="arraylist">ArrayList </string>
+    <string name="linkedlist">LinkedList </string>
+    <string name="copyonwritearraylist">CopyOnWriteArrayList </string>
+
+    <!-- Strings for performing operations on Maps -->
+    <string name="adding_new">Adding new</string>
+    <string name="search_by_key">Search by key</string>
+    <string name="removing">Removing </string>
+    <string name="hashmap">HashMap </string>
+    <string name="treemap">TreeMap </string>
+
+    <!-- Tab Names -->
+    <string name="tab_collections">Collections</string>
+    <string name="tab_maps">Maps</string>
+    <string name="error_count">Error.You need enter elements count.</string>
+    <string name="error_valid">Please enter a valid number</string>
+
+</resources>
