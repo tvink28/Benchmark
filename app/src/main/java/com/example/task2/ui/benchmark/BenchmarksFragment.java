@@ -23,6 +23,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
     private static final String ARG_BENCHMARK_TYPE = "benchmarkType";
+
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private TextInputEditText textInputEditText;
     private ToggleButton buttonStopStart;
@@ -30,9 +31,9 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
     private BenchmarksViewModel viewModel;
 
     public static BenchmarksFragment newInstance(int benchmarkType) {
-        Bundle args = new Bundle();
+        final Bundle args = new Bundle();
         args.putInt(ARG_BENCHMARK_TYPE, benchmarkType);
-        BenchmarksFragment fragment = new BenchmarksFragment();
+        final BenchmarksFragment fragment = new BenchmarksFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -41,7 +42,7 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        BenchmarksViewModelFactory factory = new BenchmarksViewModelFactory(getArguments().getInt(ARG_BENCHMARK_TYPE));
+        final BenchmarksViewModelFactory factory = new BenchmarksViewModelFactory(getArguments().getInt(ARG_BENCHMARK_TYPE));
         viewModel = new ViewModelProvider(this, factory).get(BenchmarksViewModel.class);
         viewModel.onCreate();
     }
