@@ -38,6 +38,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/error_alert_circle" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -42,11 +42,11 @@ public class BenchmarksViewModel extends ViewModel {
     }
 
     public void onButtonClicked(String input) {
-        if (disposable != null && !disposable.isDisposed()) {
-            stopBenchmark();
-        } else {
+        if (disposable.isDisposed()) {
             final int number = Integer.parseInt(input);
             runBenchmark(number);
+        } else {
+            stopBenchmark();
         }
     }
 
