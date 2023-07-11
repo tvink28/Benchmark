@@ -97,18 +97,18 @@ public class BenchmarksViewModelTest {
 
     @Test
     public void testValidateNumber_validInput() {
-        String input = "10";
+        final String input = "10";
         viewModel.validateNumber(input);
-        Integer errorMessage = viewModel.getValidNumberLiveData().getValue();
+        final Integer errorMessage = viewModel.getValidNumberLiveData().getValue();
         assertNull(errorMessage);
         verify(mockValidNumberObserver, times(1)).onChanged(any());
     }
 
     @Test
     public void testValidateNumber_invalidInput() {
-        String input = "one";
+        final String input = "one";
         viewModel.validateNumber(input);
-        Integer errorMessage = viewModel.getValidNumberLiveData().getValue();
+        final Integer errorMessage = viewModel.getValidNumberLiveData().getValue();
         assertNotNull(errorMessage);
         assertEquals(R.string.error_valid, (int) errorMessage);
         verify(mockValidNumberObserver, times(1)).onChanged(any());
@@ -116,9 +116,9 @@ public class BenchmarksViewModelTest {
 
     @Test
     public void testValidateNumber_invalidCount() {
-        String input = "0";
+        final String input = "0";
         viewModel.validateNumber(input);
-        Integer errorMessage = viewModel.getValidNumberLiveData().getValue();
+        final Integer errorMessage = viewModel.getValidNumberLiveData().getValue();
         assertNotNull(errorMessage);
         assertEquals(R.string.error_count, (int) errorMessage);
         verify(mockValidNumberObserver, times(1)).onChanged(any());
@@ -126,29 +126,25 @@ public class BenchmarksViewModelTest {
 
     @Test
     public void testOnButtonClicked_startBenchmark() {
-        String input = "10";
-        int number = Integer.parseInt(input);
-        long time = 100;
+        final String input = "10";
+        final int number = 10;
+        final long time = 100;
 
-
-        List<CellOperation> operations = new ArrayList<>();
+        final List<CellOperation> operations = new ArrayList<>();
         operations.add(new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, true));
         operations.add(new CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na, true));
         when(mockBenchmark.createItemsList(true)).thenReturn(operations);
         when(mockBenchmark.measureTime(any(CellOperation.class), Mockito.eq(number))).thenReturn(time);
 
-
         viewModel.onButtonClicked(input);
         testScheduler.triggerActions();
-
 
         verify(viewModel).runBenchmark(number);
         verify(mockBenchmark).createItemsList(true);
         verify(mockBenchmark, times(operations.size())).measureTime(any(CellOperation.class), Mockito.eq(number));
         verify(mockCellOperationsObserver, times(operations.size() + 1)).onChanged(Mockito.anyList());
 
-        List<CellOperation> updatedOperations = viewModel.getCellOperationsLiveData().getValue();
-
+        final List<CellOperation> updatedOperations = viewModel.getCellOperationsLiveData().getValue();
         for (int i = 0; i < operations.size(); i++) {
             CellOperation upgradeCell = updatedOperations.get(i);
             assertEquals(time, upgradeCell.time);
@@ -159,11 +155,11 @@ public class BenchmarksViewModelTest {
 
     @Test
     public void testOnButtonClicked_stopBenchmark() {
-        String input = "10";
-        int number = Integer.parseInt(input);
-        long time = 100;
+        final String input = "10";
+        final int number = 10;
+        final long time = 100;
 
-        List<CellOperation> operations = new ArrayList<>();
+        final List<CellOperation> operations = new ArrayList<>();
         operations.add(new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, true));
         operations.add(new CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na, true));
         when(mockBenchmark.createItemsList(true)).thenReturn(operations);
@@ -187,7 +183,7 @@ public class BenchmarksViewModelTest {
         verify(mockAllTasksCompletedObserver).onChanged(true);   // Тут почему то выполнилось действие allTasksCompletedLiveData.setValue(true), но не должно было, операции то не выполнились
         verify(mockCellOperationsObserver, times(2)).onChanged(Mockito.anyList());
 
-        List<CellOperation> updatedOperations = viewModel.getCellOperationsLiveData().getValue();
+        final List<CellOperation> updatedOperations = viewModel.getCellOperationsLiveData().getValue();
 
         for (int i = 0; i < operations.size(); i++) {
             assertEquals(time, updatedOperations.get(0).time);      // Проверка не проходит, operations.time не изменяется
