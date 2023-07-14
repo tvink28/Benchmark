@@ -1,4 +1,4 @@
-package com.example.task2;
+package com.example.task2.ViewModelTests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -8,7 +8,6 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -17,11 +16,13 @@ import static org.mockito.Mockito.when;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
 
+import com.example.task2.R;
 import com.example.task2.models.benchmarks.Benchmark;
 import com.example.task2.models.benchmarks.CellOperation;
 import com.example.task2.ui.benchmark.BenchmarksViewModel;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,24 +66,26 @@ public class BenchmarksViewModelTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        viewModel = spy(new BenchmarksViewModel(mockBenchmark));
+        viewModel = new BenchmarksViewModel(mockBenchmark);
+        viewModel.getValidNumberLiveData().observeForever(mockValidNumberObserver);
         viewModel.getCellOperationsLiveData().observeForever(mockCellOperationsObserver);
         viewModel.getAllTasksCompletedLiveData().observeForever(mockAllTasksCompletedObserver);
-        viewModel.getValidNumberLiveData().observeForever(mockValidNumberObserver);
     }
 
     @After
     public void tearDown() {
+        verifyNoMore();
+        rxSchedulerRule.resetSchedulers();
+        viewModel.getValidNumberLiveData().removeObserver(mockValidNumberObserver);
         viewModel.getCellOperationsLiveData().removeObserver(mockCellOperationsObserver);
         viewModel.getAllTasksCompletedLiveData().removeObserver(mockAllTasksCompletedObserver);
-        viewModel.getValidNumberLiveData().removeObserver(mockValidNumberObserver);
     }
 
     public void verifyNoMore() {
         verifyNoMoreInteractions(mockBenchmark);
+        verifyNoMoreInteractions(mockValidNumberObserver);
         verifyNoMoreInteractions(mockCellOperationsObserver);
         verifyNoMoreInteractions(mockAllTasksCompletedObserver);
-        verifyNoMoreInteractions(mockValidNumberObserver);
     }
 
     @Test
@@ -90,7 +93,6 @@ public class BenchmarksViewModelTest {
         viewModel.onCreate();
         verify(mockBenchmark).createItemsList(false);
         verify(mockCellOperationsObserver).onChanged(Mockito.anyList());
-        verifyNoMore();
     }
 
     @Test
@@ -100,7 +102,6 @@ public class BenchmarksViewModelTest {
         final Integer errorMessage = viewModel.getValidNumberLiveData().getValue();
         assertNull(errorMessage);
         verify(mockValidNumberObserver, times(1)).onChanged(any());
-        verifyNoMore();
     }
 
     @Test
@@ -109,9 +110,8 @@ public class BenchmarksViewModelTest {
         viewModel.validateNumber(input);
         final Integer errorMessage = viewModel.getValidNumberLiveData().getValue();
         assertNotNull(errorMessage);
-        assertEquals(R.string.error_valid, (int) errorMessage);
+        Assert.assertEquals(R.string.error_valid, (int) errorMessage);
         verify(mockValidNumberObserver, times(1)).onChanged(any());
-        verifyNoMore();
     }
 
     @Test
@@ -122,7 +122,6 @@ public class BenchmarksViewModelTest {
         assertNotNull(errorMessage);
         assertEquals(R.string.error_count, (int) errorMessage);
         verify(mockValidNumberObserver, times(1)).onChanged(any());
-        verifyNoMore();
     }
 
     @Test
@@ -138,7 +137,6 @@ public class BenchmarksViewModelTest {
 
         viewModel.onButtonClicked(input);
 
-        verify(viewModel).runBenchmark(number);
         verify(mockBenchmark).createItemsList(true);
         verify(mockBenchmark, times(operations.size())).measureTime(any(CellOperation.class), eq(number));
         verify(mockCellOperationsObserver, times(operations.size() + 1)).onChanged(Mockito.anyList());
@@ -151,7 +149,6 @@ public class BenchmarksViewModelTest {
             assertEquals(time, upgradeCell.time);
             assertFalse(upgradeCell.isRunning);
         }
-        verifyNoMore();
     }
 
     @Test
@@ -188,8 +185,6 @@ public class BenchmarksViewModelTest {
 
         viewModel.onButtonClicked(input);
 
-        verify(viewModel).runBenchmark(number);
-        verify(viewModel).stopBenchmark();
         verify(mockBenchmark).createItemsList(true);
         verify(mockBenchmark, atMost(3)).measureTime(Mockito.any(CellOperation.class), eq(number));
         verify(mockCellOperationsObserver, times(3)).onChanged(Mockito.anyList());
@@ -207,6 +202,5 @@ public class BenchmarksViewModelTest {
             assertNotEquals(time, updatedOperations.get(2).time);
             assertFalse(updatedOperations.get(2).isRunning);
         }
-        verifyNoMore();
     }
 }

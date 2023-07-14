@@ -1,4 +1,4 @@
-package com.example.task2;
+package com.example.task2.ViewModelTests;
 
 import androidx.annotation.NonNull;
 
@@ -24,10 +24,14 @@ public class RxSchedulerRule implements TestRule {
                 try {
                     base.evaluate();
                 } finally {
-                    RxJavaPlugins.reset();
-                    RxAndroidPlugins.reset();
+                    resetSchedulers();
                 }
             }
         };
+    }
+
+    public void resetSchedulers() {
+        RxJavaPlugins.reset();
+        RxAndroidPlugins.reset();
     }
 }

@@ -59,7 +59,7 @@ public class MapBenchmark implements Benchmark {
         return result;
     }
 
-    public long addNew(Map<String, String> map) {
+    private long addNew(Map<String, String> map) {
         long startTime, endTime;
         startTime = System.nanoTime();
         map.put("key", "value");
@@ -67,7 +67,7 @@ public class MapBenchmark implements Benchmark {
         return (endTime - startTime);
     }
 
-    public long searchByKey(Map<String, String> map) {
+    private long searchByKey(Map<String, String> map) {
         List<String> keys = new ArrayList<>(map.keySet());
         String randomKey = keys.get(random.nextInt(keys.size()));
         map.put(randomKey, SPECIFIC_NUMBER);
@@ -78,7 +78,7 @@ public class MapBenchmark implements Benchmark {
         return (endTime - startTime);
     }
 
-    public long removing(Map<String, String> map) {
+    private long removing(Map<String, String> map) {
         List<String> keys = new ArrayList<>(map.keySet());
         String randomKey = keys.get(random.nextInt(keys.size()));
         long startTime, endTime;

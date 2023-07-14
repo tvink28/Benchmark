@@ -19,7 +19,7 @@ public class CellOperationTest {
 
     @Test
     public void testWithTime() {
-        CellOperation updatedCellOperation = cellOperation.withTime(5);
+        final CellOperation updatedCellOperation = cellOperation.withTime(5);
         assertEquals(R.string.adding_in_the_beginning, updatedCellOperation.action);
         assertEquals(R.string.arraylist, updatedCellOperation.type);
         assertEquals(5, updatedCellOperation.time);
@@ -28,7 +28,7 @@ public class CellOperationTest {
 
     @Test
     public void testWithIsRunning() {
-        CellOperation updatedCellOperation = cellOperation.withIsRunning(false);
+        final CellOperation updatedCellOperation = cellOperation.withIsRunning(false);
         assertEquals(R.string.adding_in_the_beginning, updatedCellOperation.action);
         assertEquals(R.string.arraylist, updatedCellOperation.type);
         assertEquals(R.string.na, updatedCellOperation.time);
@@ -37,11 +37,11 @@ public class CellOperationTest {
 
     @Test
     public void testEquals() {
-        CellOperation updatedCellOperationIsRunning = new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, false);
-        CellOperation updatedCellOperationAction = new CellOperation(R.string.removing_in_the_middle, R.string.arraylist, R.string.na, true);
-        CellOperation updatedCellOperationType = new CellOperation(R.string.removing_in_the_middle, R.string.copyonwritearraylist, R.string.na, true);
-        CellOperation updatedCellOperationTime = new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, 14, true);
-        CellOperation updatedCellOperation = new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, true);
+        final CellOperation updatedCellOperationIsRunning = new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, false);
+        final CellOperation updatedCellOperationAction = new CellOperation(R.string.removing_in_the_middle, R.string.arraylist, R.string.na, true);
+        final CellOperation updatedCellOperationType = new CellOperation(R.string.removing_in_the_middle, R.string.copyonwritearraylist, R.string.na, true);
+        final CellOperation updatedCellOperationTime = new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, 14, true);
+        final CellOperation updatedCellOperation = new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, true);
 
         assertNotEquals(cellOperation, updatedCellOperationIsRunning);
         assertNotEquals(cellOperation, updatedCellOperationAction);
