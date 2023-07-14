@@ -1,4 +1,4 @@
-package com.example.task2.ViewModelTests;
+package com.example.task2.ui.benchmark;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,9 +17,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
 
 import com.example.task2.R;
+import com.example.task2.RxSchedulerRule;
 import com.example.task2.models.benchmarks.Benchmark;
 import com.example.task2.models.benchmarks.CellOperation;
-import com.example.task2.ui.benchmark.BenchmarksViewModel;
 
 import org.junit.After;
 import org.junit.Assert;

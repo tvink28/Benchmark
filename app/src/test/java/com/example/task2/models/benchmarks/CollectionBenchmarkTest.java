@@ -1,11 +1,9 @@
-package com.example.task2.BenchmarkTests;
+package com.example.task2.models.benchmarks;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.example.task2.R;
-import com.example.task2.models.benchmarks.CellOperation;
-import com.example.task2.models.benchmarks.CollectionBenchmark;
 
 import org.junit.Before;
 import org.junit.Test;

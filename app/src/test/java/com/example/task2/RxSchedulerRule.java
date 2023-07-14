@@ -1,4 +1,4 @@
-package com.example.task2.ViewModelTests;
+package com.example.task2;
 
 import androidx.annotation.NonNull;
 

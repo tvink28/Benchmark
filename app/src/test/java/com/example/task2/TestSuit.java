@@ -1,9 +1,9 @@
 package com.example.task2;
 
-
-import com.example.task2.BenchmarkTests.CollectionBenchmarkTest;
-import com.example.task2.BenchmarkTests.MapBenchmarkTest;
-import com.example.task2.ViewModelTests.BenchmarksViewModelTest;
+import com.example.task2.models.benchmarks.CellOperationTest;
+import com.example.task2.models.benchmarks.CollectionBenchmarkTest;
+import com.example.task2.models.benchmarks.MapBenchmarkTest;
+import com.example.task2.ui.benchmark.BenchmarksViewModelTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -15,7 +15,5 @@ import org.junit.runners.Suite;
         BenchmarksViewModelTest.class,
         CellOperationTest.class
 })
-
 public class TestSuit {
-    
 }
