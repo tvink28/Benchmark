@@ -96,6 +96,16 @@ public class BenchmarksViewModelTest {
     }
 
     @Test
+    public void testGetNumberOfColumns() {
+        int expectedColumns = 3;
+        when(mockBenchmark.getNumberOfColumns()).thenReturn(expectedColumns);
+        int columns = viewModel.getNumberOfColumns();
+
+        assertEquals(expectedColumns, columns);
+        verify(mockBenchmark).getNumberOfColumns();
+    }
+
+    @Test
     public void testValidateNumber_validInput() {
         final String input = "10";
         viewModel.validateNumber(input);

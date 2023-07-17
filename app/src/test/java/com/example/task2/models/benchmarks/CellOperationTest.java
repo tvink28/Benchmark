@@ -48,5 +48,11 @@ public class CellOperationTest {
         assertNotEquals(cellOperation, updatedCellOperationType);
         assertNotEquals(cellOperation, updatedCellOperationTime);
         assertEquals(cellOperation, updatedCellOperation);
+
+        assertEquals(cellOperation.hashCode(), updatedCellOperationIsRunning.hashCode());
+        assertEquals(cellOperation.hashCode(), updatedCellOperationTime.hashCode());
+        assertEquals(cellOperation.hashCode(), updatedCellOperation.hashCode());
+        assertNotEquals(cellOperation.hashCode(), updatedCellOperationAction.hashCode());
+        assertNotEquals(cellOperation.hashCode(), updatedCellOperationType.hashCode());
     }
 }
