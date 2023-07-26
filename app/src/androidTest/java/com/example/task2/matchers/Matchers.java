@@ -11,17 +11,14 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
 public class Matchers {
+
     public static Matcher<View> withTabSelected(final int position) {
         return new BoundedMatcher<View, TabLayout>(TabLayout.class) {
 
             @Override
             protected boolean matchesSafely(TabLayout tabLayout) {
                 TabLayout.Tab tab = tabLayout.getTabAt(position);
-                if (tab == null) {
-                    return false;
-                }
-
-                return tab.isSelected();
+                return tab != null && tab.isSelected();
             }
 
             @Override

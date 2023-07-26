@@ -20,10 +20,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.task2.BenchmarksApp;
-import com.example.task2.DaggerTestBenchmarkComponent;
 import com.example.task2.R;
-import com.example.task2.TestBenchmarkComponent;
-import com.example.task2.TestBenchmarkModule;
+import com.example.task2.models.DaggerTestBenchmarkComponent;
+import com.example.task2.models.TestBenchmarkComponent;
+import com.example.task2.models.TestBenchmarkModule;
 import com.example.task2.ui.MainActivity;
 
 import org.junit.Before;
@@ -39,7 +39,9 @@ public class TestCollectionBenchmark {
 
     @BeforeClass
     public static void set() {
-        final TestBenchmarkComponent appComponent = DaggerTestBenchmarkComponent.builder().testBenchmarkModule(new TestBenchmarkModule()).build();
+        final TestBenchmarkComponent appComponent = DaggerTestBenchmarkComponent.builder()
+                .testBenchmarkModule(new TestBenchmarkModule())
+                .build();
         BenchmarksApp.setAppComponent(appComponent);
     }
 
@@ -56,20 +58,17 @@ public class TestCollectionBenchmark {
         pressBack();
         onView(withId(R.id.btnStopStart)).perform(click());
 
+        SystemClock.sleep(500);
         for (int i = 0; i < ITEM_COUNT; i++) {
             onView(withId(R.id.rv)).perform(scrollToPosition(i));
             onView(withRecyclerView(R.id.rv)
-                    .atPositionOnView(i, R.id.progressBar))
-                    .check(matches(withAlpha(1f)));
+                    .atPositionOnView(i, R.id.progressBar, withAlpha(1F)));
         }
-
         SystemClock.sleep(1000 * ITEM_COUNT);
-
         for (int i = 0; i < ITEM_COUNT; i++) {
             onView(withId(R.id.rv)).perform(RecyclerViewActions.scrollToPosition(i));
             onView(withRecyclerView(R.id.rv)
-                    .atPositionOnView(i, R.id.item_text_action))
-                    .check(matches(withText(containsString(TIME))));
+                    .atPositionOnView(i, R.id.item_text_action, withText(containsString(TIME))));
         }
     }
 

@@ -32,7 +32,6 @@ public class TabAndViewPagerTest {
 
     @Test
     public void test_swipeViewPager() {
-
         onView(ViewMatchers.withId(R.id.view_pager)).check(matches(isDisplayed()));
         onView(withId(R.id.tab_layout)).check(matches(withTabSelected(0)));
 

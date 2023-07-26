@@ -42,7 +42,6 @@ public class ViewTest {
 
     @Test
     public void test_textView() {
-
         onView(ViewMatchers.withId(R.id.textView)).check(matches(withText(R.string.please_enter_collection_size_and_number_of_elements_to_compare)));
     }
 

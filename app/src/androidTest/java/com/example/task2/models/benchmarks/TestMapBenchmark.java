@@ -20,10 +20,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.task2.BenchmarksApp;
-import com.example.task2.DaggerTestBenchmarkComponent;
 import com.example.task2.R;
-import com.example.task2.TestBenchmarkComponent;
-import com.example.task2.TestBenchmarkModule;
+import com.example.task2.models.DaggerTestBenchmarkComponent;
+import com.example.task2.models.TestBenchmarkComponent;
+import com.example.task2.models.TestBenchmarkModule;
 import com.example.task2.ui.MainActivity;
 
 import org.junit.Before;
@@ -39,7 +39,9 @@ public class TestMapBenchmark {
 
     @BeforeClass
     public static void set() {
-        TestBenchmarkComponent appComponent = DaggerTestBenchmarkComponent.builder().testBenchmarkModule(new TestBenchmarkModule()).build();
+        TestBenchmarkComponent appComponent = DaggerTestBenchmarkComponent.builder().
+                testBenchmarkModule(new TestBenchmarkModule())
+                .build();
         BenchmarksApp.setAppComponent(appComponent);
     }
 

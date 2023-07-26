@@ -1,4 +1,4 @@
-package com.example.task2;
+package com.example.task2.models;
 
 import com.example.task2.models.benchmarks.Benchmark;
 import com.example.task2.models.benchmarks.FakeCollectionBenchmark;
