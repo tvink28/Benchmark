@@ -7,7 +7,7 @@ import com.example.task2.models.DaggerBenchmarkComponent;
 
 public class BenchmarksApp extends Application {
     private static BenchmarksApp instance;
-    private BenchmarkComponent component;
+    private static BenchmarkComponent component;
 
     @Override
     public void onCreate() {
@@ -22,5 +22,9 @@ public class BenchmarksApp extends Application {
 
     public BenchmarkComponent getComponent() {
         return component;
+    }
+
+    public static void setAppComponent(BenchmarkComponent testComponent) {
+        component = testComponent;
     }
 }
