@@ -35,6 +35,9 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class ViewTest {
 
+    private static final int SLEEP_TIME = 2000;
+    private static final String TIME_NA = InstrumentationRegistry.getInstrumentation().getTargetContext().getString(R.string.na);
+
     @Before
     public void setUp() {
         ActivityScenario.launch(MainActivity.class);
@@ -73,22 +76,16 @@ public class ViewTest {
         onView(withId(R.id.rv)).check(matches(isDisplayed()));
 
         onView(new RecyclerViewMatcher(R.id.rv)
-                .atPositionOnView(0, R.id.item_text_action))
-                .check(matches(isDisplayed()))
-                .check(matches(withText(textViewAction)));
+                .atPositionOnView(0, R.id.item_text_action, withText(textViewAction)));
         onView(new RecyclerViewMatcher(R.id.rv)
-                .atPositionOnView(0, R.id.progressBar))
-                .check(matches(withAlpha(0f)));
+                .atPositionOnView(0, R.id.progressBar, withAlpha(0f)));
 
         onView(withId(R.id.rv)).perform(scrollToPosition(18));
 
         onView(new RecyclerViewMatcher(R.id.rv)
-                .atPositionOnView(19, R.id.item_text_action))
-                .check(matches(isDisplayed()))
-                .check(matches(withText(textViewAction2)));
+                .atPositionOnView(19, R.id.item_text_action, withText(textViewAction2)));
         onView(new RecyclerViewMatcher(R.id.rv)
-                .atPositionOnView(19, R.id.progressBar))
-                .check(matches(withAlpha(0f)));
+                .atPositionOnView(19, R.id.progressBar, withAlpha(0f)));
     }
 
     @Test
@@ -101,30 +98,23 @@ public class ViewTest {
         onView(withId(R.id.rv)).check(matches(isDisplayed()));
 
         onView(new RecyclerViewMatcher(R.id.rv)
-                .atPositionOnView(0, R.id.item_text_action))
-                .check(matches(isDisplayed()))
-                .check(matches(withText(textViewAction)));
+                .atPositionOnView(0, R.id.item_text_action, withText(textViewAction)));
         onView(new RecyclerViewMatcher(R.id.rv)
-                .atPositionOnView(0, R.id.progressBar))
-                .check(matches(withAlpha(0f)));
+                .atPositionOnView(0, R.id.progressBar, withAlpha(0f)));
 
 
         onView(withId(R.id.rv)).perform(scrollToPosition(18));
 
         onView(new RecyclerViewMatcher(R.id.rv)
-                .atPositionOnView(3, R.id.item_text_action))
-                .check(matches(isDisplayed()))
-                .check(matches(withText(textViewAction2)));
+                .atPositionOnView(3, R.id.item_text_action, withText(textViewAction2)));
         onView(new RecyclerViewMatcher(R.id.rv)
-                .atPositionOnView(3, R.id.progressBar))
-                .check(matches(withAlpha(0f)));
+                .atPositionOnView(3, R.id.progressBar, withAlpha(0f)));
     }
 
     @Test
     public void test_complete_recyclerView_collection() {
 
         final int itemCount = 21;
-        final String time = InstrumentationRegistry.getInstrumentation().getTargetContext().getString(R.string.na);
 
         onView(withId(R.id.editText)).perform(typeText("5999999"));
         onView(withId(R.id.editText)).check(matches(withText("5999999")));
@@ -132,7 +122,7 @@ public class ViewTest {
         onView(withId(R.id.btnStopStart)).perform(click());
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(SLEEP_TIME);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -140,8 +130,7 @@ public class ViewTest {
         for (int i = 0; i < itemCount; i++) {
             onView(withId(R.id.rv)).perform(RecyclerViewActions.scrollToPosition(i));
             onView(withRecyclerView(R.id.rv)
-                    .atPositionOnView(i, R.id.item_text_action))
-                    .check(matches(withText(not(containsString(time)))));
+                    .atPositionOnView(i, R.id.item_text_action, withText(not(containsString(TIME_NA)))));
         }
     }
 
@@ -149,7 +138,6 @@ public class ViewTest {
     public void test_complete_recyclerView_map() {
 
         final int itemCount = 6;
-        final String time = InstrumentationRegistry.getInstrumentation().getTargetContext().getString(R.string.na);
 
         onView(withId(R.id.editText)).perform(typeText("999999"));
         onView(withId(R.id.editText)).check(matches(withText("999999")));
@@ -157,7 +145,7 @@ public class ViewTest {
         onView(withId(R.id.btnStopStart)).perform(click());
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(SLEEP_TIME);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -165,8 +153,7 @@ public class ViewTest {
         for (int i = 0; i < itemCount; i++) {
             onView(withId(R.id.rv)).perform(RecyclerViewActions.scrollToPosition(i));
             onView(withRecyclerView(R.id.rv)
-                    .atPositionOnView(i, R.id.item_text_action))
-                    .check(matches(withText(not(containsString(time)))));
+                    .atPositionOnView(i, R.id.item_text_action, withText(not(containsString(TIME_NA)))));
         }
     }
 

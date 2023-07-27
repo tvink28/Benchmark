@@ -10,6 +10,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.example.task2.matchers.Matchers.withAlpha;
 import static com.example.task2.matchers.RecyclerViewMatcher.withRecyclerView;
+import static com.example.task2.models.benchmarks.Constants.INPUT_TEXT;
+import static com.example.task2.models.benchmarks.Constants.ITEM_COUNT_FOR_MAP;
+import static com.example.task2.models.benchmarks.Constants.RESULT_MAP;
+import static com.example.task2.models.benchmarks.Constants.TIME_NA;
+import static com.example.task2.models.benchmarks.Constants.SLEEP_TIME_FOR_TESTS;
 import static org.hamcrest.Matchers.containsString;
 
 import android.os.SystemClock;
@@ -17,7 +22,6 @@ import android.os.SystemClock;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.task2.BenchmarksApp;
 import com.example.task2.R;
@@ -34,9 +38,6 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class TestMapBenchmark {
 
-    private final int ITEM_COUNT = 6;
-    private final String TIME = "99";
-
     @BeforeClass
     public static void set() {
         TestBenchmarkComponent appComponent = DaggerTestBenchmarkComponent.builder().
@@ -49,60 +50,53 @@ public class TestMapBenchmark {
     public void setUp() {
         ActivityScenario.launch(MainActivity.class);
         onView(withText(R.string.tab_maps)).perform(click());
-
     }
 
     @Test
     public void test_startCalculations() {
 
-        onView(withId(R.id.editText)).perform(typeText("5"));
-        onView(withId(R.id.editText)).check(matches(withText("5")));
+        onView(withId(R.id.editText)).perform(typeText(INPUT_TEXT));
+        onView(withId(R.id.editText)).check(matches(withText(INPUT_TEXT)));
         pressBack();
         onView(withId(R.id.btnStopStart)).perform(click());
 
-        for (int i = 0; i < ITEM_COUNT; i++) {
+        for (int i = 0; i < ITEM_COUNT_FOR_MAP; i++) {
             onView(withId(R.id.rv)).perform(scrollToPosition(i));
             onView(withRecyclerView(R.id.rv)
-                    .atPositionOnView(i, R.id.progressBar))
-                    .check(matches(withAlpha(1f)));
+                    .atPositionOnView(i, R.id.progressBar, withAlpha(1f)));
         }
 
-        SystemClock.sleep(1100 * ITEM_COUNT);
+        SystemClock.sleep(SLEEP_TIME_FOR_TESTS * ITEM_COUNT_FOR_MAP);
 
-        for (int i = 0; i < ITEM_COUNT; i++) {
-            onView(withId(R.id.rv)).perform(RecyclerViewActions.scrollToPosition(i));
+        for (int i = 0; i < ITEM_COUNT_FOR_MAP; i++) {
+            onView(withId(R.id.rv)).perform(scrollToPosition(i));
             onView(withRecyclerView(R.id.rv)
-                    .atPositionOnView(i, R.id.item_text_action))
-                    .check(matches(withText(containsString(TIME))));
+                    .atPositionOnView(i, R.id.item_text_action, withText(containsString(String.valueOf(RESULT_MAP)))));
         }
     }
 
     @Test
     public void test_stopCalculations() {
 
-        final String naTime = InstrumentationRegistry.getInstrumentation().getTargetContext().getString(R.string.na);
-
-        onView(withId(R.id.editText)).perform(typeText("5"));
-        onView(withId(R.id.editText)).check(matches(withText("5")));
+        onView(withId(R.id.editText)).perform(typeText(INPUT_TEXT));
+        onView(withId(R.id.editText)).check(matches(withText(INPUT_TEXT)));
         pressBack();
         onView(withId(R.id.btnStopStart)).perform(click());
 
-        SystemClock.sleep(1100);
+        SystemClock.sleep(SLEEP_TIME_FOR_TESTS);
 
         onView(withId(R.id.btnStopStart)).perform(click());
 
         for (int i = 0; i < 1; i++) {
             onView(withId(R.id.rv)).perform(RecyclerViewActions.scrollToPosition(i));
             onView(withRecyclerView(R.id.rv)
-                    .atPositionOnView(i, R.id.item_text_action))
-                    .check(matches(withText(containsString(TIME))));
+                    .atPositionOnView(i, R.id.item_text_action, withText(containsString(String.valueOf(RESULT_MAP)))));
         }
 
-        for (int i = 2; i < ITEM_COUNT; i++) {
+        for (int i = 2; i < ITEM_COUNT_FOR_MAP; i++) {
             onView(withId(R.id.rv)).perform(RecyclerViewActions.scrollToPosition(i));
             onView(withRecyclerView(R.id.rv)
-                    .atPositionOnView(i, R.id.item_text_action))
-                    .check(matches(withText(containsString(naTime))));
+                    .atPositionOnView(i, R.id.item_text_action, withText(containsString(TIME_NA))));
         }
     }
 }
