@@ -21,9 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.task2.R;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
-    private static final String ARG_BENCHMARK_TYPE = "benchmarkType";
+import java.util.Objects;
 
+public class BenchmarksFragment extends Fragment implements View.OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
+    public static final String ARG_BENCHMARK_TYPE = "benchmarkType";
     private final BenchmarksAdapter adapter = new BenchmarksAdapter();
     private TextInputEditText textInputEditText;
     private ToggleButton buttonStopStart;
@@ -42,6 +43,7 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        assert getArguments() != null;
         final BenchmarksViewModelFactory factory = new BenchmarksViewModelFactory(getArguments().getInt(ARG_BENCHMARK_TYPE));
         viewModel = new ViewModelProvider(this, factory).get(BenchmarksViewModel.class);
         viewModel.onCreate();
@@ -122,7 +124,7 @@ public class BenchmarksFragment extends Fragment implements View.OnFocusChangeLi
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        viewModel.onButtonClicked(textInputEditText.getText().toString().trim());
+        viewModel.onButtonClicked(Objects.requireNonNull(textInputEditText.getText()).toString().trim());
     }
 
     private void showError(int errorMessage, int inputBg) {

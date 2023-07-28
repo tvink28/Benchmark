@@ -2,7 +2,6 @@ package com.example.task2.matchers;
 
 import android.view.View;
 
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.matcher.BoundedMatcher;
 
 import com.google.android.material.tabs.TabLayout;
@@ -38,27 +37,6 @@ public class Matchers {
             @Override
             public void describeTo(Description description) {
                 description.appendText("has alpha: " + alpha);
-            }
-        };
-    }
-
-    public static Matcher<View> withViewAtPosition(int position, int targetViewId, Matcher<View> viewMatcher) {
-        return new BoundedMatcher<View, RecyclerView>(RecyclerView.class) {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("has view id " + targetViewId + " at position " + position + ": ");
-                viewMatcher.describeTo(description);
-            }
-
-            @Override
-            protected boolean matchesSafely(RecyclerView recyclerView) {
-                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
-                if (viewHolder == null) {
-                    // has no item on such position
-                    return false;
-                }
-                View targetView = viewHolder.itemView.findViewById(targetViewId);
-                return viewMatcher.matches(targetView);
             }
         };
     }

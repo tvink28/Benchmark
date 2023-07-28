@@ -10,7 +10,14 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.example.task2.matchers.Matchers.withTabSelected;
+import static com.example.task2.models.benchmarks.BenchmarkTypes.LISTS;
+import static com.example.task2.models.benchmarks.BenchmarkTypes.MAPS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -23,11 +30,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-public class TabAndViewPagerTest {
+public class TestActivity {
+
+    private ActivityScenario<MainActivity> scenario;
 
     @Before
     public void setUp() {
-        ActivityScenario.launch(MainActivity.class);
+        scenario = ActivityScenario.launch(MainActivity.class);
     }
 
     @Test
@@ -46,17 +55,37 @@ public class TabAndViewPagerTest {
 
     @Test
     public void test_clickTabs() {
-
         onView(withId(R.id.tab_layout)).check(matches(withTabSelected(0)));
-
         onView(withText(R.string.tab_maps))
                 .check(matches(isCompletelyDisplayed()))
                 .perform(click());
         onView(withId(R.id.tab_layout)).check(matches(withTabSelected(1)));
 
+        verifyActiveFragment(MAPS);
+
         onView(withText(R.string.tab_collections))
                 .check(matches(isCompletelyDisplayed()))
                 .perform(click());
         onView(withId(R.id.tab_layout)).check(matches(withTabSelected(0)));
+
+        verifyActiveFragment(LISTS);
+    }
+
+    private void verifyActiveFragment(int benchmarkType) {
+        scenario.onActivity(activity -> {
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            Fragment activeFragment = null;
+
+            for (Fragment fragment : fragmentManager.getFragments()) {
+                if (fragment.isVisible()) {
+                    activeFragment = fragment;
+                }
+            }
+
+            assertNotNull(activeFragment);
+            assertTrue(activeFragment instanceof BenchmarksFragment);
+            assertNotNull(activeFragment.getArguments());
+            assertEquals(benchmarkType, activeFragment.getArguments().getInt(BenchmarksFragment.ARG_BENCHMARK_TYPE));
+        });
     }
 }
