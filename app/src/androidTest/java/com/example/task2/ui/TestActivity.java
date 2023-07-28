@@ -1,4 +1,4 @@
-package com.example.task2.ui.benchmark;
+package com.example.task2.ui;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -7,8 +7,6 @@ import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.example.task2.matchers.Matchers.withTabSelected;
 import static com.example.task2.models.benchmarks.BenchmarkTypes.LISTS;
 import static com.example.task2.models.benchmarks.BenchmarkTypes.MAPS;
@@ -23,7 +21,6 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.task2.R;
-import com.example.task2.ui.MainActivity;
 
 import org.junit.Before;
 import org.junit.Test;

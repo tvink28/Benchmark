@@ -1,4 +1,4 @@
-package com.example.task2.models.benchmarks;
+package com.example.task2;
 
 public class Constants {
 

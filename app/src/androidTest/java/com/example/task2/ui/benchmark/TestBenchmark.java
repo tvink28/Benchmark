@@ -1,4 +1,4 @@
-package com.example.task2.models.benchmarks;
+package com.example.task2.ui.benchmark;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.espresso.Espresso.onView;
@@ -12,12 +12,11 @@ import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static com.example.task2.Constants.INPUT_TEXT;
+import static com.example.task2.Constants.SLEEP_TIME_FOR_TESTS;
 import static com.example.task2.matchers.Matchers.withAlpha;
 import static com.example.task2.matchers.RecyclerViewMatcher.withRecyclerView;
-import static com.example.task2.models.benchmarks.Constants.INPUT_TEXT;
-import static com.example.task2.models.benchmarks.Constants.SLEEP_TIME_FOR_TESTS;
 import static org.hamcrest.Matchers.not;
 
 import android.os.SystemClock;
@@ -27,10 +26,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.example.task2.BenchmarksApp;
+import com.example.task2.Constants;
 import com.example.task2.R;
 import com.example.task2.models.DaggerTestBenchmarkComponent;
 import com.example.task2.models.TestBenchmarkComponent;
 import com.example.task2.models.TestBenchmarkModule;
+import com.example.task2.models.benchmarks.CellOperation;
 import com.example.task2.ui.MainActivity;
 
 import org.junit.Before;

@@ -51,11 +51,7 @@ public class RecyclerViewMatcher {
                         return false;
                     }
                 }
-//                if (targetViewId == -1) {
-//                    return view == childView;
-//                } else {
                 return viewMatcher.matches(childView.findViewById(targetViewId));
-//                }
             }
         };
     }

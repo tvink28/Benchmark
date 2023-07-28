@@ -1,12 +1,13 @@
-package com.example.task2.models.benchmarks;
+package com.example.task2.ui.benchmark;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.task2.R;
+import com.example.task2.models.benchmarks.CellOperation;
+import com.example.task2.models.benchmarks.MapBenchmark;
 
 import org.junit.runner.RunWith;
 
