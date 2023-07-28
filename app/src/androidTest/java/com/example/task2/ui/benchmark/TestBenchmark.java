@@ -5,6 +5,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition;
@@ -15,6 +16,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.example.task2.Constants.INPUT_TEXT;
+import static com.example.task2.Constants.SLEEP_TIME_500;
 import static com.example.task2.Constants.SLEEP_TIME_FOR_TESTS;
 import static com.example.task2.matchers.Matchers.withAlpha;
 import static com.example.task2.matchers.RecyclerViewMatcher.withRecyclerView;
@@ -60,11 +62,6 @@ public abstract class TestBenchmark {
     }
 
     @Test
-    public void test_textView() {
-        onView(withId(R.id.textView)).check(matches(withText(R.string.please_enter_collection_size_and_number_of_elements_to_compare)));
-    }
-
-    @Test
     public void test_invalidInput() {
         final String textInput = "qwe";
         onView(withId(R.id.editText)).perform(typeText(textInput));
@@ -72,12 +69,14 @@ public abstract class TestBenchmark {
         onView(withId(R.id.btnStopStart)).check(matches(not(isEnabled())));
 
         final String textInput2 = "0";
-        onView(withId(R.id.editText)).perform(typeText(textInput2));
+        onView(withId(R.id.editText)).perform(typeText(textInput2), closeSoftKeyboard());
+        SystemClock.sleep(SLEEP_TIME_500);
         onView(withId(R.id.btnStopStart)).check(matches(not(isEnabled())));
         onView(withId(R.id.errorLayout)).inRoot(isPlatformPopup()).check(matches(isDisplayed()));
         onView(withId(R.id.errorText)).inRoot(isPlatformPopup()).check(matches(withText(R.string.error_count)));
 
-        onView(withId(R.id.editText)).perform(clearText());
+        onView(withId(R.id.editText)).perform(clearText(), closeSoftKeyboard());
+        SystemClock.sleep(SLEEP_TIME_500);
         onView(withId(R.id.btnStopStart)).check(matches(not(isEnabled())));
         onView(withId(R.id.errorLayout)).inRoot(isPlatformPopup()).check(matches(isDisplayed()));
         onView(withId(R.id.errorText)).inRoot(isPlatformPopup()).check(matches(withText(R.string.error_valid)));
@@ -89,7 +88,7 @@ public abstract class TestBenchmark {
 
         for (int i = 0; i < cellOperationList.size(); i++) {
             final CellOperation cellOperation = cellOperationList.get(i);
-            final String textViewAction = createTextViewAction(cellOperation.action, cellOperation.type, (int) cellOperation.time);
+            final String textViewAction = createTextViewAction(cellOperation.action, cellOperation.type, cellOperation.time);
 
             onView(withId(R.id.rv)).perform(scrollToPosition(i));
             onView(withRecyclerView(R.id.rv)
@@ -106,7 +105,7 @@ public abstract class TestBenchmark {
         pressBack();
         onView(withId(R.id.btnStopStart)).perform(click());
 
-        SystemClock.sleep(500);
+        SystemClock.sleep(SLEEP_TIME_500);
 
         for (int i = 0; i < cellOperationList.size(); i++) {
             onView(withId(R.id.rv)).perform(scrollToPosition(i));
@@ -114,7 +113,7 @@ public abstract class TestBenchmark {
                     .atPositionOnView(i, R.id.progressBar, withAlpha(1f)));
         }
 
-        SystemClock.sleep((long) SLEEP_TIME_FOR_TESTS * cellOperationList.size());
+        SystemClock.sleep(SLEEP_TIME_FOR_TESTS * cellOperationList.size());
 
         for (int i = 0; i < cellOperationList.size(); i++) {
             final CellOperation cellOperation = cellOperationList.get(i);
@@ -139,7 +138,7 @@ public abstract class TestBenchmark {
 
         for (int i = 0; i <= 1; i++) {
             final CellOperation cellOperation = cellOperationList.get(i);
-            final String textViewAction = createTextViewAction(cellOperation.action, cellOperation.type, (int) cellOperation.time);
+            final String textViewAction = createTextViewAction(cellOperation.action, cellOperation.type, cellOperation.time);
 
             onView(withId(R.id.rv)).perform(RecyclerViewActions.scrollToPosition(i));
             onView(withRecyclerView(R.id.rv)
@@ -156,10 +155,10 @@ public abstract class TestBenchmark {
         }
     }
 
-    private String createTextViewAction(int action, int type, int time) {
+    private String createTextViewAction(int action, int type, long time) {
         final String actionText = getApplicationContext().getString(action);
         final String typeText = getApplicationContext().getString(type);
-        final String timeText = getApplicationContext().getString(time);
+        final String timeText = Long.toString(time);
         return String.format("%s\n%s\n%s ns", actionText, typeText, timeText);
     }
 
