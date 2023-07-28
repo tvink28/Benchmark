@@ -1,6 +1,6 @@
 package com.example.task2;
 
-import com.example.task2.ui.benchmark.TestActivity;
+import com.example.task2.ui.TestActivity;
 import com.example.task2.ui.benchmark.TestCollectionBenchmark;
 import com.example.task2.ui.benchmark.TestMapBenchmark;
 
