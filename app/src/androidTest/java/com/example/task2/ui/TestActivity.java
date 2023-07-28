@@ -17,10 +17,10 @@ import static org.junit.Assert.assertTrue;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.task2.R;
+import com.example.task2.ui.benchmark.BenchmarksFragment;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class TestActivity {
 
     @Test
     public void test_swipeViewPager() {
-        onView(ViewMatchers.withId(R.id.view_pager)).check(matches(isDisplayed()));
+        onView(withId(R.id.view_pager)).check(matches(isDisplayed()));
         onView(withId(R.id.tab_layout)).check(matches(withTabSelected(0)));
 
         onView(withId(R.id.view_pager)).perform(swipeLeft());

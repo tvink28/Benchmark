@@ -23,7 +23,6 @@ import android.os.SystemClock;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.contrib.RecyclerViewActions;
-import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.example.task2.BenchmarksApp;
 import com.example.task2.Constants;
@@ -61,7 +60,7 @@ public abstract class TestBenchmark {
 
     @Test
     public void test_textView() {
-        onView(ViewMatchers.withId(R.id.textView)).check(matches(withText(R.string.please_enter_collection_size_and_number_of_elements_to_compare)));
+        onView(withId(R.id.textView)).check(matches(withText(R.string.please_enter_collection_size_and_number_of_elements_to_compare)));
     }
 
     @Test
