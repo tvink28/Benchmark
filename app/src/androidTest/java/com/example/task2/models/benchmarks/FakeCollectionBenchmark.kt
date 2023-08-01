@@ -1,17 +1,14 @@
-package com.example.task2.models.benchmarks;
+package com.example.task2.models.benchmarks
 
-import static com.example.task2.Constants.RESULT_COLLECTION;
-import static com.example.task2.Constants.SLEEP_TIME_FOR_MODELS;
+import com.example.task2.Constants
 
-public class FakeCollectionBenchmark extends CollectionBenchmark implements Benchmark {
-
-    @Override
-    public long measureTime(CellOperation item, int number) {
+class FakeCollectionBenchmark : CollectionBenchmark(), Benchmark {
+    override fun measureTime(item: CellOperation, number: Int): Long {
         try {
-            Thread.sleep(SLEEP_TIME_FOR_MODELS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.sleep(Constants.SLEEP_TIME_FOR_MODELS)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
         }
-        return RESULT_COLLECTION;
+        return Constants.RESULT_COLLECTION
     }
 }

@@ -1,58 +1,56 @@
-package com.example.task2.models.benchmarks;
+package com.example.task2.models.benchmarks
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
+import com.example.task2.R
+import junit.framework.TestCase.assertEquals
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
 
-import com.example.task2.R;
+class CellOperationTest {
 
-import org.junit.Before;
-import org.junit.Test;
-
-public class CellOperationTest {
-    private CellOperation cellOperation;
+    private lateinit var cellOperation: CellOperation
 
     @Before
-    public void setup() {
-        cellOperation = new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, true);
+    fun setup() {
+        cellOperation = CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na.toLong(), true)
     }
 
     @Test
-    public void testWithTime() {
-        final CellOperation updatedCellOperation = cellOperation.withTime(5);
-        assertEquals(R.string.adding_in_the_beginning, updatedCellOperation.action);
-        assertEquals(R.string.arraylist, updatedCellOperation.type);
-        assertEquals(5, updatedCellOperation.time);
-        assertFalse(updatedCellOperation.isRunning);
+    fun testWithTime() {
+        val updatedCellOperation = cellOperation.withTime(5)
+        assertEquals(R.string.adding_in_the_beginning, updatedCellOperation.action)
+        assertEquals(R.string.arraylist, updatedCellOperation.type)
+        assertEquals(5, updatedCellOperation.time)
+        assertEquals(false, updatedCellOperation.isRunning)
     }
 
     @Test
-    public void testWithIsRunning() {
-        final CellOperation updatedCellOperation = cellOperation.withIsRunning(false);
-        assertEquals(R.string.adding_in_the_beginning, updatedCellOperation.action);
-        assertEquals(R.string.arraylist, updatedCellOperation.type);
-        assertEquals(R.string.na, updatedCellOperation.time);
-        assertFalse(updatedCellOperation.isRunning);
+    fun testWithIsRunning() {
+        val updatedCellOperation = cellOperation.withIsRunning(false)
+        assertEquals(R.string.adding_in_the_beginning, updatedCellOperation.action)
+        assertEquals(R.string.arraylist, updatedCellOperation.type)
+        assertEquals(R.string.na.toLong(), updatedCellOperation.time)
+        assertEquals(false, updatedCellOperation.isRunning)
     }
 
     @Test
-    public void testEquals() {
-        final CellOperation updatedCellOperationIsRunning = new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, false);
-        final CellOperation updatedCellOperationAction = new CellOperation(R.string.removing_in_the_middle, R.string.arraylist, R.string.na, true);
-        final CellOperation updatedCellOperationType = new CellOperation(R.string.removing_in_the_middle, R.string.copyonwritearraylist, R.string.na, true);
-        final CellOperation updatedCellOperationTime = new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, 14, true);
-        final CellOperation updatedCellOperation = new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, true);
+    fun testEquals() {
+        val updatedCellOperationIsRunning = CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na.toLong(), false)
+        val updatedCellOperationAction = CellOperation(R.string.removing_in_the_middle, R.string.arraylist, R.string.na.toLong(), true)
+        val updatedCellOperationType = CellOperation(R.string.removing_in_the_middle, R.string.copyonwritearraylist, R.string.na.toLong(), true)
+        val updatedCellOperationTime = CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, 14, true)
+        val updatedCellOperation = CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na.toLong(), true)
 
-        assertNotEquals(cellOperation, updatedCellOperationIsRunning);
-        assertNotEquals(cellOperation, updatedCellOperationAction);
-        assertNotEquals(cellOperation, updatedCellOperationType);
-        assertNotEquals(cellOperation, updatedCellOperationTime);
-        assertEquals(cellOperation, updatedCellOperation);
+        Assert.assertNotEquals(cellOperation, updatedCellOperationIsRunning)
+        Assert.assertNotEquals(cellOperation, updatedCellOperationAction)
+        Assert.assertNotEquals(cellOperation, updatedCellOperationType)
+        Assert.assertNotEquals(cellOperation, updatedCellOperationTime)
+        Assert.assertEquals(cellOperation, updatedCellOperation)
 
-        assertEquals(cellOperation.hashCode(), updatedCellOperationIsRunning.hashCode());
-        assertEquals(cellOperation.hashCode(), updatedCellOperationTime.hashCode());
-        assertEquals(cellOperation.hashCode(), updatedCellOperation.hashCode());
-        assertNotEquals(cellOperation.hashCode(), updatedCellOperationAction.hashCode());
-        assertNotEquals(cellOperation.hashCode(), updatedCellOperationType.hashCode());
+        Assert.assertEquals(cellOperation.hashCode().toLong(), updatedCellOperationIsRunning.hashCode().toLong())
+        Assert.assertEquals(cellOperation.hashCode().toLong(), updatedCellOperationTime.hashCode().toLong())
+        Assert.assertEquals(cellOperation.hashCode().toLong(), updatedCellOperation.hashCode().toLong())
+        Assert.assertNotEquals(cellOperation.hashCode().toLong(), updatedCellOperationAction.hashCode().toLong())
+        Assert.assertNotEquals(cellOperation.hashCode().toLong(), updatedCellOperationType.hashCode().toLong())
     }
 }

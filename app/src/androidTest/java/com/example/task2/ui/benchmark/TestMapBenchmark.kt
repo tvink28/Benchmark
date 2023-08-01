@@ -1,30 +1,20 @@
-package com.example.task2.ui.benchmark;
+package com.example.task2.ui.benchmark
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.task2.R
+import com.example.task2.models.benchmarks.CellOperation
+import com.example.task2.models.benchmarks.MapBenchmark
+import org.junit.runner.RunWith
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+@RunWith(AndroidJUnit4::class)
+class TestMapBenchmark : TestBenchmark() {
+    override fun createItemsList(): List<CellOperation> = MapBenchmark().createItemsList(false)
 
-import com.example.task2.R;
-import com.example.task2.models.benchmarks.CellOperation;
-import com.example.task2.models.benchmarks.MapBenchmark;
-
-import org.junit.runner.RunWith;
-
-import java.util.List;
-
-@RunWith(AndroidJUnit4.class)
-public class TestMapBenchmark extends TestBenchmark {
-
-    @Override
-    protected List<CellOperation> createItemsList() {
-        return new MapBenchmark().createItemsList(false);
-    }
-
-    @Override
-    public void setUp() {
-        super.setUp();
-        onView(withText(R.string.tab_maps)).perform(click());
+    override fun setUp() {
+        super.setUp()
+        Espresso.onView(ViewMatchers.withText(R.string.tab_maps)).perform(ViewActions.click())
     }
 }

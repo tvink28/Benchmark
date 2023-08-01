@@ -1,26 +1,20 @@
-package com.example.task2.models;
+package com.example.task2.models
 
-import com.example.task2.models.benchmarks.Benchmark;
-import com.example.task2.models.benchmarks.FakeCollectionBenchmark;
-import com.example.task2.models.benchmarks.FakeMapBenchmark;
-
-import javax.inject.Named;
-
-import dagger.Module;
-import dagger.Provides;
+import com.example.task2.models.benchmarks.Benchmark
+import com.example.task2.models.benchmarks.FakeCollectionBenchmark
+import com.example.task2.models.benchmarks.FakeMapBenchmark
+import dagger.Module
+import dagger.Provides
+import javax.inject.Named
 
 @Module
-public class TestBenchmarkModule {
+class TestBenchmarkModule {
 
     @Provides
     @Named("CollectionBenchmark")
-    public Benchmark provideCollectionBenchmark() {
-        return new FakeCollectionBenchmark();
-    }
+    fun provideCollectionBenchmark(): Benchmark = FakeCollectionBenchmark()
 
     @Provides
     @Named("MapBenchmark")
-    public Benchmark provideMapBenchmark() {
-        return new FakeMapBenchmark();
-    }
+    fun provideMapBenchmark(): Benchmark = FakeMapBenchmark()
 }

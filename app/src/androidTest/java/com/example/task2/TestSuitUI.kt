@@ -1,17 +1,12 @@
-package com.example.task2;
+package com.example.task2
 
-import com.example.task2.ui.TestActivity;
-import com.example.task2.ui.benchmark.TestCollectionBenchmark;
-import com.example.task2.ui.benchmark.TestMapBenchmark;
+import com.example.task2.ui.TestActivity
+import com.example.task2.ui.benchmark.TestCollectionBenchmark
+import com.example.task2.ui.benchmark.TestMapBenchmark
+import org.junit.runner.RunWith
+import org.junit.runners.Suite
+import org.junit.runners.Suite.SuiteClasses
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        TestCollectionBenchmark.class,
-        TestMapBenchmark.class,
-        TestActivity.class
-})
-public class TestSuitUI {
-}
+@RunWith(Suite::class)
+@SuiteClasses(TestCollectionBenchmark::class, TestMapBenchmark::class, TestActivity::class)
+class TestSuitUI 

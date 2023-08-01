@@ -1,86 +1,65 @@
-package com.example.task2.ui.benchmark;
+package com.example.task2.ui.benchmark
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.task2.R
+import com.example.task2.models.benchmarks.CellOperation
+import com.example.task2.ui.benchmark.BenchmarksAdapter.BenchmarkViewHolder
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
+class BenchmarksAdapter : ListAdapter<CellOperation?, BenchmarkViewHolder?>(
 
-import com.example.task2.R;
-import com.example.task2.models.benchmarks.CellOperation;
+        object : DiffUtil.ItemCallback<CellOperation?>() {
+            override fun areItemsTheSame(oldItem: CellOperation, newItem: CellOperation) =
+                    oldItem.action == newItem.action && oldItem.type == newItem.type
 
-public class BenchmarksAdapter extends ListAdapter<CellOperation, BenchmarksAdapter.BenchmarkViewHolder> {
+            override fun areContentsTheSame(oldItem: CellOperation, newItem: CellOperation) =
+                    oldItem == newItem
+        }) {
 
-    public BenchmarksAdapter() {
-        super(new DiffUtil.ItemCallback<CellOperation>() {
-            @Override
-            public boolean areItemsTheSame(@NonNull CellOperation oldItem, @NonNull CellOperation newItem) {
-                return oldItem.action == newItem.action && oldItem.type == newItem.type;
-            }
-
-            @Override
-            public boolean areContentsTheSame(@NonNull CellOperation oldItem, @NonNull CellOperation newItem) {
-                return oldItem.equals(newItem);
-            }
-        });
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BenchmarkViewHolder {
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_benchmark, parent, false)
+        return BenchmarkViewHolder(v)
     }
 
-    @NonNull
-    @Override
-    public BenchmarkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.item_benchmark, parent, false
-        );
-        return new BenchmarkViewHolder(v);
+    override fun onBindViewHolder(holder: BenchmarkViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull BenchmarkViewHolder holder, int position) {
-        holder.bind(getItem(position));
-    }
+    class BenchmarkViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    public static class BenchmarkViewHolder extends RecyclerView.ViewHolder {
+        private val backgroundView: View = itemView.findViewById(R.id.backgroundView)
+        private val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
+        private val textViewAction: TextView = itemView.findViewById(R.id.item_text_action)
 
-        private final View backgroundView;
-        private final ProgressBar progressBar;
-        private final TextView textViewAction;
+        fun bind(cellOperation: CellOperation?) {
+            val action = itemView.resources.getString(cellOperation!!.action)
+            val type = itemView.resources.getString(cellOperation.type)
+            val time = cellOperation.time
 
-        public BenchmarkViewHolder(@NonNull View itemView) {
-            super(itemView);
-            backgroundView = itemView.findViewById(R.id.backgroundView);
-            textViewAction = itemView.findViewById(R.id.item_text_action);
-            progressBar = itemView.findViewById(R.id.progressBar);
-        }
-
-        public void bind(CellOperation cellOperation) {
-            final String action = itemView.getResources().getString(cellOperation.action);
-            final String type = itemView.getResources().getString(cellOperation.type);
-            final long time = cellOperation.time;
-
-            String timeText;
-            if (time == R.string.na) {
-                timeText = itemView.getContext().getString(R.string.na);
+            val timeText = if (time == R.string.na.toLong()) {
+                itemView.context.getString(R.string.na)
             } else {
-                timeText = String.valueOf(time);
+                time.toString()
             }
 
-            textViewAction.setText(String.format("%s\n%s\n%s ns", action, type, timeText));
+            textViewAction.text = itemView.context.getString(R.string.benchmark_text, action, type, timeText)
 
-            if (cellOperation.isRunning != (progressBar.getAlpha() != 0)) {
-                setVisibility(progressBar, cellOperation.isRunning);
-                setVisibility(backgroundView, cellOperation.isRunning);
+            if (cellOperation.isRunning != (progressBar.alpha != 0f)) {
+                setVisibility(progressBar, cellOperation.isRunning)
+                setVisibility(backgroundView, cellOperation.isRunning)
             }
         }
 
-        public void setVisibility(View view, boolean isVisible) {
+        private fun setVisibility(view: View, isVisible: Boolean) {
             view.animate()
-                    .alpha(isVisible ? 1 : 0)
-                    .setDuration(500);
+                    .alpha(if (isVisible) 1f else 0f)
+                    .duration = 500
         }
     }
 }

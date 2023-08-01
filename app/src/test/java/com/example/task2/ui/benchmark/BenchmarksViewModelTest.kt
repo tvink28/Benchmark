@@ -1,216 +1,173 @@
-package com.example.task2.ui.benchmark;
+package com.example.task2.ui.benchmark
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
+import com.example.task2.CoroutineTestRule
+import com.example.task2.R
+import com.example.task2.models.benchmarks.Benchmark
+import com.example.task2.models.benchmarks.CellOperation
+import io.mockk.clearAllMocks
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertNull
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.junit.After
+import org.junit.Assert.assertNotEquals
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.Observer;
+@ExperimentalCoroutinesApi
+class BenchmarksViewModelTest {
 
-import com.example.task2.R;
-import com.example.task2.RxSchedulerRule;
-import com.example.task2.models.benchmarks.Benchmark;
-import com.example.task2.models.benchmarks.CellOperation;
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
+    private lateinit var viewModel: BenchmarksViewModel
 
-import io.reactivex.rxjava3.plugins.RxJavaPlugins;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-
-@RunWith(MockitoJUnitRunner.class)
-public class BenchmarksViewModelTest {
-
-    @Rule
-    public TestRule rule = new InstantTaskExecutorRule();
-
-    @Rule
-    public RxSchedulerRule rxSchedulerRule = new RxSchedulerRule();
-
-    @Mock
-    private Benchmark mockBenchmark;
-
-    @Mock
-    private Observer<List<CellOperation>> mockCellOperationsObserver;
-
-    @Mock
-    private Observer<Boolean> mockAllTasksCompletedObserver;
-
-    @Mock
-    private Observer<Integer> mockValidNumberObserver;
-    private BenchmarksViewModel viewModel;
+    private val mockBenchmark = mockk<Benchmark>(relaxed = true)
+    private val mockValidNumberObserver = mockk<Observer<Int?>>(relaxed = true)
+    private val mockCellOperationsObserver = mockk<Observer<List<CellOperation>>>(relaxed = true)
+    private val mockAllTasksCompletedObserver = mockk<Observer<Boolean>>(relaxed = true)
 
     @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        viewModel = new BenchmarksViewModel(mockBenchmark);
-        viewModel.getValidNumberLiveData().observeForever(mockValidNumberObserver);
-        viewModel.getCellOperationsLiveData().observeForever(mockCellOperationsObserver);
-        viewModel.getAllTasksCompletedLiveData().observeForever(mockAllTasksCompletedObserver);
+    fun setup() {
+        clearAllMocks()
+        viewModel = BenchmarksViewModel(mockBenchmark)
+        viewModel.getValidNumberLiveData().observeForever(mockValidNumberObserver)
+        viewModel.getCellOperationsLiveData().observeForever(mockCellOperationsObserver)
+        viewModel.getAllTasksCompletedLiveData().observeForever(mockAllTasksCompletedObserver)
     }
 
     @After
-    public void tearDown() {
-        verifyNoMore();
-        rxSchedulerRule.resetSchedulers();
-        viewModel.getValidNumberLiveData().removeObserver(mockValidNumberObserver);
-        viewModel.getCellOperationsLiveData().removeObserver(mockCellOperationsObserver);
-        viewModel.getAllTasksCompletedLiveData().removeObserver(mockAllTasksCompletedObserver);
-    }
-
-    public void verifyNoMore() {
-        verifyNoMoreInteractions(mockBenchmark);
-        verifyNoMoreInteractions(mockValidNumberObserver);
-        verifyNoMoreInteractions(mockCellOperationsObserver);
-        verifyNoMoreInteractions(mockAllTasksCompletedObserver);
+    fun tearDown() {
+        viewModel.getValidNumberLiveData().removeObserver(mockValidNumberObserver)
+        viewModel.getCellOperationsLiveData().removeObserver(mockCellOperationsObserver)
+        viewModel.getAllTasksCompletedLiveData().removeObserver(mockAllTasksCompletedObserver)
     }
 
     @Test
-    public void testOnCreate() {
-        viewModel.onCreate();
-        verify(mockBenchmark).createItemsList(false);
-        verify(mockCellOperationsObserver).onChanged(Mockito.anyList());
+    fun testOnCreate() = runTest {
+        viewModel.onCreate()
+        verify { mockBenchmark.createItemsList(false) }
+        verify { mockCellOperationsObserver.onChanged(any()) }
     }
 
     @Test
-    public void testGetNumberOfColumns() {
-        int expectedColumns = 3;
-        when(mockBenchmark.getNumberOfColumns()).thenReturn(expectedColumns);
-        int columns = viewModel.getNumberOfColumns();
+    fun testGetNumberOfColumns() = runTest {
+        val expectedColumns = 3
+        every { mockBenchmark.getNumberOfColumns() } returns expectedColumns
+        val columns = viewModel.numberOfColumns
 
-        assertEquals(expectedColumns, columns);
-        verify(mockBenchmark).getNumberOfColumns();
+        assertEquals(expectedColumns, columns)
+        verify { mockBenchmark.getNumberOfColumns() }
     }
 
     @Test
-    public void testValidateNumber_validInput() {
-        final String input = "10";
-        viewModel.validateNumber(input);
-        final Integer errorMessage = viewModel.getValidNumberLiveData().getValue();
-        assertNull(errorMessage);
-        verify(mockValidNumberObserver, times(1)).onChanged(any());
+    fun testValidateNumber_validInput() = runTest {
+        val input = "10"
+        viewModel.validateNumber(input)
+        val errorMessage = viewModel.getValidNumberLiveData().value
+
+        assertNull(errorMessage)
+        verify(exactly = 1) { mockValidNumberObserver.onChanged(any()) }
     }
 
     @Test
-    public void testValidateNumber_invalidInput() {
-        final String input = "one";
-        viewModel.validateNumber(input);
-        final Integer errorMessage = viewModel.getValidNumberLiveData().getValue();
-        assertNotNull(errorMessage);
-        Assert.assertEquals(R.string.error_valid, (int) errorMessage);
-        verify(mockValidNumberObserver, times(1)).onChanged(any());
+    fun testValidateNumber_invalidInput() = runTest {
+        val input = "one"
+        viewModel.validateNumber(input)
+        val errorMessage = viewModel.getValidNumberLiveData().value
+
+        assertNotNull(errorMessage)
+        assertEquals(R.string.error_valid, errorMessage)
+        verify(exactly = 1) { mockValidNumberObserver.onChanged(any()) }
     }
 
     @Test
-    public void testValidateNumber_invalidCount() {
-        final String input = "0";
-        viewModel.validateNumber(input);
-        final Integer errorMessage = viewModel.getValidNumberLiveData().getValue();
-        assertNotNull(errorMessage);
-        assertEquals(R.string.error_count, (int) errorMessage);
-        verify(mockValidNumberObserver, times(1)).onChanged(any());
+    fun testValidateNumber_invalidCount() = runTest {
+        val input = "0"
+        viewModel.validateNumber(input)
+        val errorMessage = viewModel.getValidNumberLiveData().value
+
+        assertNotNull(errorMessage)
+        assertEquals(R.string.error_count, errorMessage)
+        verify(exactly = 1) { mockValidNumberObserver.onChanged(any()) }
     }
 
     @Test
-    public void testOnButtonClicked_startBenchmark() {
-        final String input = "10";
-        final int number = 10;
-        final long time = 100;
-        final List<CellOperation> operations = new ArrayList<>();
-        operations.add(new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, true));
-        operations.add(new CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na, true));
-        when(mockBenchmark.createItemsList(true)).thenReturn(operations);
-        when(mockBenchmark.measureTime(any(CellOperation.class), eq(number))).thenReturn(time);
+    fun testOnButtonClicked_startBenchmark() = runTest {
+        val input = "10"
+        val number = 10
+        val time = 100L
+        val operations = mutableListOf<CellOperation>()
 
-        viewModel.onButtonClicked(input);
+        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na.toLong(), true))
+        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na.toLong(), true))
 
-        verify(mockBenchmark).createItemsList(true);
-        verify(mockBenchmark, times(operations.size())).measureTime(any(CellOperation.class), eq(number));
-        verify(mockCellOperationsObserver, times(operations.size() + 1)).onChanged(Mockito.anyList());
-        verify(mockAllTasksCompletedObserver).onChanged(true);
+        every { mockBenchmark.createItemsList(true) } returns operations
+        every { mockBenchmark.measureTime(any(), number) } returns time
 
-        final List<CellOperation> updatedOperations = viewModel.getCellOperationsLiveData().getValue();
-        assertEquals(operations.size(), Objects.requireNonNull(updatedOperations).size());
-        for (int i = 0; i < operations.size(); i++) {
-            CellOperation upgradeCell = updatedOperations.get(i);
-            assertEquals(time, upgradeCell.time);
-            assertFalse(upgradeCell.isRunning);
+        viewModel.onButtonClicked(input)
+
+        verify { mockBenchmark.createItemsList(true) }
+        verify(exactly = operations.size) { mockBenchmark.measureTime(any(), number) }
+        verify { mockCellOperationsObserver.onChanged(any()) }
+        verify { mockAllTasksCompletedObserver.onChanged(true) }
+
+        val updatedOperations = viewModel.getCellOperationsLiveData().value
+        assertEquals(operations.size, updatedOperations?.size)
+        updatedOperations?.forEach { operation ->
+            assertEquals(time, operation.time)
+            assertEquals(false, operation.isRunning)
         }
     }
 
     @Test
-    public void testOnButtonClicked_stopBenchmark() {
-        RxJavaPlugins.setComputationSchedulerHandler(scheduler -> Schedulers.single());
-        final CountDownLatch latch = new CountDownLatch(1);
-        final String input = "10";
-        final int number = 10;
-        final long time = 100;
-        final List<CellOperation> operations = new ArrayList<>();
+    fun testOnButtonClicked_stopBenchmark(): Unit = runBlocking {
+        val input = "10"
+        val number = 10
+        val time = 100L
+        val operations = mutableListOf<CellOperation>()
 
-        operations.add(new CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na, true));
-        operations.add(new CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na, true));
-        operations.add(new CellOperation(R.string.adding_in_the_middle, R.string.linkedlist, R.string.na, true));
-        when(mockBenchmark.createItemsList(true)).thenReturn(operations);
-        when(mockBenchmark.measureTime(any(CellOperation.class), eq(number))).thenAnswer(invocation -> {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na.toLong(), true))
+        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na.toLong(), true))
+        operations.add(CellOperation(R.string.adding_in_the_middle, R.string.linkedlist, R.string.na.toLong(), true))
+
+        every { mockBenchmark.createItemsList(true) } returns operations
+        coEvery { mockBenchmark.measureTime(any(), number) } coAnswers {
+            delay(1000)
+            time
+        }
+
+        viewModel.onButtonClicked(input)
+        delay(1500)
+        viewModel.onButtonClicked(input)
+
+        verify { mockBenchmark.createItemsList(true) }
+        verify(atMost = 3) { mockBenchmark.measureTime(any(), number) }
+        verify(atLeast = 3) { mockCellOperationsObserver.onChanged(any()) }
+
+        val updatedOperations = viewModel.getCellOperationsLiveData().value
+        assertEquals(operations.size, updatedOperations?.size)
+        updatedOperations?.forEachIndexed { index, operation ->
+            if (index == 0) {
+                assertEquals(time, operation.time)
+                assertEquals(false, operation.isRunning)
+            } else {
+                assertNotEquals(time, operation.time)
+                assertEquals(false, operation.isRunning)
             }
-            latch.countDown();
-            return time;
-        });
-
-        viewModel.onButtonClicked(input);
-
-        try {
-            Thread.sleep(1500);
-            latch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        viewModel.onButtonClicked(input);
-
-        verify(mockBenchmark).createItemsList(true);
-        verify(mockBenchmark, atMost(3)).measureTime(Mockito.any(CellOperation.class), eq(number));
-        verify(mockCellOperationsObserver, times(3)).onChanged(Mockito.anyList());
-        verify(mockAllTasksCompletedObserver).onChanged(true);
-
-        final List<CellOperation> updatedOperations = viewModel.getCellOperationsLiveData().getValue();
-        assertEquals(operations.size(), Objects.requireNonNull(updatedOperations).size());
-        for (int i = 0; i < operations.size(); i++) {
-            assertEquals(time, updatedOperations.get(0).time);
-            assertFalse(updatedOperations.get(0).isRunning);
-
-            assertNotEquals(time, updatedOperations.get(1).time);
-            assertFalse(updatedOperations.get(1).isRunning);
-
-            assertNotEquals(time, updatedOperations.get(2).time);
-            assertFalse(updatedOperations.get(2).isRunning);
         }
     }
 }
