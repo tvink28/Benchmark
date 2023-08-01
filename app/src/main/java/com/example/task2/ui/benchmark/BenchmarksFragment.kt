@@ -55,9 +55,9 @@ class BenchmarksFragment : Fragment(), OnFocusChangeListener, TextWatcher, Compo
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv)
-        recyclerView.layoutManager = GridLayoutManager(activity, viewModel.numberOfColumns)
+        recyclerView.layoutManager = GridLayoutManager(activity, viewModel.getNumberOfColumns())
         recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(SpacesItemDecoration(viewModel.numberOfColumns, resources.getDimensionPixelSize(R.dimen.card_margin)))
+        recyclerView.addItemDecoration(SpacesItemDecoration(viewModel.getNumberOfColumns(), resources.getDimensionPixelSize(R.dimen.card_margin)))
 
         viewModel.getCellOperationsLiveData().observe(viewLifecycleOwner) { adapter.submitList(it) }
         viewModel.getAllTasksCompletedLiveData().observe(viewLifecycleOwner) { allTasksCompleted: Boolean? ->

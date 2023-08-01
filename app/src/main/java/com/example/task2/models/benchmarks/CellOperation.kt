@@ -3,10 +3,10 @@ package com.example.task2.models.benchmarks
 import java.util.Objects
 
 data class CellOperation(
-        val action: Int,
-        val type: Int,
-        val time: Long,
-        val isRunning: Boolean
+    val action: Int,
+    val type: Int,
+    val time: Long,
+    val isRunning: Boolean
 ) {
     fun withTime(newTime: Long): CellOperation = copy(time = newTime, isRunning = false)
 

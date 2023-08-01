@@ -1,5 +1,6 @@
 package com.example.task2.ui.benchmark
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,6 +28,7 @@ class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
     fun getCellOperationsLiveData(): LiveData<List<CellOperation>> = cellOperationsLiveData
     fun getAllTasksCompletedLiveData(): LiveData<Boolean> = allTasksCompletedLiveData
     fun getValidNumberLiveData(): LiveData<Int?> = validNumberLiveData
+    fun getNumberOfColumns(): Int = benchmark.getNumberOfColumns()
 
     fun onButtonClicked(input: String) {
         val number = input.toIntOrNull()
@@ -49,9 +51,6 @@ class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
     fun onCreate() {
         cellOperationsLiveData.value = benchmark.createItemsList(false)
     }
-
-    val numberOfColumns: Int
-        get() = benchmark.getNumberOfColumns()
 
     private fun runBenchmark(number: Int) {
         val handler = CoroutineExceptionHandler { _, exception ->

@@ -13,4 +13,4 @@ import org.junit.runners.Suite.SuiteClasses
 
 @RunWith(Suite::class)
 @SuiteClasses(CollectionBenchmarkTest::class, MapBenchmarkTest::class, BenchmarksViewModelTest::class, CellOperationTest::class)
-class TestSuit 
+class TestSuit

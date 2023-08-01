@@ -9,4 +9,4 @@ import org.junit.runners.Suite.SuiteClasses
 
 @RunWith(Suite::class)
 @SuiteClasses(TestCollectionBenchmark::class, TestMapBenchmark::class, TestActivity::class)
-class TestSuitUI 
+class TestSuitUI
