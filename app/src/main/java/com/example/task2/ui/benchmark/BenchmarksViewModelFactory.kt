@@ -19,7 +19,7 @@ class BenchmarksViewModelFactory(private val benchmarkType: Int) : ViewModelProv
     lateinit var mapBenchmark: Benchmark
 
     init {
-        instance!!.component!!.inject(this)
+        instance?.component?.inject(this)
     }
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

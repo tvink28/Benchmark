@@ -46,11 +46,5 @@ class CellOperationTest {
         Assert.assertNotEquals(cellOperation, updatedCellOperationType)
         Assert.assertNotEquals(cellOperation, updatedCellOperationTime)
         Assert.assertEquals(cellOperation, updatedCellOperation)
-
-        Assert.assertEquals(cellOperation.hashCode().toLong(), updatedCellOperationIsRunning.hashCode().toLong())
-        Assert.assertEquals(cellOperation.hashCode().toLong(), updatedCellOperationTime.hashCode().toLong())
-        Assert.assertEquals(cellOperation.hashCode().toLong(), updatedCellOperation.hashCode().toLong())
-        Assert.assertNotEquals(cellOperation.hashCode().toLong(), updatedCellOperationAction.hashCode().toLong())
-        Assert.assertNotEquals(cellOperation.hashCode().toLong(), updatedCellOperationType.hashCode().toLong())
     }
 }

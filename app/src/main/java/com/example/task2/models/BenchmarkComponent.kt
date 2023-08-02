@@ -5,5 +5,5 @@ import dagger.Component
 
 @Component(modules = [BenchmarkModule::class])
 interface BenchmarkComponent {
-    fun inject(factory: BenchmarksViewModelFactory?)
+    fun inject(factory: BenchmarksViewModelFactory)
 }

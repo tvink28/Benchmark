@@ -79,8 +79,8 @@ class TestActivity {
 
             assertNotNull(activeFragment)
             assertTrue(activeFragment is BenchmarksFragment)
-            assertNotNull(activeFragment!!.arguments)
-            assertEquals(benchmarkType, activeFragment.arguments!!.getInt(BenchmarksFragment.ARG_BENCHMARK_TYPE))
+            assertNotNull(activeFragment?.arguments)
+            assertEquals(benchmarkType, activeFragment?.arguments?.getInt(BenchmarksFragment.ARG_BENCHMARK_TYPE))
         }
     }
 }

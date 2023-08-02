@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(), TabConfigurationStrategy {
         }
 
         tabLayoutMediator = TabLayoutMediator(tabLayout, viewPager2, this)
-        tabLayoutMediator!!.attach()
+        tabLayoutMediator?.attach()
     }
 
     override fun onDestroy() {

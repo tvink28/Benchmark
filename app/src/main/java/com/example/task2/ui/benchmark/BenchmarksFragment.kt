@@ -60,9 +60,9 @@ class BenchmarksFragment : Fragment(), OnFocusChangeListener, TextWatcher, Compo
         recyclerView.addItemDecoration(SpacesItemDecoration(viewModel.getNumberOfColumns(), resources.getDimensionPixelSize(R.dimen.card_margin)))
 
         viewModel.getCellOperationsLiveData().observe(viewLifecycleOwner) { adapter.submitList(it) }
-        viewModel.getAllTasksCompletedLiveData().observe(viewLifecycleOwner) { allTasksCompleted: Boolean? ->
+        viewModel.getAllTasksCompletedLiveData().observe(viewLifecycleOwner) { allTasksCompleted ->
             buttonStopStart.setOnCheckedChangeListener(null)
-            buttonStopStart.isChecked = allTasksCompleted!!
+            buttonStopStart.isChecked = allTasksCompleted
             buttonStopStart.setOnCheckedChangeListener(this)
         }
         viewModel.getValidNumberLiveData().observe(viewLifecycleOwner) { errorMessage: Int? ->
@@ -70,7 +70,7 @@ class BenchmarksFragment : Fragment(), OnFocusChangeListener, TextWatcher, Compo
                 buttonStopStart.isEnabled = true
                 textInputEditText.setBackgroundResource(R.drawable.input_bg2)
                 if (errorPopup != null) {
-                    errorPopup!!.dismiss()
+                    errorPopup?.dismiss()
                 }
             } else {
                 buttonStopStart.isEnabled = false
@@ -107,28 +107,32 @@ class BenchmarksFragment : Fragment(), OnFocusChangeListener, TextWatcher, Compo
     }
 
     private fun showError(errorMessage: Int, inputBg: Int) {
-        val errorView: View
-        val errorText: TextView
+        lateinit var errorView: View
+        lateinit var errorText: TextView
         if (errorPopup == null) {
             errorView = LayoutInflater.from(context).inflate(R.layout.view_error, view as ViewGroup?, false)
             errorText = errorView.findViewById(R.id.errorText)
             errorPopup = PopupWindow(errorView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         } else {
-            errorView = errorPopup!!.contentView
-            errorText = errorPopup!!.contentView.findViewById(R.id.errorText)
+            errorPopup?.let {
+                errorView = it.contentView
+                errorText = it.contentView.findViewById(R.id.errorText)
+            }
         }
-        val y = 30
 
         errorText.setText(errorMessage)
         textInputEditText.setBackgroundResource(inputBg)
 
-        errorPopup!!.width = ViewGroup.LayoutParams.WRAP_CONTENT
-        errorPopup!!.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        errorPopup!!.contentView = errorView
+        errorPopup?.apply {
+            width = ViewGroup.LayoutParams.WRAP_CONTENT
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
+            contentView = errorView
 
-        errorView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val errorPopupWidth = errorView.measuredWidth
-        val x = textInputEditText.width / 2 - errorPopupWidth / 2
-        errorPopup!!.showAsDropDown(textInputEditText, x, y)
+            val y = 30
+            errorView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            val errorPopupWidth = errorView.measuredWidth
+            val x = textInputEditText.width / 2 - errorPopupWidth / 2
+            showAsDropDown(textInputEditText, x, y)
+        }
     }
 }

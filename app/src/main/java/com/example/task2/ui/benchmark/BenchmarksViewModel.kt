@@ -1,6 +1,5 @@
 package com.example.task2.ui.benchmark
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,16 +10,16 @@ import com.example.task2.models.benchmarks.CellOperation
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
 
-    private val cellOperationsLiveData = MutableLiveData<List<CellOperation>>()
-    private val allTasksCompletedLiveData = MutableLiveData<Boolean>()
+    private val cellOperationsLiveData = MutableLiveData<List<CellOperation>>(emptyList())
+    private val allTasksCompletedLiveData = MutableLiveData(true)
     private val validNumberLiveData = MutableLiveData<Int?>()
 
     private var benchmarkJob: Job? = null
@@ -61,13 +60,15 @@ class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
         cellOperationsLiveData.value = ArrayList(operations)
 
         benchmarkJob = viewModelScope.launch(handler) {
-            operations.withIndex().asFlow()
+            operations.withIndex()
+                    .asFlow()
                     .map { (index, cell) ->
-                        val operationTime = withContext(Dispatchers.Default) {
-                            benchmark.measureTime(cell, number)
+                        async(Dispatchers.Default) {
+                            val operationTime = benchmark.measureTime(cell, number)
+                            index to cell.withTime(operationTime)
                         }
-                        index to cell.withTime(operationTime)
                     }
+                    .map { it.await() }
                     .onCompletion { allTasksCompletedLiveData.value = true }
                     .collect { (position, updatedCell) ->
                         operations[position] = updatedCell

@@ -11,7 +11,7 @@ object Matchers {
 
             override fun matchesSafely(tabLayout: TabLayout): Boolean {
                 val tab = tabLayout.getTabAt(position)
-                return tab != null && tab.isSelected
+                return tab?.isSelected ?: false
             }
 
             override fun describeTo(description: Description) {
