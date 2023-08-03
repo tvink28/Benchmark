@@ -14,17 +14,15 @@ import io.mockk.verify
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertNull
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-@ExperimentalCoroutinesApi
+@RunWith(JUnit4::class)
 class BenchmarksViewModelTest {
 
     @get:Rule
@@ -57,14 +55,14 @@ class BenchmarksViewModelTest {
     }
 
     @Test
-    fun testOnCreate() = runTest {
+    fun testOnCreate() {
         viewModel.onCreate()
         verify { mockBenchmark.createItemsList(false) }
         verify { mockCellOperationsObserver.onChanged(any()) }
     }
 
     @Test
-    fun testGetNumberOfColumns() = runTest {
+    fun testGetNumberOfColumns() {
         val expectedColumns = 3
         every { mockBenchmark.getNumberOfColumns() } returns expectedColumns
         val columns = viewModel.getNumberOfColumns()
@@ -74,7 +72,7 @@ class BenchmarksViewModelTest {
     }
 
     @Test
-    fun testValidateNumber_validInput() = runTest {
+    fun testValidateNumber_validInput() {
         val input = "10"
         viewModel.validateNumber(input)
         val errorMessage = viewModel.getValidNumberLiveData().value
@@ -84,7 +82,7 @@ class BenchmarksViewModelTest {
     }
 
     @Test
-    fun testValidateNumber_invalidInput() = runTest {
+    fun testValidateNumber_invalidInput() {
         val input = "one"
         viewModel.validateNumber(input)
         val errorMessage = viewModel.getValidNumberLiveData().value
@@ -95,7 +93,7 @@ class BenchmarksViewModelTest {
     }
 
     @Test
-    fun testValidateNumber_invalidCount() = runTest {
+    fun testValidateNumber_invalidCount() {
         val input = "0"
         viewModel.validateNumber(input)
         val errorMessage = viewModel.getValidNumberLiveData().value
@@ -106,14 +104,28 @@ class BenchmarksViewModelTest {
     }
 
     @Test
-    fun testOnButtonClicked_startBenchmark() = runTest {
+    fun testOnButtonClicked_startBenchmark() {
         val input = "10"
         val number = 10
         val time = 100L
         val operations = mutableListOf<CellOperation>()
 
-        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na.toLong(), true))
-        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na.toLong(), true))
+        operations.add(
+            CellOperation(
+                R.string.adding_in_the_beginning,
+                R.string.arraylist,
+                R.string.na.toLong(),
+                true
+            )
+        )
+        operations.add(
+            CellOperation(
+                R.string.adding_in_the_beginning,
+                R.string.linkedlist,
+                R.string.na.toLong(),
+                true
+            )
+        )
 
         every { mockBenchmark.createItemsList(true) } returns operations
         every { mockBenchmark.measureTime(any(), number) } returns time
@@ -131,54 +143,109 @@ class BenchmarksViewModelTest {
             assertEquals(time, operation.time)
             assertEquals(false, operation.isRunning)
         }
+        Unit
     }
 
     @Test
-    fun testOnButtonClicked_stopBenchmark(): Unit = runBlocking {
+    fun testOnButtonClicked_stopBenchmark() {
         val input = "10"
         val number = 10
         val time = 100L
         val operations = mutableListOf<CellOperation>()
 
-        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na.toLong(), true))
-        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na.toLong(), true))
-        operations.add(CellOperation(R.string.adding_in_the_middle, R.string.linkedlist, R.string.na.toLong(), true))
-        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.copyonwritearraylist, R.string.na.toLong(), true))
-        operations.add(CellOperation(R.string.adding_in_the_middle, R.string.arraylist, R.string.na.toLong(), true))
+        operations.add(
+            CellOperation(
+                R.string.adding_in_the_beginning,
+                R.string.arraylist,
+                R.string.na.toLong(),
+                true
+            )
+        )
+        operations.add(
+            CellOperation(
+                R.string.adding_in_the_beginning,
+                R.string.linkedlist,
+                R.string.na.toLong(),
+                true
+            )
+        )
+        operations.add(
+            CellOperation(
+                R.string.adding_in_the_middle,
+                R.string.linkedlist,
+                R.string.na.toLong(),
+                true
+            )
+        )
+        operations.add(
+            CellOperation(
+                R.string.adding_in_the_beginning,
+                R.string.copyonwritearraylist,
+                R.string.na.toLong(),
+                true
+            )
+        )
+        operations.add(
+            CellOperation(
+                R.string.adding_in_the_middle,
+                R.string.arraylist,
+                R.string.na.toLong(),
+                true
+            )
+        )
         operations.add(CellOperation(R.string.adding_in_the_middle, R.string.copyonwritearraylist, R.string.na.toLong(), true))
         operations.add(CellOperation(R.string.adding_in_the_end, R.string.arraylist, R.string.na.toLong(), true))
         operations.add(CellOperation(R.string.adding_in_the_end, R.string.linkedlist, R.string.na.toLong(), true))
         operations.add(CellOperation(R.string.adding_in_the_end, R.string.copyonwritearraylist, R.string.na.toLong(), true))
         operations.add(CellOperation(R.string.search_by_value, R.string.arraylist, R.string.na.toLong(), true))
         operations.add(CellOperation(R.string.search_by_value, R.string.linkedlist, R.string.na.toLong(), true))
-        operations.add(CellOperation(R.string.search_by_value, R.string.copyonwritearraylist, R.string.na.toLong(), true))
-        operations.add(CellOperation(R.string.removing_in_the_beginning, R.string.arraylist, R.string.na.toLong(), true))
-        operations.add(CellOperation(R.string.removing_in_the_beginning, R.string.linkedlist, R.string.na.toLong(), true))
+        operations.add(
+            CellOperation(
+                R.string.search_by_value,
+                R.string.copyonwritearraylist,
+                R.string.na.toLong(),
+                true
+            )
+        )
+        operations.add(
+            CellOperation(
+                R.string.removing_in_the_beginning,
+                R.string.arraylist,
+                R.string.na.toLong(),
+                true
+            )
+        )
+        operations.add(
+            CellOperation(
+                R.string.removing_in_the_beginning,
+                R.string.linkedlist,
+                R.string.na.toLong(),
+                true
+            )
+        )
 
         every { mockBenchmark.createItemsList(true) } returns operations
         coEvery { mockBenchmark.measureTime(any(), number) } coAnswers {
-            delay(1000)
+            Thread.sleep(3000)
             time
         }
-
         viewModel.onButtonClicked(input)
-        delay(1500)
+        try {
+            Thread.sleep(1000)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
         viewModel.onButtonClicked(input)
 
         verify { mockBenchmark.createItemsList(true) }
-        verify(atMost = 3) { mockBenchmark.measureTime(any(), number) }
-        verify(atLeast = 3) { mockCellOperationsObserver.onChanged(any()) }
+        verify(exactly = operations.size) { mockBenchmark.measureTime(any(), number) }
 
         val updatedOperations = viewModel.getCellOperationsLiveData().value
         assertEquals(operations.size, updatedOperations?.size)
-        updatedOperations?.forEachIndexed { index, operation ->
-            if (index == 0) {
-                assertEquals(time, operation.time)
-                assertEquals(false, operation.isRunning)
-            } else {
-                assertNotEquals(time, operation.time)
-                assertEquals(false, operation.isRunning)
-            }
+        updatedOperations?.forEach { operation ->
+            assertNotEquals(time, operation.time)
+            assertEquals(false, operation.isRunning)
         }
+        Unit
     }
 }

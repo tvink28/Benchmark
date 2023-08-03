@@ -10,6 +10,8 @@ import com.example.task2.models.benchmarks.CellOperation
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -28,6 +30,7 @@ class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
 
     fun onButtonClicked(input: String) {
         val number = input.toIntOrNull()
+        println("Job running ${benchmarkJob?.isActive}, completed  ${benchmarkJob?.isCompleted}")
         when {
             benchmarkJob?.isActive == true -> stopBenchmark()
             number != null -> runBenchmark(number)
@@ -56,11 +59,9 @@ class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
         val operations = benchmark.createItemsList(true).toMutableList()
         cellOperationsLiveData.value = ArrayList(operations)
 
-        benchmarkJob = viewModelScope.launch(handler) {
-            val jobs = mutableListOf<Job>()
-
-            operations.withIndex().forEach { (index, cell) ->
-                val childJob = launch(Dispatchers.Default) {
+        benchmarkJob = viewModelScope.launch(Dispatchers.IO + handler) {
+            operations.mapIndexed { index, cell ->
+                async {
                     val operationTime = benchmark.measureTime(cell, number)
                     val updatedCell = cell.withTime(operationTime)
 
@@ -69,10 +70,10 @@ class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
                         cellOperationsLiveData.value = ArrayList(operations)
                     }
                 }
-                jobs.add(childJob)
+            }.awaitAll()
+            withContext(Dispatchers.Main) {
+                allTasksCompletedLiveData.value = true
             }
-            jobs.forEach { it.join() }
-            allTasksCompletedLiveData.value = true
         }
     }
 
