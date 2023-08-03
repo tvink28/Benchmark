@@ -23,7 +23,7 @@ class RecyclerViewMatcher(private val recyclerViewId: Int) {
                 var idDescription = recyclerViewId.toString()
                 resources?.let {
                     idDescription = try {
-                        resources?.getResourceName(recyclerViewId) ?: recyclerViewId.toString()
+                        it.getResourceName(recyclerViewId)
                     } catch (var4: NotFoundException) {
                         String.format("%s (resource name not found)", recyclerViewId)
                     }
