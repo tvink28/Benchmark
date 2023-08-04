@@ -5,6 +5,7 @@
     <string name="please_enter_collection_size_and_number_of_elements_to_compare">Please enter collection size and number of elements to compare</string>
     <string name="elements_amount">Elements amount:</string>
     <string name="title_action_bar">Activity</string>
+    <string name="benchmark_text">%1$s\n%2$s\n%3$s ns</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="na">N/A</string>
