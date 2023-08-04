@@ -80,7 +80,7 @@ public class CollectionBenchmark implements Benchmark {
         return result;
     }
 
-    public long addStart(List<String> list) {
+    private long addStart(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
         list.add(0, "test");
@@ -88,7 +88,7 @@ public class CollectionBenchmark implements Benchmark {
         return (endTime - startTime);
     }
 
-    public long addMiddle(List<String> list) {
+    private long addMiddle(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
         list.add(list.size() / 2, "test");
@@ -96,7 +96,7 @@ public class CollectionBenchmark implements Benchmark {
         return (endTime - startTime);
     }
 
-    public long addEnd(List<String> list) {
+    private long addEnd(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
         list.add("test");
@@ -104,7 +104,7 @@ public class CollectionBenchmark implements Benchmark {
         return (endTime - startTime);
     }
 
-    public long searchByValue(List<String> list) {
+    private long searchByValue(List<String> list) {
         int randomIndex = random.nextInt(list.size());
         list.set(randomIndex, SPECIFIC_NUMBER);
         long startTime, endTime;
@@ -114,7 +114,7 @@ public class CollectionBenchmark implements Benchmark {
         return (endTime - startTime);
     }
 
-    public long removeStart(List<String> list) {
+    private long removeStart(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
         list.remove(0);
@@ -122,7 +122,7 @@ public class CollectionBenchmark implements Benchmark {
         return (endTime - startTime);
     }
 
-    public long removeMiddle(List<String> list) {
+    private long removeMiddle(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
         list.remove(list.size() / 2);
@@ -130,7 +130,7 @@ public class CollectionBenchmark implements Benchmark {
         return (endTime - startTime);
     }
 
-    public long removeEnd(List<String> list) {
+    private long removeEnd(List<String> list) {
         long startTime, endTime;
         startTime = System.nanoTime();
         list.remove(list.size() - 1);

@@ -10,15 +10,3 @@ public interface Benchmark {
 
     long measureTime(CellOperation item, int number);
 }
-
-
-
-
-
-
-
-
-
-
-
-
