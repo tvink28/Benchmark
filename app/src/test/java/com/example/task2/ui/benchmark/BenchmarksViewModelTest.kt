@@ -110,22 +110,8 @@ class BenchmarksViewModelTest {
         val time = 100L
         val operations = mutableListOf<CellOperation>()
 
-        operations.add(
-            CellOperation(
-                R.string.adding_in_the_beginning,
-                R.string.arraylist,
-                R.string.na.toLong(),
-                true
-            )
-        )
-        operations.add(
-            CellOperation(
-                R.string.adding_in_the_beginning,
-                R.string.linkedlist,
-                R.string.na.toLong(),
-                true
-            )
-        )
+        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na.toLong(), true))
+        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na.toLong(), true))
 
         every { mockBenchmark.createItemsList(true) } returns operations
         every { mockBenchmark.measureTime(any(), number) } returns time
@@ -153,76 +139,20 @@ class BenchmarksViewModelTest {
         val time = 100L
         val operations = mutableListOf<CellOperation>()
 
-        operations.add(
-            CellOperation(
-                R.string.adding_in_the_beginning,
-                R.string.arraylist,
-                R.string.na.toLong(),
-                true
-            )
-        )
-        operations.add(
-            CellOperation(
-                R.string.adding_in_the_beginning,
-                R.string.linkedlist,
-                R.string.na.toLong(),
-                true
-            )
-        )
-        operations.add(
-            CellOperation(
-                R.string.adding_in_the_middle,
-                R.string.linkedlist,
-                R.string.na.toLong(),
-                true
-            )
-        )
-        operations.add(
-            CellOperation(
-                R.string.adding_in_the_beginning,
-                R.string.copyonwritearraylist,
-                R.string.na.toLong(),
-                true
-            )
-        )
-        operations.add(
-            CellOperation(
-                R.string.adding_in_the_middle,
-                R.string.arraylist,
-                R.string.na.toLong(),
-                true
-            )
-        )
+        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.arraylist, R.string.na.toLong(), true))
+        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.linkedlist, R.string.na.toLong(), true))
+        operations.add(CellOperation(R.string.adding_in_the_middle, R.string.linkedlist, R.string.na.toLong(), true))
+        operations.add(CellOperation(R.string.adding_in_the_beginning, R.string.copyonwritearraylist, R.string.na.toLong(), true))
+        operations.add(CellOperation(R.string.adding_in_the_middle, R.string.arraylist, R.string.na.toLong(), true))
         operations.add(CellOperation(R.string.adding_in_the_middle, R.string.copyonwritearraylist, R.string.na.toLong(), true))
         operations.add(CellOperation(R.string.adding_in_the_end, R.string.arraylist, R.string.na.toLong(), true))
         operations.add(CellOperation(R.string.adding_in_the_end, R.string.linkedlist, R.string.na.toLong(), true))
         operations.add(CellOperation(R.string.adding_in_the_end, R.string.copyonwritearraylist, R.string.na.toLong(), true))
         operations.add(CellOperation(R.string.search_by_value, R.string.arraylist, R.string.na.toLong(), true))
         operations.add(CellOperation(R.string.search_by_value, R.string.linkedlist, R.string.na.toLong(), true))
-        operations.add(
-            CellOperation(
-                R.string.search_by_value,
-                R.string.copyonwritearraylist,
-                R.string.na.toLong(),
-                true
-            )
-        )
-        operations.add(
-            CellOperation(
-                R.string.removing_in_the_beginning,
-                R.string.arraylist,
-                R.string.na.toLong(),
-                true
-            )
-        )
-        operations.add(
-            CellOperation(
-                R.string.removing_in_the_beginning,
-                R.string.linkedlist,
-                R.string.na.toLong(),
-                true
-            )
-        )
+        operations.add(CellOperation(R.string.search_by_value, R.string.copyonwritearraylist, R.string.na.toLong(), true))
+        operations.add(CellOperation(R.string.removing_in_the_beginning, R.string.arraylist, R.string.na.toLong(), true))
+        operations.add(CellOperation(R.string.removing_in_the_beginning, R.string.linkedlist, R.string.na.toLong(), true))
 
         every { mockBenchmark.createItemsList(true) } returns operations
         coEvery { mockBenchmark.measureTime(any(), number) } coAnswers {
