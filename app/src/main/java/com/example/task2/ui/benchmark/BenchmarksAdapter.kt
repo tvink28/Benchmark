@@ -13,15 +13,15 @@ import com.example.task2.models.benchmarks.CellOperation
 import com.example.task2.ui.benchmark.BenchmarksAdapter.BenchmarkViewHolder
 
 class BenchmarksAdapter : ListAdapter<CellOperation?, BenchmarkViewHolder?>(
-    object : DiffUtil.ItemCallback<CellOperation?>() {
-        override fun areItemsTheSame(
-            oldItem: CellOperation, newItem: CellOperation
-        ) = oldItem.action == newItem.action && oldItem.type == newItem.type
+        object : DiffUtil.ItemCallback<CellOperation?>() {
+            override fun areItemsTheSame(
+                oldItem: CellOperation, newItem: CellOperation
+            ) = oldItem.action == newItem.action && oldItem.type == newItem.type
 
-        override fun areContentsTheSame(
-            oldItem: CellOperation, newItem: CellOperation
-        ) = oldItem == newItem
-    }) {
+            override fun areContentsTheSame(
+                oldItem: CellOperation, newItem: CellOperation
+            ) = oldItem == newItem
+        }) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BenchmarkViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_benchmark, parent, false)
@@ -49,8 +49,7 @@ class BenchmarksAdapter : ListAdapter<CellOperation?, BenchmarkViewHolder?>(
                 time.toString()
             }
 
-            textViewAction.text =
-                itemView.context.getString(R.string.benchmark_text, action, type, timeText)
+            textViewAction.text = itemView.context.getString(R.string.benchmark_text, action, type, timeText)
 
             if (cellOperation.isRunning != (progressBar.alpha != 0F)) {
                 setVisibility(progressBar, cellOperation.isRunning)
@@ -60,8 +59,8 @@ class BenchmarksAdapter : ListAdapter<CellOperation?, BenchmarkViewHolder?>(
 
         private fun setVisibility(view: View, isVisible: Boolean) {
             view.animate()
-                .alpha(if (isVisible) 1F else 0F)
-                .duration = 500
+                    .alpha(if (isVisible) 1F else 0F)
+                    .duration = 500
         }
     }
 }

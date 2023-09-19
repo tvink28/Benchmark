@@ -7,26 +7,26 @@ import com.example.task2.models.room.AppDatabase
 
 class BenchmarksApp : Application() {
 
-	val component: BenchmarkComponent?
-		get() = Companion.component
+    val component: BenchmarkComponent?
+        get() = Companion.component
 
-	companion object {
-		@JvmStatic
-		var instance: BenchmarksApp? = null
-			private set
-		private var component: BenchmarkComponent? = null
+    companion object {
+        @JvmStatic
+        var instance: BenchmarksApp? = null
+            private set
+        private var component: BenchmarkComponent? = null
 
-		@JvmStatic
-		fun setAppComponent(testComponent: BenchmarkComponent?) {
-			component = testComponent
-		}
-	}
+        @JvmStatic
+        fun setAppComponent(testComponent: BenchmarkComponent?) {
+            component = testComponent
+        }
+    }
 
-	override fun onCreate() {
-		super.onCreate()
-		instance = this
-		Companion.component = DaggerBenchmarkComponent.create()
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
+        Companion.component = DaggerBenchmarkComponent.create()
 
-		AppDatabase.init(this)
-	}
+        AppDatabase.init(this)
+    }
 }
