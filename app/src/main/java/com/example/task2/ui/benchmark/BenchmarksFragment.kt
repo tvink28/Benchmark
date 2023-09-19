@@ -1,5 +1,6 @@
 package com.example.task2.ui.benchmark
 
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,13 +14,16 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.task2.R
 import com.example.task2.ui.SpacesItemDecoration
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.launch
 
-class BenchmarksFragment : Fragment(), OnFocusChangeListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
+class BenchmarksFragment : Fragment(), OnFocusChangeListener, TextWatcher,
+        CompoundButton.OnCheckedChangeListener, View.OnLongClickListener {
 
     companion object {
         const val ARG_BENCHMARK_TYPE = "benchmarkType"
@@ -48,11 +52,13 @@ class BenchmarksFragment : Fragment(), OnFocusChangeListener, TextWatcher, Compo
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_benchmark, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<TextView>(R.id.textView)?.setOnLongClickListener(this)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv)
         recyclerView.layoutManager = GridLayoutManager(activity, viewModel.getNumberOfColumns())
@@ -110,9 +116,14 @@ class BenchmarksFragment : Fragment(), OnFocusChangeListener, TextWatcher, Compo
         lateinit var errorView: View
         lateinit var errorText: TextView
         if (errorPopup == null) {
-            errorView = LayoutInflater.from(context).inflate(R.layout.view_error, view as ViewGroup?, false)
+            errorView =
+                    LayoutInflater.from(context).inflate(R.layout.view_error, view as ViewGroup?, false)
             errorText = errorView.findViewById(R.id.errorText)
-            errorPopup = PopupWindow(errorView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            errorPopup = PopupWindow(
+                    errorView,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            )
         } else {
             errorPopup?.let {
                 errorView = it.contentView
@@ -134,5 +145,41 @@ class BenchmarksFragment : Fragment(), OnFocusChangeListener, TextWatcher, Compo
             val x = textInputEditText.width / 2 - errorPopupWidth / 2
             showAsDropDown(textInputEditText, x, y)
         }
+    }
+
+    override fun onLongClick(p0: View?): Boolean {
+        lifecycleScope.launch {
+            val last21Result = viewModel.getLast21Results().reversed()
+            val textToShow = StringBuilder()
+            for ((index, result) in last21Result.withIndex()) {
+                val action = result.action.replace("\n", "")
+                if (index == 0) {
+                    textToShow.append("Input: ${result.input}\n")
+                }
+                textToShow.append("$action ${result.type} ${result.time} n/a\n")
+            }
+
+            val inflater = LayoutInflater.from(requireContext())
+            val layout = inflater.inflate(R.layout.toast_bd, null)
+
+            val customToastText = layout.findViewById<TextView>(R.id.customToastText)
+            customToastText.text = textToShow.toString()
+
+            val dialog = Dialog(requireContext())
+            dialog.setContentView(layout)
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+
+            val displayMetrics = context?.resources?.displayMetrics
+            val width = (displayMetrics?.widthPixels?.times(0.9))?.toInt()
+            width?.let {
+                dialog.window?.setLayout(
+                        it,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+            dialog.show()
+        }
+        return true
     }
 }

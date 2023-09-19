@@ -3,6 +3,7 @@ package com.example.task2
 import android.app.Application
 import com.example.task2.models.BenchmarkComponent
 import com.example.task2.models.DaggerBenchmarkComponent
+import com.example.task2.models.room.AppDatabase
 
 class BenchmarksApp : Application() {
 
@@ -25,5 +26,7 @@ class BenchmarksApp : Application() {
         super.onCreate()
         instance = this
         Companion.component = DaggerBenchmarkComponent.create()
+
+        AppDatabase.init(this)
     }
 }

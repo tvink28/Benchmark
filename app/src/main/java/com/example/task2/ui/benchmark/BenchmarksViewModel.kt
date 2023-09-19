@@ -4,9 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.task2.BenchmarksApp
 import com.example.task2.R
 import com.example.task2.models.benchmarks.Benchmark
 import com.example.task2.models.benchmarks.CellOperation
+import com.example.task2.models.room.AppDatabase
+import com.example.task2.models.room.OperationResult
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,6 +20,7 @@ import kotlinx.coroutines.withContext
 
 class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
 
+    private val operationResultDao = AppDatabase.getInstance().operationResultDao()
     private val cellOperationsLiveData = MutableLiveData<List<CellOperation>>(emptyList())
     private val allTasksCompletedLiveData = MutableLiveData(true)
     private val validNumberLiveData = MutableLiveData<Int?>()
@@ -51,6 +55,35 @@ class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
         cellOperationsLiveData.value = benchmark.createItemsList(false)
     }
 
+    private fun addResultToDatabase(result: List<CellOperation>, input: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            for (cell in result) {
+                val appContext = BenchmarksApp.instance
+                val action = appContext?.getString(cell.action)
+                val type = appContext?.getString(cell.type)
+                if (action != null && type != null) {
+                    val operationResult = OperationResult(
+                            action = action,
+                            type = type,
+                            time = cell.time,
+                            input = input
+                    )
+                    try {
+                        operationResultDao.insertResult(operationResult)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+    }
+
+    suspend fun getLast21Results(): List<OperationResult> {
+        return withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
+            operationResultDao.getLast21Results()
+        }
+    }
+
     private fun runBenchmark(number: Int) {
         val handler = CoroutineExceptionHandler { _, exception ->
             exception.printStackTrace()
@@ -71,6 +104,7 @@ class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
                     }
                 }
             }.awaitAll()
+            addResultToDatabase(operations, number)
             withContext(Dispatchers.Main) {
                 allTasksCompletedLiveData.value = true
             }
