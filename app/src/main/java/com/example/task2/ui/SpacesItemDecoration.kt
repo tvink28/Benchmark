@@ -13,8 +13,10 @@ class SpacesItemDecoration(private val spanCount: Int, private val spacing: Int)
         val position = parent.getChildAdapterPosition(view)
         val column = position % spanCount
 
-        outRect.left = column * spacing / spanCount
-        outRect.right = spacing - (column + 1) * spacing / spanCount
+        with(outRect) {
+            left = column * spacing / spanCount
+            right = spacing - (column + 1) * spacing / spanCount
+        }
 
         if (position >= spanCount) {
             outRect.top = spacing
