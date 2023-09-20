@@ -55,8 +55,8 @@ class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
         cellOperationsLiveData.value = benchmark.createItemsList(false)
     }
 
-    private fun addResultToDatabase(result: List<CellOperation>, input: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
+    private suspend fun addResultToDatabase(result: List<CellOperation>, input: Int) {
+        withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
             for (cell in result) {
                 val appContext = BenchmarksApp.instance
                 val action = appContext?.getString(cell.action)
