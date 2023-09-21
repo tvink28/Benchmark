@@ -1,6 +1,8 @@
 package com.example.task2.models.benchmarks
 
 import com.example.task2.R
+import com.example.task2.models.room.AppDatabase
+import com.example.task2.models.room.CollectionResult
 import java.util.Collections
 import java.util.LinkedList
 import java.util.Random
@@ -13,6 +15,25 @@ open class CollectionBenchmark : Benchmark {
     }
 
     private val random = Random()
+    private val operationResultDao = AppDatabase.getInstance().collectionResultDao()
+
+    override fun setData(action: String, type: String, time: Long, input: Int) {
+        val operationResult = CollectionResult(
+                action = action,
+                type = type,
+                time = time,
+                input = input
+        )
+        try {
+            operationResultDao.insertResult(operationResult)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun getData(): List<CollectionResult> {
+        return operationResultDao.getLastResults()
+    }
 
     override fun getNumberOfColumns(): Int = 3
 

@@ -8,8 +8,7 @@ import com.example.task2.BenchmarksApp
 import com.example.task2.R
 import com.example.task2.models.benchmarks.Benchmark
 import com.example.task2.models.benchmarks.CellOperation
-import com.example.task2.models.room.AppDatabase
-import com.example.task2.models.room.OperationResult
+import com.example.task2.models.room.ResultData
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,7 +19,6 @@ import kotlinx.coroutines.withContext
 
 class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
 
-    private val operationResultDao = AppDatabase.getInstance().operationResultDao()
     private val cellOperationsLiveData = MutableLiveData<List<CellOperation>>(emptyList())
     private val allTasksCompletedLiveData = MutableLiveData(true)
     private val validNumberLiveData = MutableLiveData<Int?>()
@@ -62,25 +60,15 @@ class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
                 val action = appContext?.getString(cell.action)
                 val type = appContext?.getString(cell.type)
                 if (action != null && type != null) {
-                    val operationResult = OperationResult(
-                            action = action,
-                            type = type,
-                            time = cell.time,
-                            input = input
-                    )
-                    try {
-                        operationResultDao.insertResult(operationResult)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+                    benchmark.setData(action, type, cell.time, input)
                 }
             }
         }
     }
 
-    suspend fun getLast21Results(): List<OperationResult> {
+    suspend fun getLastResults(): List<ResultData> {
         return withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
-            operationResultDao.getLast21Results()
+            benchmark.getData()
         }
     }
 
