@@ -149,9 +149,9 @@ class BenchmarksFragment : Fragment(), OnFocusChangeListener, TextWatcher,
 
     override fun onLongClick(p0: View?): Boolean {
         lifecycleScope.launch {
-            val last21Result = viewModel.getLast21Results().reversed()
+            val lastResult = viewModel.getLastResults().reversed()
             val textToShow = StringBuilder()
-            for ((index, result) in last21Result.withIndex()) {
+            for ((index, result) in lastResult.withIndex()) {
                 val action = result.action.replace("\n", "")
                 if (index == 0) {
                     textToShow.append("Input: ${result.input}\n")

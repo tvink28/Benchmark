@@ -1,6 +1,8 @@
 package com.example.task2.models.benchmarks
 
 import com.example.task2.R
+import com.example.task2.models.room.AppDatabase
+import com.example.task2.models.room.MapResult
 import java.util.Random
 import java.util.TreeMap
 
@@ -11,6 +13,25 @@ open class MapBenchmark : Benchmark {
     }
 
     private val random = Random()
+    private val operationResultDao = AppDatabase.getInstance().mapResultDao()
+
+    override fun setData(action: String, type: String, time: Long, input: Int) {
+        val operationResult = MapResult(
+                action = action,
+                type = type,
+                time = time,
+                input = input
+        )
+        try {
+            operationResultDao.insertResult(operationResult)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun getData(): List<MapResult> {
+        return operationResultDao.getLastResults()
+    }
 
     override fun getNumberOfColumns(): Int = 2
 
