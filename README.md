@@ -8,7 +8,7 @@ An application that performs various operations with collections and maps calcul
 ## Languages and technologies
 
 - Java, Kotlin
-- MVVM, ViewModel, LiveData
+- MVVM, LiveData
 - Room
 - Dagger 2
 - RxJava, Coroutines
