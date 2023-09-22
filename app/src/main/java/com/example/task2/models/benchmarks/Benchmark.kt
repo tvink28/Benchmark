@@ -13,4 +13,6 @@ interface Benchmark {
     fun setData(action: String, type: String, time: Long, input: Int)
 
     fun getData(): List<ResultData>
+
+    fun injectDependenciesRoom()
 }

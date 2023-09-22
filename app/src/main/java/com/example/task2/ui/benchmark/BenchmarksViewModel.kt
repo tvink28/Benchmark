@@ -51,6 +51,7 @@ class BenchmarksViewModel(private val benchmark: Benchmark) : ViewModel() {
 
     fun onCreate() {
         cellOperationsLiveData.value = benchmark.createItemsList(false)
+        benchmark.injectDependenciesRoom()
     }
 
     private suspend fun addResultToDatabase(result: List<CellOperation>, input: Int) {
