@@ -3,9 +3,14 @@ package com.example.task2
 import android.app.Application
 import com.example.task2.models.BenchmarkComponent
 import com.example.task2.models.DaggerBenchmarkComponent
-import com.example.task2.models.room.AppDatabase
+import com.example.task2.models.DaggerRoomComponent
+import com.example.task2.models.RoomComponent
+import com.example.task2.models.RoomModule
 
 class BenchmarksApp : Application() {
+
+    val roomComponent: RoomComponent?
+        get() = Companion.roomComponent
 
     val component: BenchmarkComponent?
         get() = Companion.component
@@ -15,6 +20,7 @@ class BenchmarksApp : Application() {
         var instance: BenchmarksApp? = null
             private set
         private var component: BenchmarkComponent? = null
+        private var roomComponent: RoomComponent? = null
 
         @JvmStatic
         fun setAppComponent(testComponent: BenchmarkComponent?) {
@@ -26,7 +32,8 @@ class BenchmarksApp : Application() {
         super.onCreate()
         instance = this
         Companion.component = DaggerBenchmarkComponent.create()
-
-        AppDatabase.init(this)
+        Companion.roomComponent = DaggerRoomComponent.builder()
+                .roomModule(RoomModule(applicationContext))
+                .build()
     }
 }

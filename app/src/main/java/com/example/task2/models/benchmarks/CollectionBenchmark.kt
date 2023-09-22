@@ -1,12 +1,14 @@
 package com.example.task2.models.benchmarks
 
+import com.example.task2.BenchmarksApp
 import com.example.task2.R
-import com.example.task2.models.room.AppDatabase
 import com.example.task2.models.room.CollectionResult
+import com.example.task2.models.room.CollectionResultDao
 import java.util.Collections
 import java.util.LinkedList
 import java.util.Random
 import java.util.concurrent.CopyOnWriteArrayList
+import javax.inject.Inject
 
 open class CollectionBenchmark : Benchmark {
 
@@ -14,8 +16,14 @@ open class CollectionBenchmark : Benchmark {
         private const val SPECIFIC_NUMBER = "28"
     }
 
+    override fun injectDependenciesRoom() {
+        BenchmarksApp.instance?.roomComponent?.inject(this)
+    }
+
+    @Inject
+    lateinit var collectionResultDao: CollectionResultDao
+
     private val random = Random()
-    private val operationResultDao = AppDatabase.getInstance().collectionResultDao()
 
     override fun setData(action: String, type: String, time: Long, input: Int) {
         val operationResult = CollectionResult(
@@ -25,14 +33,14 @@ open class CollectionBenchmark : Benchmark {
                 input = input
         )
         try {
-            operationResultDao.insertResult(operationResult)
+            collectionResultDao.insertResult(operationResult)
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     override fun getData(): List<CollectionResult> {
-        return operationResultDao.getLastResults()
+        return collectionResultDao.getLastResults()
     }
 
     override fun getNumberOfColumns(): Int = 3

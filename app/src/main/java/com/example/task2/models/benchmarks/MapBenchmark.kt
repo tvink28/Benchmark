@@ -1,10 +1,12 @@
 package com.example.task2.models.benchmarks
 
+import com.example.task2.BenchmarksApp
 import com.example.task2.R
-import com.example.task2.models.room.AppDatabase
 import com.example.task2.models.room.MapResult
+import com.example.task2.models.room.MapResultDao
 import java.util.Random
 import java.util.TreeMap
+import javax.inject.Inject
 
 open class MapBenchmark : Benchmark {
 
@@ -12,8 +14,14 @@ open class MapBenchmark : Benchmark {
         private const val SPECIFIC_NUMBER = "28"
     }
 
+    override fun injectDependenciesRoom() {
+        BenchmarksApp.instance?.roomComponent?.inject(this)
+    }
+
+    @Inject
+    lateinit var mapResultDao: MapResultDao
+
     private val random = Random()
-    private val operationResultDao = AppDatabase.getInstance().mapResultDao()
 
     override fun setData(action: String, type: String, time: Long, input: Int) {
         val operationResult = MapResult(
@@ -23,14 +31,14 @@ open class MapBenchmark : Benchmark {
                 input = input
         )
         try {
-            operationResultDao.insertResult(operationResult)
+            mapResultDao.insertResult(operationResult)
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     override fun getData(): List<MapResult> {
-        return operationResultDao.getLastResults()
+        return mapResultDao.getLastResults()
     }
 
     override fun getNumberOfColumns(): Int = 2
