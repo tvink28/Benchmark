@@ -14,27 +14,13 @@ open class MapBenchmark : Benchmark {
         private const val SPECIFIC_NUMBER = "28"
     }
 
-    override fun injectDependenciesRoom() {
-        BenchmarksApp.instance?.roomComponent?.inject(this)
-    }
-
     @Inject
     lateinit var mapResultDao: MapResultDao
 
     private val random = Random()
 
-    override fun setData(action: String, type: String, time: Long, input: Int) {
-        val operationResult = MapResult(
-                action = action,
-                type = type,
-                time = time,
-                input = input
-        )
-        try {
-            mapResultDao.insertResult(operationResult)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    override fun injectDependenciesRoom() {
+        BenchmarksApp.instance?.roomComponent?.inject(this)
     }
 
     override fun getData(): List<MapResult> {
@@ -51,6 +37,20 @@ open class MapBenchmark : Benchmark {
             CellOperation(R.string.removing, R.string.treemap, R.string.na.toLong(), setRunning),
             CellOperation(R.string.removing, R.string.hashmap, R.string.na.toLong(), setRunning)
     )
+
+    override fun setData(action: String, type: String, time: Long, input: Int) {
+        val operationResult = MapResult(
+                action = action,
+                type = type,
+                time = time,
+                input = input
+        )
+        try {
+            mapResultDao.insertResult(operationResult)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
     override fun measureTime(item: CellOperation, number: Int): Long {
 

@@ -16,27 +16,13 @@ open class CollectionBenchmark : Benchmark {
         private const val SPECIFIC_NUMBER = "28"
     }
 
-    override fun injectDependenciesRoom() {
-        BenchmarksApp.instance?.roomComponent?.inject(this)
-    }
-
     @Inject
     lateinit var collectionResultDao: CollectionResultDao
 
     private val random = Random()
 
-    override fun setData(action: String, type: String, time: Long, input: Int) {
-        val operationResult = CollectionResult(
-                action = action,
-                type = type,
-                time = time,
-                input = input
-        )
-        try {
-            collectionResultDao.insertResult(operationResult)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    override fun injectDependenciesRoom() {
+        BenchmarksApp.instance?.roomComponent?.inject(this)
     }
 
     override fun getData(): List<CollectionResult> {
@@ -68,6 +54,20 @@ open class CollectionBenchmark : Benchmark {
             CellOperation(R.string.removing_in_the_end, R.string.linkedlist, R.string.na.toLong(), setRunning),
             CellOperation(R.string.removing_in_the_end, R.string.copyonwritearraylist, R.string.na.toLong(), setRunning)
     )
+
+    override fun setData(action: String, type: String, time: Long, input: Int) {
+        val operationResult = CollectionResult(
+                action = action,
+                type = type,
+                time = time,
+                input = input
+        )
+        try {
+            collectionResultDao.insertResult(operationResult)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
     override fun measureTime(item: CellOperation, number: Int): Long {
 
